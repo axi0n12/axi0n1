@@ -1,4 +1,4 @@
--- 4.2
+-- 4.1
 local KraviX = {}
 
 local TweenService     = game:GetService("TweenService")
@@ -1192,58 +1192,46 @@ function KraviX:CreateWindow(config)
     _G.KraviX_ViewingPlayer   = nil
 
     local MiniPlayers = Window:CreateMiniUI({
-        Title = "Player List", Width = 560, Height = 380,
-        DefaultPosition = UDim2.new(0.5, -280, 0.5, -190),
+        Title = "Player List", Width = 480, Height = 320,
+        DefaultPosition = UDim2.new(0.5, -240, 0.5, -160),
         OnToggle = function(on) BtnTheme.SetActive(on) end
     })
 
-    -- Limpa layout padrao do MBody para layout 2-colunas profissional
+    -- Clean layout
     for _, child in ipairs(MiniPlayers.Body:GetChildren()) do
         if child:IsA("UIListLayout") or child:IsA("UIPadding") then
             child:Destroy()
         end
     end
+    mkPad(MiniPlayers.Body, 10, 10, 10, 10)
 
     local selectedPlayer = LocalPlayer
 
-    -- Divisor vertical sutil entre os painéis (Deep Midnight Dark)
+    -- Divisor vertical sutil
     local Divider = Instance.new("Frame", MiniPlayers.Body)
-    Divider.Size = UDim2.new(0, 1, 1, -10)
-    Divider.Position = UDim2.new(0, 290, 0, 5)
-    Divider.BackgroundColor3 = Color3.fromRGB(35, 31, 51)
+    Divider.Size = UDim2.new(0, 1, 1, 0)
+    Divider.Position = UDim2.new(0, 240, 0, 0)
+    Divider.BackgroundColor3 = C.Border
     Divider.BorderSizePixel = 0
     Divider.ZIndex = MiniPlayers.Frame.ZIndex + 2
     Divider:SetAttribute("RelZIndex", 2)
 
-    -- Left Column Frame (Player List - ~52% da largura)
+    -- Left Column Frame (Player List)
     local LeftCol = Instance.new("Frame", MiniPlayers.Body)
-    LeftCol.Size = UDim2.new(0, 275, 1, 0)
+    LeftCol.Size = UDim2.new(0, 230, 1, 0)
     LeftCol.Position = UDim2.new(0, 0, 0, 0)
     LeftCol.BackgroundTransparency = 1
     LeftCol.ZIndex = MiniPlayers.Frame.ZIndex + 2
     LeftCol:SetAttribute("RelZIndex", 2)
 
-    -- Header Title "Players [N]"
-    local PlayersTitle = Instance.new("TextLabel", LeftCol)
-    PlayersTitle.Size = UDim2.new(1, 0, 0, 20)
-    PlayersTitle.Position = UDim2.new(0, 0, 0, 0)
-    PlayersTitle.BackgroundTransparency = 1
-    PlayersTitle.Text = "Players [0]"
-    PlayersTitle.TextColor3 = Color3.fromRGB(245, 245, 250)
-    PlayersTitle.TextSize = 13
-    PlayersTitle.Font = Enum.Font.GothamBold
-    PlayersTitle.TextXAlignment = Enum.TextXAlignment.Left
-    PlayersTitle.ZIndex = MiniPlayers.Frame.ZIndex + 2
-    PlayersTitle:SetAttribute("RelZIndex", 2)
-
     -- Search Box Container
     local SearchCont = Instance.new("Frame", LeftCol)
-    SearchCont.Size = UDim2.new(1, 0, 0, 32)
-    SearchCont.Position = UDim2.new(0, 0, 0, 26)
+    SearchCont.Size = UDim2.new(1, 0, 0, 28)
+    SearchCont.Position = UDim2.new(0, 0, 0, 0)
     SearchCont.BackgroundColor3 = C.Bg3
     SearchCont.ZIndex = MiniPlayers.Frame.ZIndex + 2
     SearchCont:SetAttribute("RelZIndex", 2)
-    mkCorner(SearchCont, 8)
+    mkCorner(SearchCont, 6)
     local searchSt = mkStroke(SearchCont, C.Border, 1, 0)
     searchSt:SetAttribute("RelZIndex", 2)
 
@@ -1251,10 +1239,10 @@ function KraviX:CreateWindow(config)
     SearchBox.Size = UDim2.new(1, -16, 1, 0)
     SearchBox.Position = UDim2.new(0, 10, 0, 0)
     SearchBox.BackgroundTransparency = 1
-    SearchBox.PlaceholderText = "Search player by name..."
-    SearchBox.PlaceholderColor3 = Color3.fromRGB(140, 135, 160)
+    SearchBox.PlaceholderText = "Search player..."
+    SearchBox.PlaceholderColor3 = C.Muted
     SearchBox.Text = ""
-    SearchBox.TextColor3 = Color3.fromRGB(245, 245, 250)
+    SearchBox.TextColor3 = C.Text
     SearchBox.TextSize = 11
     SearchBox.Font = Enum.Font.GothamMedium
     SearchBox.TextXAlignment = Enum.TextXAlignment.Left
@@ -1262,42 +1250,10 @@ function KraviX:CreateWindow(config)
     SearchBox.ZIndex = MiniPlayers.Frame.ZIndex + 3
     SearchBox:SetAttribute("RelZIndex", 3)
 
-    -- Table Column Headers (NAME & STATUS)
-    local HeaderRow = Instance.new("Frame", LeftCol)
-    HeaderRow.Size = UDim2.new(1, 0, 0, 20)
-    HeaderRow.Position = UDim2.new(0, 0, 0, 64)
-    HeaderRow.BackgroundTransparency = 1
-    HeaderRow.ZIndex = MiniPlayers.Frame.ZIndex + 2
-    HeaderRow:SetAttribute("RelZIndex", 2)
-
-    local NameColText = Instance.new("TextLabel", HeaderRow)
-    NameColText.Size = UDim2.new(0.65, 0, 1, 0)
-    NameColText.Position = UDim2.new(0, 10, 0, 0)
-    NameColText.BackgroundTransparency = 1
-    NameColText.Text = "NAME"
-    NameColText.TextColor3 = Color3.fromRGB(140, 135, 160)
-    NameColText.TextSize = 10
-    NameColText.Font = Enum.Font.GothamBold
-    NameColText.TextXAlignment = Enum.TextXAlignment.Left
-    NameColText.ZIndex = MiniPlayers.Frame.ZIndex + 2
-    NameColText:SetAttribute("RelZIndex", 2)
-
-    local StatusColText = Instance.new("TextLabel", HeaderRow)
-    StatusColText.Size = UDim2.new(0.35, -10, 1, 0)
-    StatusColText.Position = UDim2.new(0.65, 0, 0, 0)
-    StatusColText.BackgroundTransparency = 1
-    StatusColText.Text = "STATUS"
-    StatusColText.TextColor3 = Color3.fromRGB(140, 135, 160)
-    StatusColText.TextSize = 10
-    StatusColText.Font = Enum.Font.GothamBold
-    StatusColText.TextXAlignment = Enum.TextXAlignment.Right
-    StatusColText.ZIndex = MiniPlayers.Frame.ZIndex + 2
-    StatusColText:SetAttribute("RelZIndex", 2)
-
     -- Scrolling Frame for Player Cards
     local PlayerScroll = Instance.new("ScrollingFrame", LeftCol)
-    PlayerScroll.Size = UDim2.new(1, 0, 1, -88)
-    PlayerScroll.Position = UDim2.new(0, 0, 0, 88)
+    PlayerScroll.Size = UDim2.new(1, 0, 1, -34)
+    PlayerScroll.Position = UDim2.new(0, 0, 0, 34)
     PlayerScroll.BackgroundTransparency = 1
     PlayerScroll.BorderSizePixel = 0
     PlayerScroll.ScrollBarThickness = 3
@@ -1315,30 +1271,18 @@ function KraviX:CreateWindow(config)
     end
     ScrollLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(updateCanvas)
 
-    -- Right Column Frame (Selected Player Inspector - ~45% da largura)
+    -- Right Column Frame (Selected Player Inspector)
     local RightCol = Instance.new("Frame", MiniPlayers.Body)
-    RightCol.Size = UDim2.new(0, 250, 1, 0)
-    RightCol.Position = UDim2.new(0, 305, 0, 0)
+    RightCol.Size = UDim2.new(0, 210, 1, 0)
+    RightCol.Position = UDim2.new(0, 250, 0, 0)
     RightCol.BackgroundTransparency = 1
     RightCol.ZIndex = MiniPlayers.Frame.ZIndex + 2
     RightCol:SetAttribute("RelZIndex", 2)
 
-    local SelTitle = Instance.new("TextLabel", RightCol)
-    SelTitle.Size = UDim2.new(1, 0, 0, 20)
-    SelTitle.Position = UDim2.new(0, 0, 0, 0)
-    SelTitle.BackgroundTransparency = 1
-    SelTitle.Text = "Selected Player"
-    SelTitle.TextColor3 = C.Text
-    SelTitle.TextSize = 13
-    SelTitle.Font = Enum.Font.GothamBold
-    SelTitle.TextXAlignment = Enum.TextXAlignment.Left
-    SelTitle.ZIndex = MiniPlayers.Frame.ZIndex + 2
-    SelTitle:SetAttribute("RelZIndex", 2)
-
     -- Profile Card Container
     local ProfileCard = Instance.new("Frame", RightCol)
-    ProfileCard.Size = UDim2.new(1, 0, 0, 142)
-    ProfileCard.Position = UDim2.new(0, 0, 0, 26)
+    ProfileCard.Size = UDim2.new(1, 0, 0, 136)
+    ProfileCard.Position = UDim2.new(0, 0, 0, 0)
     ProfileCard.BackgroundColor3 = C.Bg3
     ProfileCard.ZIndex = MiniPlayers.Frame.ZIndex + 2
     ProfileCard:SetAttribute("RelZIndex", 2)
@@ -1605,7 +1549,6 @@ function KraviX:CreateWindow(config)
             end
         end
 
-        PlayersTitle.Text = "Players [" .. count .. "]"
         updateCanvas()
     end
 
@@ -1697,338 +1640,208 @@ function KraviX:CreateWindow(config)
         end
     end)
 
-    -- ===== BOTÃO 3: CONFIGURATIONS =====
+    -- ===== BOTÃO 3: CONFIGURATIONS (DESIGN MINIMALISTA MATCHA) =====
     local MiniConfigs = Window:CreateMiniUI({
-        Title = "Configurations", Width = 440, Height = 390,
-        DefaultPosition = UDim2.new(0.5, -220, 0.5, -195),
+        Title = "Configurations", Width = 360, Height = 240,
+        DefaultPosition = UDim2.new(0.5, -180, 0.5, -120),
         OnToggle = function(on) BtnCloud.SetActive(on) end
     })
 
-    -- Limpa layout padrao do MBody
+    -- Clean layout without redundant banners
     for _, child in ipairs(MiniConfigs.Body:GetChildren()) do
         if child:IsA("UIListLayout") or child:IsA("UIPadding") then
             child:Destroy()
         end
     end
+    mkPad(MiniConfigs.Body, 10, 10, 10, 10)
 
-    -- Header Banner Card (Subtitle / Title info)
-    local HeaderBanner = Instance.new("Frame", MiniConfigs.Body)
-    HeaderBanner.Size = UDim2.new(1, 0, 0, 42)
-    HeaderBanner.Position = UDim2.new(0, 0, 0, 0)
-    HeaderBanner.BackgroundColor3 = C.Bg3
-    HeaderBanner.ZIndex = MiniConfigs.Frame.ZIndex + 2
-    HeaderBanner:SetAttribute("RelZIndex", 2)
-    mkCorner(HeaderBanner, 10)
-    local hbSt = mkStroke(HeaderBanner, C.Border, 1, 0)
-    hbSt:SetAttribute("RelZIndex", 2)
+    local CfgLayout = Instance.new("UIListLayout", MiniConfigs.Body)
+    CfgLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    CfgLayout.Padding = UDim.new(0, 8)
 
-    local hbBar = Instance.new("Frame", HeaderBanner)
-    hbBar.Size = UDim2.new(0, 3, 1, 0)
-    hbBar.Position = UDim2.new(0, 0, 0, 0)
-    hbBar.BackgroundColor3 = C.Accent
-    hbBar.BorderSizePixel = 0
-    hbBar.ZIndex = MiniConfigs.Frame.ZIndex + 3
-    hbBar:SetAttribute("RelZIndex", 3)
+    -- Row 1: Config Name Input Box
+    local InputCont = Instance.new("Frame", MiniConfigs.Body)
+    InputCont.Size = UDim2.new(1, 0, 0, 30)
+    InputCont.BackgroundColor3 = C.Bg3
+    InputCont.ZIndex = MiniConfigs.Frame.ZIndex + 2
+    InputCont:SetAttribute("RelZIndex", 2)
+    mkCorner(InputCont, 6)
+    local cfgInSt = mkStroke(InputCont, C.Border, 1, 0)
+    cfgInSt:SetAttribute("RelZIndex", 2)
 
-    local hbTitle = Instance.new("TextLabel", HeaderBanner)
-    hbTitle.Size = UDim2.new(1, -20, 0, 18)
-    hbTitle.Position = UDim2.new(0, 12, 0, 4)
-    hbTitle.BackgroundTransparency = 1
-    hbTitle.Text = "GERENCIADOR DE CONFIGURAÇÕES (.CFG)"
-    hbTitle.TextColor3 = C.Text
-    hbTitle.TextSize = 11
-    hbTitle.Font = Enum.Font.GothamBold
-    hbTitle.TextXAlignment = Enum.TextXAlignment.Left
-    hbTitle.ZIndex = MiniConfigs.Frame.ZIndex + 3
-    hbTitle:SetAttribute("RelZIndex", 3)
-
-    local hbSub = Instance.new("TextLabel", HeaderBanner)
-    hbSub.Size = UDim2.new(1, -20, 0, 16)
-    hbSub.Position = UDim2.new(0, 12, 0, 22)
-    hbSub.BackgroundTransparency = 1
-    hbSub.Text = "Crie, salve, altere e gerencie seus perfis de configuração com facilidade."
-    hbSub.TextColor3 = C.Sub
-    hbSub.TextSize = 10
-    hbSub.Font = Enum.Font.GothamMedium
-    hbSub.TextXAlignment = Enum.TextXAlignment.Left
-    hbSub.ZIndex = MiniConfigs.Frame.ZIndex + 3
-    hbSub:SetAttribute("RelZIndex", 3)
-
-    -- Card 1: Input & Selector Panel
-    local Card1 = Instance.new("Frame", MiniConfigs.Body)
-    Card1.Size = UDim2.new(1, 0, 0, 115)
-    Card1.Position = UDim2.new(0, 0, 0, 50)
-    Card1.BackgroundColor3 = C.Bg3
-    Card1.ZIndex = MiniConfigs.Frame.ZIndex + 2
-    Card1:SetAttribute("RelZIndex", 2)
-    mkCorner(Card1, 10)
-    local c1St = mkStroke(Card1, C.Border, 1, 0)
-    c1St:SetAttribute("RelZIndex", 2)
-
-    -- Row 1 inside Card1: Input
-    local InputLbl = Instance.new("TextLabel", Card1)
-    InputLbl.Size = UDim2.new(1, -20, 0, 14)
-    InputLbl.Position = UDim2.new(0, 10, 0, 8)
-    InputLbl.BackgroundTransparency = 1
-    InputLbl.Text = "NOME DA CONFIGURAÇÃO (CRIAR / SALVAR):"
-    InputLbl.TextColor3 = C.Accent2
-    InputLbl.TextSize = 10
-    InputLbl.Font = Enum.Font.GothamBold
-    InputLbl.TextXAlignment = Enum.TextXAlignment.Left
-    InputLbl.ZIndex = MiniConfigs.Frame.ZIndex + 3
-    InputLbl:SetAttribute("RelZIndex", 3)
-
-    local CfgInputCont = Instance.new("Frame", Card1)
-    CfgInputCont.Size = UDim2.new(1, -20, 0, 32)
-    CfgInputCont.Position = UDim2.new(0, 10, 0, 24)
-    CfgInputCont.BackgroundColor3 = Color3.fromRGB(14, 14, 20)
-    CfgInputCont.ZIndex = MiniConfigs.Frame.ZIndex + 3
-    CfgInputCont:SetAttribute("RelZIndex", 3)
-    mkCorner(CfgInputCont, 6)
-    local cfgInSt = mkStroke(CfgInputCont, Color3.fromRGB(34, 30, 52), 1, 0)
-    cfgInSt:SetAttribute("RelZIndex", 3)
-
-    local cfgBox = Instance.new("TextBox", CfgInputCont)
-    cfgBox.Size = UDim2.new(1, -16, 1, 0)
+    local cfgBox = Instance.new("TextBox", InputCont)
+    cfgBox.Size = UDim2.new(1, -20, 1, 0)
     cfgBox.Position = UDim2.new(0, 10, 0, 0)
     cfgBox.BackgroundTransparency = 1
-    cfgBox.PlaceholderText = "Digite o nome da config..."
-    cfgBox.PlaceholderColor3 = Color3.fromRGB(140, 135, 160)
+    cfgBox.PlaceholderText = "Nome da configuração..."
+    cfgBox.PlaceholderColor3 = C.Muted
     cfgBox.Text = "default"
-    cfgBox.TextColor3 = Color3.fromRGB(245, 245, 250)
+    cfgBox.TextColor3 = C.Text
     cfgBox.TextSize = 11
     cfgBox.Font = Enum.Font.GothamMedium
     cfgBox.TextXAlignment = Enum.TextXAlignment.Left
     cfgBox.ClearTextOnFocus = false
-    cfgBox.ZIndex = MiniConfigs.Frame.ZIndex + 4
-    cfgBox:SetAttribute("RelZIndex", 4)
+    cfgBox.ZIndex = MiniConfigs.Frame.ZIndex + 3
+    cfgBox:SetAttribute("RelZIndex", 3)
 
-    cfgBox.Focused:Connect(function()
-        Tween(cfgInSt, {Color = Color3.fromRGB(139, 92, 246)}, 0.15):Play()
-    end)
-    cfgBox.FocusLost:Connect(function()
-        Tween(cfgInSt, {Color = Color3.fromRGB(34, 30, 52)}, 0.15):Play()
-    end)
+    cfgBox.Focused:Connect(function() Tween(cfgInSt, {Color = C.Accent}, 0.12):Play() end)
+    cfgBox.FocusLost:Connect(function() Tween(cfgInSt, {Color = C.Border}, 0.12):Play() end)
 
-    -- Row 2 inside Card1: Select Config Button
-    local SelectLbl = Instance.new("TextLabel", Card1)
-    SelectLbl.Size = UDim2.new(1, -20, 0, 14)
-    SelectLbl.Position = UDim2.new(0, 10, 0, 62)
-    SelectLbl.BackgroundTransparency = 1
-    SelectLbl.Text = "CONFIGURAÇÃO SELECIONADA NA LISTA:"
-    SelectLbl.TextColor3 = Color3.fromRGB(140, 135, 160)
-    SelectLbl.TextSize = 10
-    SelectLbl.Font = Enum.Font.GothamBold
-    SelectLbl.TextXAlignment = Enum.TextXAlignment.Left
-    SelectLbl.ZIndex = MiniConfigs.Frame.ZIndex + 3
-    SelectLbl:SetAttribute("RelZIndex", 3)
-
+    -- Row 2: Config Selector Button
     local selectedConfig = "default"
 
-    local ConfigSelectBtn = Instance.new("TextButton", Card1)
-    ConfigSelectBtn.Size = UDim2.new(1, -20, 0, 32)
-    ConfigSelectBtn.Position = UDim2.new(0, 10, 0, 78)
-    ConfigSelectBtn.BackgroundColor3 = Color3.fromRGB(14, 14, 20)
+    local ConfigSelectBtn = Instance.new("TextButton", MiniConfigs.Body)
+    ConfigSelectBtn.Size = UDim2.new(1, 0, 0, 30)
+    ConfigSelectBtn.BackgroundColor3 = C.Bg3
     ConfigSelectBtn.Text = "  Config: default"
-    ConfigSelectBtn.TextColor3 = Color3.fromRGB(245, 245, 250)
+    ConfigSelectBtn.TextColor3 = C.Text
     ConfigSelectBtn.TextSize = 11
     ConfigSelectBtn.Font = Enum.Font.GothamBold
     ConfigSelectBtn.TextXAlignment = Enum.TextXAlignment.Left
     ConfigSelectBtn.AutoButtonColor = false
-    ConfigSelectBtn.ZIndex = MiniConfigs.Frame.ZIndex + 3
-    ConfigSelectBtn:SetAttribute("RelZIndex", 3)
+    ConfigSelectBtn.ZIndex = MiniConfigs.Frame.ZIndex + 2
+    ConfigSelectBtn:SetAttribute("RelZIndex", 2)
     mkCorner(ConfigSelectBtn, 6)
-    local cfgSelSt = mkStroke(ConfigSelectBtn, Color3.fromRGB(34, 30, 52), 1, 0)
-    cfgSelSt:SetAttribute("RelZIndex", 3)
+    local cfgSelSt = mkStroke(ConfigSelectBtn, C.Border, 1, 0)
+    cfgSelSt:SetAttribute("RelZIndex", 2)
 
     local CfgDropArrow = Instance.new("TextLabel", ConfigSelectBtn)
-    CfgDropArrow.Size = UDim2.new(0, 140, 1, 0)
-    CfgDropArrow.Position = UDim2.new(1, -145, 0, 0)
+    CfgDropArrow.Size = UDim2.new(0, 100, 1, 0)
+    CfgDropArrow.Position = UDim2.new(1, -105, 0, 0)
     CfgDropArrow.BackgroundTransparency = 1
-    CfgDropArrow.Text = "[ ▼ Clique p/ Alternar ]"
-    CfgDropArrow.TextColor3 = Color3.fromRGB(168, 125, 255)
+    CfgDropArrow.Text = "[ ▼ Alterar ]"
+    CfgDropArrow.TextColor3 = C.Accent2
     CfgDropArrow.TextSize = 10
     CfgDropArrow.Font = Enum.Font.GothamMedium
     CfgDropArrow.TextXAlignment = Enum.TextXAlignment.Right
-    CfgDropArrow.ZIndex = MiniConfigs.Frame.ZIndex + 4
-    CfgDropArrow:SetAttribute("RelZIndex", 4)
+    CfgDropArrow.ZIndex = MiniConfigs.Frame.ZIndex + 3
+    CfgDropArrow:SetAttribute("RelZIndex", 3)
 
     ConfigSelectBtn.MouseEnter:Connect(function()
-        Tween(ConfigSelectBtn, {BackgroundColor3 = Color3.fromRGB(22, 18, 34)}, 0.12):Play()
-        Tween(cfgSelSt, {Color = Color3.fromRGB(139, 92, 246)}, 0.12):Play()
+        Tween(ConfigSelectBtn, {BackgroundColor3 = C.Bg4}, 0.12):Play()
+        Tween(cfgSelSt, {Color = C.Accent}, 0.12):Play()
     end)
     ConfigSelectBtn.MouseLeave:Connect(function()
-        Tween(ConfigSelectBtn, {BackgroundColor3 = Color3.fromRGB(14, 14, 20)}, 0.12):Play()
-        Tween(cfgSelSt, {Color = Color3.fromRGB(34, 30, 52)}, 0.12):Play()
+        Tween(ConfigSelectBtn, {BackgroundColor3 = C.Bg3}, 0.12):Play()
+        Tween(cfgSelSt, {Color = C.Border}, 0.12):Play()
     end)
 
-    -- Card 2: Action Grid Card (2x2 Buttons)
-    local Card2 = Instance.new("Frame", MiniConfigs.Body)
-    Card2.Size = UDim2.new(1, 0, 0, 94)
-    Card2.Position = UDim2.new(0, 0, 0, 173)
-    Card2.BackgroundColor3 = C.Bg3
-    Card2.ZIndex = MiniConfigs.Frame.ZIndex + 2
-    Card2:SetAttribute("RelZIndex", 2)
-    mkCorner(Card2, 10)
-    local c2St = mkStroke(Card2, C.Border, 1, 0)
-    c2St:SetAttribute("RelZIndex", 2)
+    -- Row 3: Action Buttons 2x2 Grid (Salvar, Carregar, Deletar, Atualizar)
+    local GridCont = Instance.new("Frame", MiniConfigs.Body)
+    GridCont.Size = UDim2.new(1, 0, 0, 68)
+    GridCont.BackgroundTransparency = 1
+    GridCont.ZIndex = MiniConfigs.Frame.ZIndex + 2
+    GridCont:SetAttribute("RelZIndex", 2)
 
-    -- Row 1: Save & Load
-    local SaveBtn = Instance.new("TextButton", Card2)
-    SaveBtn.Size = UDim2.new(0.48, -4, 0, 36)
-    SaveBtn.Position = UDim2.new(0, 10, 0, 10)
+    local SaveBtn = Instance.new("TextButton", GridCont)
+    SaveBtn.Size = UDim2.new(0.48, -2, 0, 30)
+    SaveBtn.Position = UDim2.new(0, 0, 0, 0)
     SaveBtn.BackgroundColor3 = C.Accent
-    SaveBtn.Text = "💾  Salvar Config"
+    SaveBtn.Text = "Salvar"
     SaveBtn.TextColor3 = C.White
     SaveBtn.TextSize = 11
     SaveBtn.Font = Enum.Font.GothamBold
     SaveBtn.AutoButtonColor = false
     SaveBtn.ZIndex = MiniConfigs.Frame.ZIndex + 3
     SaveBtn:SetAttribute("RelZIndex", 3)
-    mkCorner(SaveBtn, 8)
-    local sSt = mkStroke(SaveBtn, C.Accent2, 1, 0)
-    sSt:SetAttribute("RelZIndex", 3)
+    mkCorner(SaveBtn, 6)
+    SaveBtn.MouseEnter:Connect(function() Tween(SaveBtn, {BackgroundColor3 = C.Accent2}, 0.12):Play() end)
+    SaveBtn.MouseLeave:Connect(function() Tween(SaveBtn, {BackgroundColor3 = C.Accent}, 0.12):Play() end)
 
-    SaveBtn.MouseEnter:Connect(function()
-        Tween(SaveBtn, {BackgroundColor3 = C.Accent2}, 0.12):Play()
-    end)
-    SaveBtn.MouseLeave:Connect(function()
-        Tween(SaveBtn, {BackgroundColor3 = C.Accent}, 0.12):Play()
-    end)
-
-    local LoadBtn = Instance.new("TextButton", Card2)
-    LoadBtn.Size = UDim2.new(0.48, -4, 0, 36)
-    LoadBtn.Position = UDim2.new(0.52, -6, 0, 10)
-    LoadBtn.BackgroundColor3 = C.Bg4
-    LoadBtn.Text = "📂  Carregar Config"
-    LoadBtn.TextColor3 = C.White
+    local LoadBtn = Instance.new("TextButton", GridCont)
+    LoadBtn.Size = UDim2.new(0.48, -2, 0, 30)
+    LoadBtn.Position = UDim2.new(0.52, 2, 0, 0)
+    LoadBtn.BackgroundColor3 = C.Bg3
+    LoadBtn.Text = "Carregar"
+    LoadBtn.TextColor3 = C.Text
     LoadBtn.TextSize = 11
     LoadBtn.Font = Enum.Font.GothamBold
     LoadBtn.AutoButtonColor = false
     LoadBtn.ZIndex = MiniConfigs.Frame.ZIndex + 3
     LoadBtn:SetAttribute("RelZIndex", 3)
-    mkCorner(LoadBtn, 8)
-    local lSt = mkStroke(LoadBtn, C.BorderBt, 1, 0)
-    lSt:SetAttribute("RelZIndex", 3)
+    mkCorner(LoadBtn, 6)
+    local lSt = mkStroke(LoadBtn, C.Border, 1, 0); lSt:SetAttribute("RelZIndex", 3)
+    LoadBtn.MouseEnter:Connect(function() Tween(LoadBtn, {BackgroundColor3 = C.Bg4}, 0.12):Play(); Tween(lSt, {Color = C.Accent}, 0.12):Play() end)
+    LoadBtn.MouseLeave:Connect(function() Tween(LoadBtn, {BackgroundColor3 = C.Bg3}, 0.12):Play(); Tween(lSt, {Color = C.Border}, 0.12):Play() end)
 
-    LoadBtn.MouseEnter:Connect(function()
-        Tween(LoadBtn, {BackgroundColor3 = C.BgHover}, 0.12):Play()
-        Tween(lSt, {Color = C.Accent}, 0.12):Play()
-    end)
-    LoadBtn.MouseLeave:Connect(function()
-        Tween(LoadBtn, {BackgroundColor3 = C.Bg4}, 0.12):Play()
-        Tween(lSt, {Color = C.BorderBt}, 0.12):Play()
-    end)
-
-    -- Row 2: Delete & Refresh
-    local DelBtn = Instance.new("TextButton", Card2)
-    DelBtn.Size = UDim2.new(0.48, -4, 0, 36)
-    DelBtn.Position = UDim2.new(0, 10, 0, 50)
+    local DelBtn = Instance.new("TextButton", GridCont)
+    DelBtn.Size = UDim2.new(0.48, -2, 0, 30)
+    DelBtn.Position = UDim2.new(0, 0, 0, 36)
     DelBtn.BackgroundColor3 = Color3.fromRGB(45, 15, 25)
-    DelBtn.Text = "🗑️  Deletar Config"
+    DelBtn.Text = "Deletar"
     DelBtn.TextColor3 = Color3.fromRGB(245, 120, 120)
     DelBtn.TextSize = 11
     DelBtn.Font = Enum.Font.GothamBold
     DelBtn.AutoButtonColor = false
     DelBtn.ZIndex = MiniConfigs.Frame.ZIndex + 3
     DelBtn:SetAttribute("RelZIndex", 3)
-    mkCorner(DelBtn, 8)
-    local dSt = mkStroke(DelBtn, Color3.fromRGB(75, 25, 35), 1, 0)
-    dSt:SetAttribute("RelZIndex", 3)
+    mkCorner(DelBtn, 6)
+    local dSt = mkStroke(DelBtn, Color3.fromRGB(75, 25, 35), 1, 0); dSt:SetAttribute("RelZIndex", 3)
 
-    DelBtn.MouseEnter:Connect(function()
-        Tween(DelBtn, {BackgroundColor3 = Color3.fromRGB(60, 20, 30)}, 0.12):Play()
-    end)
-    DelBtn.MouseLeave:Connect(function()
-        Tween(DelBtn, {BackgroundColor3 = Color3.fromRGB(45, 15, 25)}, 0.12):Play()
-    end)
-
-    local RefBtn = Instance.new("TextButton", Card2)
-    RefBtn.Size = UDim2.new(0.48, -4, 0, 36)
-    RefBtn.Position = UDim2.new(0.52, -6, 0, 50)
-    RefBtn.BackgroundColor3 = C.Bg4
-    RefBtn.Text = "🔄  Atualizar Lista"
-    RefBtn.TextColor3 = C.Text
+    local RefBtn = Instance.new("TextButton", GridCont)
+    RefBtn.Size = UDim2.new(0.48, -2, 0, 30)
+    RefBtn.Position = UDim2.new(0.52, 2, 0, 36)
+    RefBtn.BackgroundColor3 = C.Bg3
+    RefBtn.Text = "Atualizar"
+    RefBtn.TextColor3 = C.Sub
     RefBtn.TextSize = 11
     RefBtn.Font = Enum.Font.GothamBold
     RefBtn.AutoButtonColor = false
     RefBtn.ZIndex = MiniConfigs.Frame.ZIndex + 3
     RefBtn:SetAttribute("RelZIndex", 3)
-    mkCorner(RefBtn, 8)
-    local rSt = mkStroke(RefBtn, C.BorderBt, 1, 0)
-    rSt:SetAttribute("RelZIndex", 3)
+    mkCorner(RefBtn, 6)
+    local rSt = mkStroke(RefBtn, C.Border, 1, 0); rSt:SetAttribute("RelZIndex", 3)
+    RefBtn.MouseEnter:Connect(function() Tween(RefBtn, {BackgroundColor3 = C.Bg4}, 0.12):Play() end)
+    RefBtn.MouseLeave:Connect(function() Tween(RefBtn, {BackgroundColor3 = C.Bg3}, 0.12):Play() end)
 
-    RefBtn.MouseEnter:Connect(function()
-        Tween(RefBtn, {BackgroundColor3 = C.BgHover}, 0.12):Play()
-        Tween(rSt, {Color = C.Accent}, 0.12):Play()
-    end)
-    RefBtn.MouseLeave:Connect(function()
-        Tween(RefBtn, {BackgroundColor3 = C.Bg4}, 0.12):Play()
-        Tween(rSt, {Color = C.BorderBt}, 0.12):Play()
-    end)
+    -- Row 4: Auto-Load Toggle Row
+    local AutoRow = Instance.new("Frame", MiniConfigs.Body)
+    AutoRow.Size = UDim2.new(1, 0, 0, 28)
+    AutoRow.BackgroundColor3 = C.Bg3
+    AutoRow.ZIndex = MiniConfigs.Frame.ZIndex + 2
+    AutoRow:SetAttribute("RelZIndex", 2)
+    mkCorner(AutoRow, 6)
+    local autoRowSt = mkStroke(AutoRow, C.Border, 1, 0); autoRowSt:SetAttribute("RelZIndex", 2)
 
-    -- Card 3: Auto Load Switch Card
-    local AutoLoadFrame = Instance.new("Frame", MiniConfigs.Body)
-    AutoLoadFrame.Size = UDim2.new(1, 0, 0, 52)
-    AutoLoadFrame.Position = UDim2.new(0, 0, 0, 275)
-    AutoLoadFrame.BackgroundColor3 = C.Bg3
-    AutoLoadFrame.ZIndex = MiniConfigs.Frame.ZIndex + 2
-    AutoLoadFrame:SetAttribute("RelZIndex", 2)
-    mkCorner(AutoLoadFrame, 10)
-    local autoSt = mkStroke(AutoLoadFrame, C.Border, 1, 0)
-    autoSt:SetAttribute("RelZIndex", 2)
-
-    local AutoTitle = Instance.new("TextLabel", AutoLoadFrame)
-    AutoTitle.Size = UDim2.new(1, -65, 0, 16)
-    AutoTitle.Position = UDim2.new(0, 12, 0, 8)
+    local AutoTitle = Instance.new("TextLabel", AutoRow)
+    AutoTitle.Size = UDim2.new(1, -50, 1, 0)
+    AutoTitle.Position = UDim2.new(0, 10, 0, 0)
     AutoTitle.BackgroundTransparency = 1
-    AutoTitle.Text = "⚡ Auto-Load ao Iniciar"
-    AutoTitle.TextColor3 = C.Text
-    AutoTitle.TextSize = 11
-    AutoTitle.Font = Enum.Font.GothamBold
+    AutoTitle.Text = "Auto-Load ao Iniciar"
+    AutoTitle.TextColor3 = C.Sub
+    AutoTitle.TextSize = 10.5
+    AutoTitle.Font = Enum.Font.GothamMedium
     AutoTitle.TextXAlignment = Enum.TextXAlignment.Left
     AutoTitle.ZIndex = MiniConfigs.Frame.ZIndex + 3
     AutoTitle:SetAttribute("RelZIndex", 3)
 
-    local AutoSub = Instance.new("TextLabel", AutoLoadFrame)
-    AutoSub.Size = UDim2.new(1, -65, 0, 14)
-    AutoSub.Position = UDim2.new(0, 12, 0, 26)
-    AutoSub.BackgroundTransparency = 1
-    AutoSub.Text = "Carrega esta configuração automaticamente ao executar"
-    AutoSub.TextColor3 = C.Sub
-    AutoSub.TextSize = 9.5
-    AutoSub.Font = Enum.Font.GothamMedium
-    AutoSub.TextXAlignment = Enum.TextXAlignment.Left
-    AutoSub.ZIndex = MiniConfigs.Frame.ZIndex + 3
-    AutoSub:SetAttribute("RelZIndex", 3)
-
-    local AutoSwitch = Instance.new("TextButton", AutoLoadFrame)
-    AutoSwitch.Size = UDim2.new(0, 40, 0, 22)
-    AutoSwitch.Position = UDim2.new(1, -50, 0.5, -11)
+    local AutoSwitch = Instance.new("TextButton", AutoRow)
+    AutoSwitch.Size = UDim2.new(0, 32, 0, 18)
+    AutoSwitch.Position = UDim2.new(1, -40, 0.5, -9)
     AutoSwitch.BackgroundColor3 = C.Bg5
     AutoSwitch.Text = ""
     AutoSwitch.AutoButtonColor = false
     AutoSwitch.ZIndex = MiniConfigs.Frame.ZIndex + 3
     AutoSwitch:SetAttribute("RelZIndex", 3)
-    mkCorner(AutoSwitch, 11)
+    mkCorner(AutoSwitch, 9)
 
     local SwitchKnob = Instance.new("Frame", AutoSwitch)
-    SwitchKnob.Size = UDim2.new(0, 16, 0, 16)
-    SwitchKnob.Position = UDim2.new(0, 3, 0.5, -8)
+    SwitchKnob.Size = UDim2.new(0, 12, 0, 12)
+    SwitchKnob.Position = UDim2.new(0, 3, 0.5, -6)
     SwitchKnob.BackgroundColor3 = C.Sub
     SwitchKnob.ZIndex = MiniConfigs.Frame.ZIndex + 4
     SwitchKnob:SetAttribute("RelZIndex", 4)
-    mkCorner(SwitchKnob, 8)
+    mkCorner(SwitchKnob, 6)
 
     local autoLoadState = false
     local function setAutoLoadUI(state)
         autoLoadState = state
         if state then
             Tween(AutoSwitch, {BackgroundColor3 = C.Accent}, 0.15):Play()
-            Tween(SwitchKnob, {Position = UDim2.new(1, -19, 0.5, -8), BackgroundColor3 = C.White}, 0.15):Play()
+            Tween(SwitchKnob, {Position = UDim2.new(1, -15, 0.5, -6), BackgroundColor3 = C.White}, 0.15):Play()
         else
             Tween(AutoSwitch, {BackgroundColor3 = C.Bg5}, 0.15):Play()
-            Tween(SwitchKnob, {Position = UDim2.new(0, 3, 0.5, -8), BackgroundColor3 = C.Sub}, 0.15):Play()
+            Tween(SwitchKnob, {Position = UDim2.new(0, 3, 0.5, -6), BackgroundColor3 = C.Sub}, 0.15):Play()
         end
     end
 
@@ -2109,23 +1922,22 @@ function KraviX:CreateWindow(config)
 
     -- ===== BOTÃO 4: REAL 3D VIEWPORT ESP PREVIEW =====
     local MiniESP = Window:CreateMiniUI({
-        Title = "ESP PREVIEW", Width = 320, Height = 360,
-        DefaultPosition = UDim2.new(0.5, -160, 0.5, -180),
+        Title = "ESP Preview", Width = 300, Height = 310,
+        DefaultPosition = UDim2.new(0.5, -150, 0.5, -155),
         OnToggle = function(on) BtnESP.SetActive(on) end
     })
-    MiniESP:AddLabel("Preview Real do Seu Personagem em 3D", C.Sub)
 
     local VFrame = Instance.new("ViewportFrame", MiniESP.Body)
-    VFrame.Size = UDim2.new(1, 0, 0, 300)
-    VFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 15)
+    VFrame.Size = UDim2.new(1, 0, 1, 0)
+    VFrame.BackgroundColor3 = C.Bg2
     VFrame.BorderSizePixel = 0
     VFrame.ZIndex = MiniESP.Frame.ZIndex + 2
     VFrame:SetAttribute("RelZIndex", 2)
     VFrame.LightColor = Color3.fromRGB(255, 255, 255)
     VFrame.LightDirection = Vector3.new(-1, -2, -1)
     VFrame.Ambient = Color3.fromRGB(180, 180, 180)
-    mkCorner(VFrame, 10)
-    local vfStroke = mkStroke(VFrame, C.BorderBt, 1, 0)
+    mkCorner(VFrame, 8)
+    local vfStroke = mkStroke(VFrame, C.Border, 1, 0)
     vfStroke:SetAttribute("RelZIndex", 2)
 
     local ViewportCamera = Instance.new("Camera")
