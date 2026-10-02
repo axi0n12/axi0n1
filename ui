@@ -1,4 +1,4 @@
--- 4.2
+-- 4.1
 local KraviX = {}
 
 local TweenService     = game:GetService("TweenService")
@@ -1691,6 +1691,10 @@ function KraviX:CreateWindow(config)
     cfgBox.Focused:Connect(function() Tween(cfgInSt, {Color = C.Accent}, 0.12):Play() end)
     cfgBox.FocusLost:Connect(function() Tween(cfgInSt, {Color = C.Border}, 0.12):Play() end)
 
+    -- Make MiniConfigs non-clipping so dropdown menu can pop outside if needed
+    MiniConfigs.Frame.ClipsDescendants = false
+    MiniConfigs.Body.ClipsDescendants = false
+
     -- Row 2: Dropdown das cfgs que eu tenho (Selector Button)
     local selectedConfig = "default"
 
@@ -1720,6 +1724,40 @@ function KraviX:CreateWindow(config)
     CfgDropArrow.TextXAlignment = Enum.TextXAlignment.Right
     CfgDropArrow.ZIndex = MiniConfigs.Frame.ZIndex + 3
     CfgDropArrow:SetAttribute("RelZIndex", 3)
+
+    -- Dropdown Popover Frame (Attached below ConfigSelectBtn)
+    local DropFrame = Instance.new("Frame", ConfigSelectBtn)
+    DropFrame.Name = "CfgDropdownFrame"
+    DropFrame.Size = UDim2.new(1, 0, 0, 0)
+    DropFrame.Position = UDim2.new(0, 0, 1, 4)
+    DropFrame.BackgroundColor3 = C.Bg2
+    DropFrame.BorderSizePixel = 0
+    DropFrame.Visible = false
+    DropFrame.ClipsDescendants = true
+    DropFrame.ZIndex = MiniConfigs.Frame.ZIndex + 50
+    DropFrame:SetAttribute("RelZIndex", 50)
+    mkCorner(DropFrame, 6)
+    local dropStroke = mkStroke(DropFrame, C.Accent, 1, 0)
+    dropStroke:SetAttribute("RelZIndex", 50)
+
+    local DropScroll = Instance.new("ScrollingFrame", DropFrame)
+    DropScroll.Size = UDim2.new(1, -4, 1, -4)
+    DropScroll.Position = UDim2.new(0, 2, 0, 2)
+    DropScroll.BackgroundTransparency = 1
+    DropScroll.BorderSizePixel = 0
+    DropScroll.ScrollBarThickness = 3
+    DropScroll.ScrollBarImageColor3 = C.Accent
+    DropScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+    DropScroll.ZIndex = MiniConfigs.Frame.ZIndex + 51
+    DropScroll:SetAttribute("RelZIndex", 51)
+
+    local DropLayout = Instance.new("UIListLayout", DropScroll)
+    DropLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    DropLayout.Padding = UDim.new(0, 2)
+
+    DropLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        DropScroll.CanvasSize = UDim2.new(0, 0, 0, DropLayout.AbsoluteContentSize.Y + 4)
+    end)
 
     ConfigSelectBtn.MouseEnter:Connect(function()
         Tween(ConfigSelectBtn, {BackgroundColor3 = C.Bg4}, 0.12):Play()
@@ -1769,6 +1807,14 @@ function KraviX:CreateWindow(config)
     LoadBtn.MouseLeave:Connect(function() Tween(LoadBtn, {BackgroundColor3 = C.Bg3}, 0.12):Play(); Tween(lSt, {Color = C.Border}, 0.12):Play() end)
 
     local currentConfigList = {}
+    local isDropOpen = false
+
+    local function closeDropdown()
+        isDropOpen = false
+        DropFrame.Visible = false
+        CfgDropArrow.Text = "[ ▼ Configs ]"
+    end
+
     local function refreshConfigUI()
         currentConfigList = Window:GetConfigs()
         if #currentConfigList == 0 then
@@ -1781,20 +1827,77 @@ function KraviX:CreateWindow(config)
         end
     end
 
-    ConfigSelectBtn.MouseButton1Click:Connect(function()
-        if #currentConfigList == 0 then
-            refreshConfigUI()
-            return
+    local function populateDropdown()
+        for _, child in ipairs(DropScroll:GetChildren()) do
+            if child:IsA("GuiObject") and not child:IsA("UIListLayout") then
+                child:Destroy()
+            end
         end
-        local idx = table.find(currentConfigList, selectedConfig) or 1
-        idx = idx + 1
-        if idx > #currentConfigList then idx = 1 end
-        selectedConfig = currentConfigList[idx]
-        cfgBox.Text = selectedConfig
-        refreshConfigUI()
+
+        currentConfigList = Window:GetConfigs()
+        if #currentConfigList == 0 then
+            local emptyLbl = Instance.new("TextLabel", DropScroll)
+            emptyLbl.Size = UDim2.new(1, 0, 0, 26)
+            emptyLbl.BackgroundTransparency = 1
+            emptyLbl.Text = "Nenhuma config salva"
+            emptyLbl.TextColor3 = C.Muted
+            emptyLbl.TextSize = 11
+            emptyLbl.Font = Enum.Font.GothamMedium
+            emptyLbl.ZIndex = MiniConfigs.Frame.ZIndex + 52
+            emptyLbl:SetAttribute("RelZIndex", 52)
+            DropFrame.Size = UDim2.new(1, 0, 0, 32)
+        else
+            for _, cfgName in ipairs(currentConfigList) do
+                local itemBtn = Instance.new("TextButton", DropScroll)
+                itemBtn.Size = UDim2.new(1, 0, 0, 26)
+                itemBtn.BackgroundColor3 = (cfgName == selectedConfig) and Color3.fromRGB(35, 25, 48) or C.Bg3
+                itemBtn.BorderSizePixel = 0
+                itemBtn.Text = "  " .. cfgName
+                itemBtn.TextColor3 = (cfgName == selectedConfig) and C.Accent2 or C.Text
+                itemBtn.TextSize = 11
+                itemBtn.Font = Enum.Font.GothamMedium
+                itemBtn.TextXAlignment = Enum.TextXAlignment.Left
+                itemBtn.AutoButtonColor = false
+                itemBtn.ZIndex = MiniConfigs.Frame.ZIndex + 52
+                itemBtn:SetAttribute("RelZIndex", 52)
+                mkCorner(itemBtn, 4)
+
+                itemBtn.MouseEnter:Connect(function()
+                    if cfgName ~= selectedConfig then
+                        Tween(itemBtn, {BackgroundColor3 = C.Bg4}, 0.1):Play()
+                    end
+                end)
+                itemBtn.MouseLeave:Connect(function()
+                    if cfgName ~= selectedConfig then
+                        Tween(itemBtn, {BackgroundColor3 = C.Bg3}, 0.1):Play()
+                    end
+                end)
+
+                itemBtn.MouseButton1Click:Connect(function()
+                    selectedConfig = cfgName
+                    cfgBox.Text = cfgName
+                    refreshConfigUI()
+                    closeDropdown()
+                end)
+            end
+            local itemHeight = math.min(#currentConfigList * 28 + 6, 120)
+            DropFrame.Size = UDim2.new(1, 0, 0, itemHeight)
+        end
+    end
+
+    ConfigSelectBtn.MouseButton1Click:Connect(function()
+        isDropOpen = not isDropOpen
+        if isDropOpen then
+            populateDropdown()
+            DropFrame.Visible = true
+            CfgDropArrow.Text = "[ ▲ Configs ]"
+        else
+            closeDropdown()
+        end
     end)
 
     SaveBtn.MouseButton1Click:Connect(function()
+        closeDropdown()
         local name = cfgBox.Text ~= "" and cfgBox.Text or selectedConfig
         if Window:SaveConfig(name) then
             selectedConfig = name
@@ -1803,6 +1906,7 @@ function KraviX:CreateWindow(config)
     end)
 
     LoadBtn.MouseButton1Click:Connect(function()
+        closeDropdown()
         local name = cfgBox.Text ~= "" and cfgBox.Text or selectedConfig
         if Window:LoadConfig(name) then
             selectedConfig = name
