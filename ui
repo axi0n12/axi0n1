@@ -1,4 +1,4 @@
--- 4.1
+-- 4.2
 local KraviX = {}
 
 local TweenService     = game:GetService("TweenService")
@@ -277,16 +277,105 @@ local function CreateNotification(title, text, duration, ntype)
 end
 
 local ASC = {
-    M = {"░░░       ░░░","░░░░     ░░░░","░░ ░░   ░░ ░░","░░  ░░ ░░  ░░","░░   ░░░   ░░","░░    ░    ░░","░░         ░░"},
-    O = {"  ░░░░░░░░░  "," ░░░     ░░░ ","░░░       ░░░","░░░       ░░░","░░░       ░░░"," ░░░     ░░░ ","  ░░░░░░░░░  "},
-    Z = {"░░░░░░░░░░░░░","         ░░░░","        ░░░░ ","      ░░░░   ","    ░░░░     ","  ░░░░       ","░░░░░░░░░░░░░"},
-    E = {"░░░░░░░░░░░░░","░░░          ","░░░          ","░░░░░░░░░░░  ","░░░          ","░░░          ","░░░░░░░░░░░░░"},
-    K = {"░░░      ░░░ ","░░░     ░░░  ","░░░   ░░░    ","░░░░░░░      ","░░░   ░░░    ","░░░     ░░░  ","░░░      ░░░ "},
-    R = {"░░░░░░░░░░░  ","░░░       ░░░","░░░       ░░░","░░░░░░░░░░░  ","░░░   ░░░    ","░░░     ░░░  ","░░░      ░░░ "},
-    A = {"  ░░░░░░░░░  "," ░░░     ░░░ ","░░░       ░░░","░░░░░░░░░░░░░","░░░       ░░░","░░░       ░░░","░░░       ░░░"},
-    V = {"░░░       ░░░","░░░       ░░░","░░░       ░░░"," ░░░     ░░░ ","  ░░░   ░░░  ","   ░░░ ░░░   ","    ░░░░░    "},
-    I = {"░░░░░░░░░░░░░","    ░░░░░    ","    ░░░░░    ","    ░░░░░    ","    ░░░░░    ","    ░░░░░    ","░░░░░░░░░░░░░"},
-    X = {"░░░       ░░░"," ░░░     ░░░ ","  ░░░   ░░░  ","    ░░░░░    ","  ░░░   ░░░  "," ░░░     ░░░ ","░░░       ░░░"},
+    A = {
+        "  .oooooo.   ",
+        " d8P'  `Y8b  ",
+        " 888      888 ",
+        " 888oooooo888 ",
+        " 888      888 ",
+        " 888      888 ",
+        " o8o      o8o "
+    },
+    X = {
+        "  ooooooo   ooooooo  ",
+        "   `88888. .88888'   ",
+        "     `88888888'      ",
+        "       `88888'       ",
+        "      .88888888.     ",
+        "     .88888' `8888.  ",
+        "   o88888o   o88888o "
+    },
+    I = {
+        " ooooo ",
+        " `888' ",
+        "  888  ",
+        "  888  ",
+        "  888  ",
+        "  888  ",
+        " o888o "
+    },
+    O = {
+        "  .oooooo.   ",
+        " d8P'  `Y8b  ",
+        " 888    888  ",
+        " 888    888  ",
+        " 888    888  ",
+        " `88b  d88'  ",
+        "  `Y8bood8P' "
+    },
+    N = {
+        " ooo        ooooo ",
+        " `88.       `888' ",
+        "  888b       888  ",
+        "  88`8b      888  ",
+        "  88 `8b     888  ",
+        "  88   `8b   888  ",
+        " o88o    o8b o888o"
+    },
+    M = {
+        " ooo        ooooo ",
+        " `88.       .888' ",
+        "  888b     d'888  ",
+        "  8 `Y88  .P 888  ",
+        "  8   `888'  888  ",
+        "  8     Y    888  ",
+        " o8o        o888o "
+    },
+    Z = {
+        " ooooooooooooo ",
+        " d'888'   `88' ",
+        "      .888P    ",
+        "     d888'     ",
+        "   .888P       ",
+        "  d888'    .P  ",
+        " .8888888888P  "
+    },
+    E = {
+        " ooooooooooooo ",
+        " `8            ",
+        "  888          ",
+        "  888oooo08    ",
+        "  888    \"     ",
+        "  888       o  ",
+        " 0888ooooood8  "
+    },
+    K = {
+        " ooo        ooooo ",
+        " `88.       .888' ",
+        "  888b     d'888  ",
+        "  8 `Y88  .P 888  ",
+        "  8   `888'  888  ",
+        "  8     Y    888  ",
+        " o8o        o888o "
+    },
+    R = {
+        " oooooooooooo.  ",
+        " `888'   `Y88.  ",
+        "  888      888  ",
+        "  888oooo888'   ",
+        "  888    `88b   ",
+        "  888    .88P   ",
+        " o888bood8P'    "
+    },
+    V = {
+        " ooo        ooo ",
+        " `88.      .88' ",
+        "  888     d'88  ",
+        "  888    d'88   ",
+        "  `88.  .88'    ",
+        "   `88..88'     ",
+        "    `8888'      "
+    }
 }
 
 local function buildAscii(text)
@@ -294,92 +383,155 @@ local function buildAscii(text)
     for i = 1, #text do
         local c = text:sub(i, i):upper()
         local art = ASC[c] or ASC["O"]
-        for r = 1, 7 do lines[r] = lines[r] .. art[r] .. "          " end
+        for r = 1, 7 do lines[r] = lines[r] .. art[r] .. "  " end
     end
     return table.concat(lines, "\n")
 end
 
-local function CreateLoader(screenGui, onDone)
+local function CreateLoader(screenGui, onDone, scriptName)
+    local titleText = scriptName or "AXION"
+    if titleText == "" or titleText:lower() == "script" or titleText:lower() == "mooze" or titleText:lower() == "kravix" then
+        titleText = "AXION"
+    end
+
     local CFG = {
-        bg = Color3.fromRGB(0, 0, 0),
+        bg = Color3.fromRGB(8, 8, 8),
+        topBg = Color3.fromRGB(13, 13, 13),
         fg = Color3.fromRGB(220, 220, 220),
         activeColor = Color3.fromRGB(255, 50, 50),
-        loadDuration = 1.2 * TWEEN_SPD,
+        loadDuration = 1.0 * TWEEN_SPD,
         blinkSpeed = 0.4,
-        loadWait = 1.5 * TWEEN_SPD,
-        fadeTime = 0.6 * TWEEN_SPD,
+        loadWait = 1.0 * TWEEN_SPD,
+        fadeTime = 0.4 * TWEEN_SPD,
     }
 
+    local WIN_W, WIN_H = 670, 350
     local Loader = Instance.new("Frame", screenGui)
-    Loader.Name = "mooze_terminal"
-    Loader.Size = UDim2.new(1, 0, 1, 0)
-    Loader.Position = UDim2.new(0, 0, 0, 0)
+    Loader.Name = "mooze_terminal_window"
+    Loader.Size = UDim2.new(0, WIN_W, 0, WIN_H)
+    Loader.Position = UDim2.new(0.5, -WIN_W/2, 0.5, -WIN_H/2)
     Loader.BackgroundColor3 = CFG.bg
     Loader.BorderSizePixel = 0
     Loader.ZIndex = 500
+    Loader.ClipsDescendants = true
+    mkCorner(Loader, 6)
+    mkStroke(Loader, Color3.fromRGB(35, 35, 35), 1, 0)
 
-    local ascii = Instance.new("TextLabel", Loader)
-    ascii.Size = UDim2.new(1, -60, 0, 340)
-    ascii.Position = UDim2.new(0, 30, 0.22, 0)
+    local Shadow = Instance.new("ImageLabel", Loader)
+    Shadow.Name = "Shadow"
+    Shadow.Size = UDim2.new(1, 40, 1, 40)
+    Shadow.Position = UDim2.new(0, -20, 0, -20)
+    Shadow.BackgroundTransparency = 1
+    Shadow.Image = "rbxassetid://6015897843"
+    Shadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
+    Shadow.ImageTransparency = 0.3
+    Shadow.ZIndex = 499
+    Shadow.ScaleType = Enum.ScaleType.Slice
+    Shadow.SliceCenter = Rect.new(49, 49, 450, 450)
+
+    local TopBar = Instance.new("Frame", Loader)
+    TopBar.Name = "TopBar"
+    TopBar.Size = UDim2.new(1, 0, 0, 32)
+    TopBar.Position = UDim2.new(0, 0, 0, 0)
+    TopBar.BackgroundColor3 = CFG.topBg
+    TopBar.BorderSizePixel = 0
+    TopBar.ZIndex = 501
+
+    local TopSep = Instance.new("Frame", TopBar)
+    TopSep.Size = UDim2.new(1, 0, 0, 1)
+    TopSep.Position = UDim2.new(0, 0, 1, -1)
+    TopSep.BackgroundColor3 = Color3.fromRGB(28, 28, 28)
+    TopSep.BorderSizePixel = 0
+    TopSep.ZIndex = 502
+
+    local IconLbl = Instance.new("TextLabel", TopBar)
+    IconLbl.Size = UDim2.new(0, 20, 1, 0)
+    IconLbl.Position = UDim2.new(0, 12, 0, 0)
+    IconLbl.BackgroundTransparency = 1
+    IconLbl.Text = string.sub(titleText, 1, 1):upper()
+    IconLbl.TextColor3 = CFG.activeColor
+    IconLbl.TextSize = 13
+    IconLbl.Font = Enum.Font.GothamBlack
+    IconLbl.TextXAlignment = Enum.TextXAlignment.Left
+    IconLbl.ZIndex = 502
+
+    local TitleLbl = Instance.new("TextLabel", TopBar)
+    TitleLbl.Size = UDim2.new(0, 200, 1, 0)
+    TitleLbl.Position = UDim2.new(0, 30, 0, 0)
+    TitleLbl.BackgroundTransparency = 1
+    TitleLbl.Text = titleText
+    TitleLbl.TextColor3 = Color3.fromRGB(230, 230, 230)
+    TitleLbl.TextSize = 12
+    TitleLbl.Font = Enum.Font.GothamBold
+    TitleLbl.TextXAlignment = Enum.TextXAlignment.Left
+    TitleLbl.ZIndex = 502
+
+    local CloseBtn = Instance.new("TextButton", TopBar)
+    CloseBtn.Size = UDim2.new(0, 24, 1, 0)
+    CloseBtn.Position = UDim2.new(1, -24, 0, 0)
+    CloseBtn.BackgroundTransparency = 1
+    CloseBtn.Text = "X"
+    CloseBtn.TextColor3 = Color3.fromRGB(200, 200, 200)
+    CloseBtn.TextSize = 13
+    CloseBtn.Font = Enum.Font.GothamBold
+    CloseBtn.ZIndex = 502
+    CloseBtn.MouseEnter:Connect(function() CloseBtn.TextColor3 = CFG.activeColor end)
+    CloseBtn.MouseLeave:Connect(function() CloseBtn.TextColor3 = Color3.fromRGB(200, 200, 200) end)
+    CloseBtn.MouseButton1Click:Connect(function() Loader:Destroy() end)
+
+    local MinBtn = Instance.new("TextButton", TopBar)
+    MinBtn.Size = UDim2.new(0, 24, 1, 0)
+    MinBtn.Position = UDim2.new(1, -48, 0, 0)
+    MinBtn.BackgroundTransparency = 1
+    MinBtn.Text = "-"
+    MinBtn.TextColor3 = Color3.fromRGB(180, 180, 180)
+    MinBtn.TextSize = 15
+    MinBtn.Font = Enum.Font.GothamBold
+    MinBtn.ZIndex = 502
+
+    MakeDraggable(Loader, TopBar)
+
+    local Body = Instance.new("Frame", Loader)
+    Body.Size = UDim2.new(1, 0, 1, -32)
+    Body.Position = UDim2.new(0, 0, 0, 32)
+    Body.BackgroundTransparency = 1
+    Body.ZIndex = 501
+
+    local ascii = Instance.new("TextLabel", Body)
+    ascii.Size = UDim2.new(1, -40, 0, 170)
+    ascii.Position = UDim2.new(0, 20, 0, 20)
     ascii.BackgroundTransparency = 1
     ascii.Text = ""
     ascii.TextColor3 = CFG.fg
     ascii.Font = Enum.Font.Code
-    ascii.TextSize = 18
+    ascii.TextSize = 13
     ascii.TextXAlignment = Enum.TextXAlignment.Left
     ascii.TextYAlignment = Enum.TextYAlignment.Top
     ascii.TextTransparency = 0.1
     ascii.TextWrapped = false
     ascii.ZIndex = 502
 
-    local asciiGhostL = Instance.new("TextLabel", Loader)
-    asciiGhostL.Size = UDim2.new(1, -60, 0, 340)
-    asciiGhostL.Position = UDim2.new(0, 31, 0.22, 1)
-    asciiGhostL.BackgroundTransparency = 1
-    asciiGhostL.Text = ""
-    asciiGhostL.TextColor3 = CFG.fg
-    asciiGhostL.Font = Enum.Font.Code
-    asciiGhostL.TextSize = 18
-    asciiGhostL.TextXAlignment = Enum.TextXAlignment.Left
-    asciiGhostL.TextYAlignment = Enum.TextYAlignment.Top
-    asciiGhostL.TextTransparency = 0.92
-    asciiGhostL.TextWrapped = false
-    asciiGhostL.ZIndex = 501
-
-    local asciiGhostR = Instance.new("TextLabel", Loader)
-    asciiGhostR.Size = UDim2.new(1, -60, 0, 340)
-    asciiGhostR.Position = UDim2.new(0, 29, 0.22, -1)
-    asciiGhostR.BackgroundTransparency = 1
-    asciiGhostR.Text = ""
-    asciiGhostR.TextColor3 = CFG.fg
-    asciiGhostR.Font = Enum.Font.Code
-    asciiGhostR.TextSize = 18
-    asciiGhostR.TextXAlignment = Enum.TextXAlignment.Left
-    asciiGhostR.TextYAlignment = Enum.TextYAlignment.Top
-    asciiGhostR.TextTransparency = 0.92
-    asciiGhostR.TextWrapped = false
-    asciiGhostR.ZIndex = 501
-
-    local prompt = Instance.new("TextLabel", Loader)
-    prompt.Size = UDim2.new(1, -60, 0, 30)
-    prompt.Position = UDim2.new(0, 30, 0.22, 360)
+    local prompt = Instance.new("TextLabel", Body)
+    prompt.Size = UDim2.new(1, -40, 0, 25)
+    prompt.Position = UDim2.new(0, 20, 0, 210)
     prompt.BackgroundTransparency = 1
+    prompt.RichText = true
     prompt.Text = ""
     prompt.TextColor3 = CFG.fg
     prompt.Font = Enum.Font.Code
-    prompt.TextSize = 15
+    prompt.TextSize = 14
     prompt.TextXAlignment = Enum.TextXAlignment.Left
-    prompt.TextTransparency = 0.2
+    prompt.TextTransparency = 0.1
     prompt.ZIndex = 502
 
-    local status = Instance.new("TextLabel", Loader)
-    status.Size = UDim2.new(1, -60, 0, 30)
-    status.Position = UDim2.new(0, 30, 0.22, 400)
+    local status = Instance.new("TextLabel", Body)
+    status.Size = UDim2.new(1, -40, 0, 25)
+    status.Position = UDim2.new(0, 20, 0, 240)
     status.BackgroundTransparency = 1
     status.Text = ""
-    status.TextColor3 = CFG.fg
+    status.TextColor3 = Color3.fromRGB(150, 150, 150)
     status.Font = Enum.Font.Code
-    status.TextSize = 15
+    status.TextSize = 13
     status.TextXAlignment = Enum.TextXAlignment.Left
     status.TextTransparency = 0.2
     status.ZIndex = 502
@@ -389,8 +541,7 @@ local function CreateLoader(screenGui, onDone)
         local showCursor = true
         while cursorRunning and prompt and prompt.Parent do
             showCursor = not showCursor
-            local base = prompt.Text:gsub("_$", ""):gsub(" $", "")
-            prompt.Text = base .. (showCursor and "_" or " ")
+            prompt.Text = '<font color="rgb(180,180,180)">[</font><font color="rgb(255,50,50)">-</font><font color="rgb(180,180,180)">]</font> <font color="rgb(220,220,220)">Key:</font> ' .. (showCursor and "_" or " ")
             task.wait(CFG.blinkSpeed)
         end
     end)
@@ -400,43 +551,42 @@ local function CreateLoader(screenGui, onDone)
         for i = 1, #text do
             local slice = text:sub(1, i)
             ascii.Text = slice
-            asciiGhostL.Text = slice
-            asciiGhostR.Text = slice
             task.wait(speed)
         end
     end
 
     task.spawn(function()
-        typeText(buildAscii("KRAVIX"), CFG.loadDuration)
-        task.wait(0.3 * TWEEN_SPD)
-
-        prompt.Text = "[ ] Key: _"
-        task.wait(0.5 * TWEEN_SPD)
-        prompt.Text = ""
+        local asciiWord = titleText:upper()
+        if ASC[asciiWord:sub(1, 1)] == nil then asciiWord = "AXION" end
+        typeText(buildAscii(asciiWord), CFG.loadDuration)
         task.wait(0.2 * TWEEN_SPD)
 
-        local base = "> loading kravix"
+        local base = "> loading " .. string.lower(asciiWord)
         status.Text = base
-        for i = 1, 4 do
-            task.wait(0.35 * TWEEN_SPD)
+        for i = 1, 3 do
+            task.wait(0.25 * TWEEN_SPD)
             status.Text = base .. string.rep(".", i)
         end
 
-        task.wait(CFG.loadWait)
-        status.Text = "> loaded kravix"
-        task.wait(0.8 * TWEEN_SPD)
+        task.wait(0.3 * TWEEN_SPD)
+        status.Text = "> loaded " .. string.lower(asciiWord)
+        task.wait(0.5 * TWEEN_SPD)
 
         cursorRunning = false
 
         local ti = TweenInfo.new(CFG.fadeTime, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
         TweenService:Create(Loader, ti, {BackgroundTransparency = 1}):Play()
+        TweenService:Create(TopBar, ti, {BackgroundTransparency = 1}):Play()
+        TweenService:Create(TopSep, ti, {BackgroundTransparency = 1}):Play()
+        TweenService:Create(IconLbl, ti, {TextTransparency = 1}):Play()
+        TweenService:Create(TitleLbl, ti, {TextTransparency = 1}):Play()
+        TweenService:Create(CloseBtn, ti, {TextTransparency = 1}):Play()
+        TweenService:Create(MinBtn, ti, {TextTransparency = 1}):Play()
         TweenService:Create(ascii, ti, {TextTransparency = 1}):Play()
-        TweenService:Create(asciiGhostL, ti, {TextTransparency = 1}):Play()
-        TweenService:Create(asciiGhostR, ti, {TextTransparency = 1}):Play()
         TweenService:Create(prompt, ti, {TextTransparency = 1}):Play()
         TweenService:Create(status, ti, {TextTransparency = 1}):Play()
 
-        task.wait(CFG.fadeTime + 0.1)
+        task.wait(CFG.fadeTime + 0.05)
         Loader:Destroy()
         onDone()
     end)
