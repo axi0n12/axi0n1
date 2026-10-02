@@ -346,6 +346,14 @@ function KraviX:CreateWindow(config)
         TabBtn.MouseButton1Click:Connect(selectTab)
         if #Window.Tabs == 1 then selectTab() end
 
+        function Tab:AddSection(secTitle, colSide)
+            if #Tab.SubTabs == 0 then
+                Tab:AddSubTab("_default")
+            end
+            local lastSub = Tab.SubTabs[#Tab.SubTabs]
+            return lastSub:AddSection(secTitle, colSide)
+        end
+
         function Tab:AddSubTab(subName)
             local SubTab = { Sections = {} }
             table.insert(Tab.SubTabs, SubTab)
@@ -607,6 +615,8 @@ function KraviX:CreateWindow(config)
                     KeyBtn.Font = Enum.Font.Code; KeyBtn.AutoButtonColor = false; mkCorner(KeyBtn, 3)
                     mkStroke(KeyBtn, C.ControlLine, 1, 0)
 
+                    local Handle = { Value = {type=bindType, value=bindVal} }
+
                     local listening = false
                     KeyBtn.MouseButton1Click:Connect(function()
                         listening = true; KeyBtn.Text = "[...]"
@@ -617,15 +627,16 @@ function KraviX:CreateWindow(config)
                                 bindVal = input.UserInputType; bindType = "mouse"
                             end
                             if bindVal then
+                                Handle.Value = {type=bindType, value=bindVal}
                                 KeyBtn.Text = "[" .. (typeof(bindVal)=="EnumItem" and bindVal.Name or tostring(bindVal)) .. "]"
                                 listening = false; conn:Disconnect()
-                                pcall(cb, {type=bindType, value=bindVal})
+                                pcall(cb, Handle.Value)
                             end
                         end)
                     end)
 
                     addItem(Cont)
-                    return { Value = {type=bindType, value=bindVal} }
+                    return Handle
                 end
 
                 function Section:AddColorPicker(cfg)
@@ -757,6 +768,8 @@ function KraviX:CreateWindow(config)
     end
     Window.Notify = Window.NotifyInfo
 
+    Window.ShowWindow = function() Main.Visible = true end
+    Window.HideWindow = function() Main.Visible = false end
     Window.ToggleWindow = function()
         Main.Visible = not Main.Visible
     end
