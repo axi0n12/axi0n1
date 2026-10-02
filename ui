@@ -1,5 +1,5 @@
 -- KraviX UI Framework (Matcha C++ ImGui Redesign)
--- Complete Matcha Design System with 2-Column Cards, Pill Sub-Tabs, Sleek Controls & Integrated 3D ESP Preview
+-- Complete Matcha Design System with 2-Column Cards, Pill Sub-Tabs, Sleek Controls & Integrated 3D ESP Preview 1.0
 
 local KraviX = {}
 
@@ -80,11 +80,6 @@ local C = {
     Black       = Color3.fromRGB(  0,   0,   0),
 }
 KraviX.C = C
-
-KraviX.Notify = function(self, title, text, duration)
-    if typeof(self) == "string" then title, text, duration = self, title, text end
-    CreateNotification(title, text, duration, "info")
-end
 
 local function mkCorner(p, r)
     local c = Instance.new("UICorner")
@@ -197,6 +192,11 @@ local function CreateNotification(title, text, duration, ntype)
         Tween(F, {Position = UDim2.new(1, 30, 1, -(MARGIN+(H+MARGIN)*slot))}, 0.2, Enum.EasingStyle.Quint, Enum.EasingDirection.In):Play()
         task.wait(0.22); G:Destroy()
     end)
+end
+
+KraviX.Notify = function(self, title, text, duration)
+    if typeof(self) == "string" then title, text, duration = self, title, text end
+    CreateNotification(title, text, duration, "info")
 end
 
 function KraviX:CreateWindow(config)
