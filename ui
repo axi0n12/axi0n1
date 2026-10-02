@@ -1,4 +1,4 @@
--- 4.1
+-- 4.2
 local KraviX = {}
 
 local TweenService     = game:GetService("TweenService")
@@ -279,109 +279,155 @@ end
 local function CreateLoader(screenGui, onDone)
     local Loader = Instance.new("Frame", screenGui)
     Loader.Name = "KxLoader"; Loader.Size = UDim2.new(1,0,1,0)
-    Loader.BackgroundColor3 = C.Bg; Loader.BackgroundTransparency = 0
-    Loader.ZIndex = 200; Loader.BorderSizePixel = 0
+    Loader.BackgroundColor3 = Color3.fromRGB(10, 8, 16)
+    Loader.BackgroundTransparency = 0.15
+    Loader.ZIndex = 500; Loader.BorderSizePixel = 0
 
-    local Scan = Instance.new("Frame", Loader)
-    Scan.Size = UDim2.new(1,0,0,2); Scan.Position = UDim2.new(0,0,-0.02,0)
-    Scan.BackgroundColor3 = C.Accent; Scan.BackgroundTransparency = 0.75
-    Scan.BorderSizePixel = 0; Scan.ZIndex = 210
-
-    local Tag = Instance.new("TextLabel", Loader)
-    Tag.Size = UDim2.new(0,80,0,18); Tag.Position = UDim2.new(1,-90,0,12)
-    Tag.BackgroundTransparency = 1; Tag.Text = "KRAVIX"
-    Tag.TextColor3 = C.Accent; Tag.TextTransparency = 1
-    Tag.TextSize = 10; Tag.Font = Enum.Font.GothamBlack
-    Tag.TextXAlignment = Enum.TextXAlignment.Right; Tag.ZIndex = 201
-
-    local VerTag = Instance.new("TextLabel", Loader)
-    VerTag.Size = UDim2.new(0,160,0,14); VerTag.Position = UDim2.new(0,14,1,-22)
-    VerTag.BackgroundTransparency = 1; VerTag.Text = "initializing system..."
-    VerTag.TextColor3 = C.Muted; VerTag.TextTransparency = 1
-    VerTag.TextSize = 9; VerTag.Font = Enum.Font.Code
-    VerTag.TextXAlignment = Enum.TextXAlignment.Left; VerTag.ZIndex = 201
+    local Glow1 = Instance.new("ImageLabel", Loader)
+    Glow1.Size = UDim2.new(0, 480, 0, 480)
+    Glow1.AnchorPoint = Vector2.new(0.5, 0.5)
+    Glow1.Position = UDim2.new(0.5, 0, 0.5, 0)
+    Glow1.BackgroundTransparency = 1
+    Glow1.Image = "rbxassetid://6015897843"
+    Glow1.ImageColor3 = C.Accent
+    Glow1.ImageTransparency = 0.6
+    Glow1.ZIndex = 501
+    Glow1.ScaleType = Enum.ScaleType.Slice
+    Glow1.SliceCenter = Rect.new(49,49,450,450)
 
     local Wrap = Instance.new("Frame", Loader)
-    Wrap.Size = UDim2.new(0,260,0,150); Wrap.AnchorPoint = Vector2.new(0.5,0.5)
-    Wrap.Position = UDim2.new(0.5,0,0.52,0); Wrap.BackgroundTransparency = 1; Wrap.ZIndex = 201
+    Wrap.Size = UDim2.new(0, 380, 0, 230)
+    Wrap.AnchorPoint = Vector2.new(0.5, 0.5)
+    Wrap.Position = UDim2.new(0.5, 0, 0.54, 0)
+    Wrap.BackgroundColor3 = C.Bg2
+    Wrap.BackgroundTransparency = 0.05
+    Wrap.ZIndex = 502
+    Wrap.ClipsDescendants = true
+    mkCorner(Wrap, 16)
+    local wrapStroke = mkStroke(Wrap, C.Accent, 1.2, 0)
 
-    local Glow = Instance.new("Frame", Wrap)
-    Glow.Size = UDim2.new(0,120,0,120); Glow.Position = UDim2.new(0.5,-60,0,-8)
-    Glow.BackgroundColor3 = C.Accent; Glow.BackgroundTransparency = 1
-    Glow.BorderSizePixel = 0; Glow.ZIndex = 202; mkCorner(Glow,60)
+    local TopLine = Instance.new("Frame", Wrap)
+    TopLine.Size = UDim2.new(1, 0, 0, 3)
+    TopLine.BackgroundColor3 = C.Accent
+    TopLine.BorderSizePixel = 0
+    TopLine.ZIndex = 504
 
-    local KLbl = Instance.new("TextLabel", Wrap)
-    KLbl.Size = UDim2.new(0,200,0,110); KLbl.Position = UDim2.new(0.5,-100,0,-10)
-    KLbl.BackgroundTransparency = 1; KLbl.Text = "Kx"
-    KLbl.TextColor3 = C.Accent; KLbl.TextSize = 96
-    KLbl.Font = Enum.Font.GothamBlack; KLbl.TextXAlignment = Enum.TextXAlignment.Center
-    KLbl.TextTransparency = 1; KLbl.ZIndex = 203
+    local IconBadge = Instance.new("Frame", Wrap)
+    IconBadge.Size = UDim2.new(0, 54, 0, 54)
+    IconBadge.Position = UDim2.new(0.5, -27, 0, 24)
+    IconBadge.BackgroundColor3 = Color3.fromRGB(24, 16, 40)
+    IconBadge.ZIndex = 503
+    mkCorner(IconBadge, 14)
+    local iconSt = mkStroke(IconBadge, C.Accent, 1.5, 0)
 
-    local TagLine = Instance.new("TextLabel", Wrap)
-    TagLine.Size = UDim2.new(1,0,0,14); TagLine.Position = UDim2.new(0,0,0,96)
-    TagLine.BackgroundTransparency = 1; TagLine.Text = "the best for the best"
-    TagLine.TextColor3 = C.Sub; TagLine.TextTransparency = 1
-    TagLine.TextSize = 10; TagLine.Font = Enum.Font.Code
-    TagLine.TextXAlignment = Enum.TextXAlignment.Center; TagLine.ZIndex = 202
+    local KLogo = Instance.new("TextLabel", IconBadge)
+    KLogo.Size = UDim2.new(1, 0, 1, 0)
+    KLogo.BackgroundTransparency = 1
+    KLogo.Text = "Kx"
+    KLogo.TextColor3 = C.Accent2
+    KLogo.TextSize = 22
+    KLogo.Font = Enum.Font.GothamBlack
+    KLogo.ZIndex = 504
 
-    local BarBg = Instance.new("Frame", Wrap)
-    BarBg.Size = UDim2.new(0,200,0,2); BarBg.Position = UDim2.new(0.5,-100,0,120)
-    BarBg.BackgroundColor3 = C.Bg5; BarBg.BackgroundTransparency = 0.3
-    BarBg.BorderSizePixel = 0; BarBg.ZIndex = 202; mkCorner(BarBg,2)
-    local BarFill = Instance.new("Frame", BarBg)
-    BarFill.Size = UDim2.new(0,0,1,0); BarFill.BackgroundColor3 = C.Accent
-    BarFill.BorderSizePixel = 0; BarFill.ZIndex = 203; mkCorner(BarFill,2)
+    local TitleLbl = Instance.new("TextLabel", Wrap)
+    TitleLbl.Size = UDim2.new(1, 0, 0, 24)
+    TitleLbl.Position = UDim2.new(0, 0, 0, 88)
+    TitleLbl.BackgroundTransparency = 1
+    TitleLbl.Text = "KRAVIX ENGINE"
+    TitleLbl.TextColor3 = C.White
+    TitleLbl.TextSize = 17
+    TitleLbl.Font = Enum.Font.GothamBlack
+    TitleLbl.ZIndex = 503
+
+    local SubTitle = Instance.new("TextLabel", Wrap)
+    SubTitle.Size = UDim2.new(1, 0, 0, 16)
+    SubTitle.Position = UDim2.new(0, 0, 0, 112)
+    SubTitle.BackgroundTransparency = 1
+    SubTitle.Text = "PREMIUM SUITE v4.1"
+    SubTitle.TextColor3 = C.Accent2
+    SubTitle.TextSize = 10
+    SubTitle.Font = Enum.Font.GothamBold
+    SubTitle.ZIndex = 503
+
+    local StatusLbl = Instance.new("TextLabel", Wrap)
+    StatusLbl.Size = UDim2.new(1, -64, 0, 16)
+    StatusLbl.Position = UDim2.new(0, 32, 0, 144)
+    StatusLbl.BackgroundTransparency = 1
+    StatusLbl.Text = "✦ Verificando ambiente..."
+    StatusLbl.TextColor3 = C.Sub
+    StatusLbl.TextSize = 11
+    StatusLbl.Font = Enum.Font.GothamMedium
+    StatusLbl.TextXAlignment = Enum.TextXAlignment.Left
+    StatusLbl.ZIndex = 503
 
     local PctLbl = Instance.new("TextLabel", Wrap)
-    PctLbl.Size = UDim2.new(0,200,0,14); PctLbl.Position = UDim2.new(0.5,-100,0,128)
-    PctLbl.BackgroundTransparency = 1; PctLbl.Text = "0%"
-    PctLbl.TextColor3 = C.Accent; PctLbl.TextTransparency = 1
-    PctLbl.TextSize = 9; PctLbl.Font = Enum.Font.Code
-    PctLbl.TextXAlignment = Enum.TextXAlignment.Right; PctLbl.ZIndex = 202
+    PctLbl.Size = UDim2.new(0, 60, 0, 16)
+    PctLbl.Position = UDim2.new(1, -92, 0, 144)
+    PctLbl.BackgroundTransparency = 1
+    PctLbl.Text = "0%"
+    PctLbl.TextColor3 = C.Accent2
+    PctLbl.TextSize = 11
+    PctLbl.Font = Enum.Font.Code
+    PctLbl.TextXAlignment = Enum.TextXAlignment.Right
+    PctLbl.ZIndex = 503
+
+    local BarBg = Instance.new("Frame", Wrap)
+    BarBg.Size = UDim2.new(1, -64, 0, 6)
+    BarBg.Position = UDim2.new(0, 32, 0, 168)
+    BarBg.BackgroundColor3 = Color3.fromRGB(24, 22, 34)
+    BarBg.BorderSizePixel = 0
+    BarBg.ZIndex = 503
+    mkCorner(BarBg, 3)
+
+    local BarFill = Instance.new("Frame", BarBg)
+    BarFill.Size = UDim2.new(0, 0, 1, 0)
+    BarFill.BackgroundColor3 = C.Accent
+    BarFill.BorderSizePixel = 0
+    BarFill.ZIndex = 504
+    mkCorner(BarFill, 3)
+
+    local FillGlow = Instance.new("Frame", BarFill)
+    FillGlow.Size = UDim2.new(0, 8, 1, 0)
+    FillGlow.Position = UDim2.new(1, -4, 0, 0)
+    FillGlow.BackgroundColor3 = C.White
+    FillGlow.BorderSizePixel = 0
+    FillGlow.ZIndex = 505
+    mkCorner(FillGlow, 3)
 
     task.spawn(function()
-        Tween(Scan,{Position=UDim2.new(0,0,1.02,0)},1.0*TWEEN_SPD,Enum.EasingStyle.Linear):Play()
-        task.wait(0.2*TWEEN_SPD)
-        Tween(Tag,{TextTransparency=0.4},0.3):Play()
-        Tween(VerTag,{TextTransparency=0.5},0.3):Play()
-        task.wait(0.15*TWEEN_SPD)
-        Tween(Glow,{BackgroundTransparency=0.88},0.35,Enum.EasingStyle.Quad):Play()
-        Tween(KLbl,{TextTransparency=0,TextSize=68,Size=UDim2.new(0,140,0,72),
-            Position=UDim2.new(0.5,-70,0,8)},0.55,Enum.EasingStyle.Back,Enum.EasingDirection.Out):Play()
-        task.wait(0.45*TWEEN_SPD)
-        TagLine.Position = UDim2.new(0,0,0,108)
-        Tween(TagLine,{TextTransparency=0.35,Position=UDim2.new(0,0,0,96)},0.35,Enum.EasingStyle.Quint):Play()
-        task.wait(0.2*TWEEN_SPD)
-        Tween(PctLbl,{TextTransparency=0.3},0.2):Play()
-        local dur = 1.2*TWEEN_SPD
-        Tween(BarFill,{Size=UDim2.new(1,0,1,0)},dur,Enum.EasingStyle.Quint):Play()
-        task.spawn(function()
-            for i = 1, 40 do
-                task.wait(dur/40)
-                PctLbl.Text = tostring(math.floor((i/40)*100)).."%"
-                if i > 32 then
-                    Tween(BarFill,{BackgroundColor3=C.Accent2},0.04):Play()
-                    task.wait(0.04); Tween(BarFill,{BackgroundColor3=C.Accent},0.04):Play()
-                end
-            end
-        end)
-        task.wait(dur+0.1)
-        Tween(Glow,{BackgroundTransparency=0.72},0.1):Play(); task.wait(0.12)
-        Tween(Glow,{BackgroundTransparency=0.88},0.18):Play()
-        task.wait(0.2*TWEEN_SPD)
-        Tween(Wrap,{Position=UDim2.new(0.5,0,0.44,0)},0.3,Enum.EasingStyle.Quint,Enum.EasingDirection.In):Play()
-        Tween(KLbl,{TextTransparency=1},0.25):Play()
-        Tween(TagLine,{TextTransparency=1},0.2):Play()
-        Tween(PctLbl,{TextTransparency=1},0.2):Play()
-        Tween(Tag,{TextTransparency=1},0.2):Play()
-        Tween(VerTag,{TextTransparency=1},0.2):Play()
-        Tween(Glow,{BackgroundTransparency=1},0.22):Play()
-        Tween(BarBg,{BackgroundTransparency=1},0.22):Play()
-        Tween(BarFill,{BackgroundTransparency=1},0.22):Play()
-        task.wait(0.28*TWEEN_SPD)
-        Tween(Loader,{Size=UDim2.new(1,0,0,0),Position=UDim2.new(0,0,0,0)},0.3,
-            Enum.EasingStyle.Quint,Enum.EasingDirection.In):Play()
-        task.wait(0.32*TWEEN_SPD); Loader:Destroy(); onDone()
+        Wrap.Position = UDim2.new(0.5, 0, 0.56, 0)
+        Wrap.BackgroundTransparency = 1
+        wrapStroke.Transparency = 1
+
+        Tween(Wrap, {Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundTransparency = 0.05}, 0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out):Play()
+        Tween(wrapStroke, {Transparency = 0}, 0.4):Play()
+        Tween(Glow1, {ImageTransparency = 0.55}, 0.5):Play()
+
+        local steps = {
+            {pct = 0.20, msg = "✦ Carregando módulos visuais..."},
+            {pct = 0.45, msg = "✦ Inicializando Aimbot & ESP..."},
+            {pct = 0.75, msg = "✦ Sincronizando sistema de configs..."},
+            {pct = 1.00, msg = "✦ KRAVIX ENGINE PRONTO!"}
+        }
+
+        local totalDur = 1.2 * TWEEN_SPD
+        Tween(BarFill, {Size = UDim2.new(1, 0, 1, 0)}, totalDur, Enum.EasingStyle.Quint):Play()
+
+        for i, step in ipairs(steps) do
+            task.wait(totalDur / #steps)
+            StatusLbl.Text = step.msg
+            PctLbl.Text = tostring(math.floor(step.pct * 100)) .. "%"
+        end
+
+        task.wait(0.2 * TWEEN_SPD)
+        Tween(Wrap, {Position = UDim2.new(0.5, 0, 0.45, 0), BackgroundTransparency = 1}, 0.35, Enum.EasingStyle.Quint, Enum.EasingDirection.In):Play()
+        Tween(wrapStroke, {Transparency = 1}, 0.25):Play()
+        Tween(Glow1, {ImageTransparency = 1}, 0.3):Play()
+        Tween(Loader, {BackgroundTransparency = 1}, 0.35):Play()
+
+        task.wait(0.38 * TWEEN_SPD)
+        Loader:Destroy()
+        onDone()
     end)
 end
 
@@ -3004,6 +3050,12 @@ function KraviX:CreateWindow(config)
                     Box.BorderSizePixel = 0; Box.ZIndex = 14; mkCorner(Box,3)
                     mkStroke(Box, toggled and C.Accent or C.BorderBt, 1, 0)
 
+                    local Check = Instance.new("TextLabel", Box)
+                    Check.Size = UDim2.new(1,0,1,0); Check.BackgroundTransparency = 1
+                    Check.Text = "✓"; Check.TextColor3 = C.White; Check.TextSize = 10
+                    Check.Font = Enum.Font.GothamBold
+                    Check.TextTransparency = toggled and 0 or 1; Check.ZIndex = 15
+
                     local Lbl = Instance.new("TextLabel", Row)
                     Lbl.Size = UDim2.new(1,-52,1,0); Lbl.Position = UDim2.new(0,20,0,0)
                     Lbl.BackgroundTransparency = 1; Lbl.Text = cfg.Name or "Toggle"
@@ -3028,6 +3080,7 @@ function KraviX:CreateWindow(config)
                     local function Update()
                         local v = Toggle.Value
                         Tween(Box,{BackgroundColor3=v and C.Accent or Color3.fromRGB(22,22,22)},0.1):Play()
+                        Tween(Check,{TextTransparency=v and 0 or 1},0.1):Play()
                         Tween(Lbl,{TextColor3=v and C.Text or C.Sub},0.1):Play()
                         local st = Box:FindFirstChildOfClass("UIStroke")
                         if st then Tween(st,{Color=v and C.Accent or C.BorderBt},0.1):Play() end
