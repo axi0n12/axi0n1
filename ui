@@ -1,4 +1,4 @@
--- 4.2
+-- 4.1
 local KraviX = {}
 
 local TweenService     = game:GetService("TweenService")
@@ -16,29 +16,34 @@ local SOUND_NOTIF = "rbxassetid://84596244576386"
 local SOUND_OPEN  = "rbxassetid://4807489774"
 
 local C = {
-    -- Neverlose-inspired dark charcoal + violet palette
-    Bg          = Color3.fromRGB( 20,  22,  28), -- sidebar deep dark
-    Bg2         = Color3.fromRGB( 26,  29,  38), -- topbar dark
-    Bg3         = Color3.fromRGB( 30,  34,  44), -- main content bg
-    Bg4         = Color3.fromRGB( 37,  41,  54), -- input / button bg
-    Bg5         = Color3.fromRGB( 46,  50,  64), -- track / bar bg
-    BgHover     = Color3.fromRGB( 44,  36,  66), -- sidebar active item tint
-    Accent      = Color3.fromRGB(139,  92, 246), -- vivid violet
-    Accent2     = Color3.fromRGB(167, 130, 255), -- lighter violet
-    Text        = Color3.fromRGB(212, 216, 228), -- primary text
-    Sub         = Color3.fromRGB(142, 147, 162), -- secondary text
-    Muted       = Color3.fromRGB( 88,  93, 110), -- muted text
-    Muted2      = Color3.fromRGB( 52,  57,  72), -- inactive toggle track
-    Border      = Color3.fromRGB( 44,  49,  64), -- subtle border
-    BorderBt    = Color3.fromRGB( 60,  65,  82), -- button border
+    Bg          = Color3.fromRGB( 12,  11,  16),
+    Bg2         = Color3.fromRGB(  8,   7,  12),
+    Bg3         = Color3.fromRGB( 16,  16,  20),
+    Bg4         = Color3.fromRGB( 22,  21,  28),
+    Bg5         = Color3.fromRGB( 28,  27,  35),
+    BgHover     = Color3.fromRGB( 35,  25,  38),
+    Accent      = Color3.fromRGB(172,  68, 134),
+    Accent2     = Color3.fromRGB(200,  85, 160),
+    Text        = Color3.fromRGB(220, 220, 225),
+    Sub         = Color3.fromRGB(136, 135, 141),
+    Muted       = Color3.fromRGB( 90,  89,  95),
+    Muted2      = Color3.fromRGB( 45,  44,  50),
+    Border      = Color3.fromRGB( 28,  28,  35),
+    BorderBt    = Color3.fromRGB( 40,  38,  50),
     White       = Color3.fromRGB(255, 255, 255),
     Black       = Color3.fromRGB(  0,   0,   0),
     Green       = Color3.fromRGB( 60, 210, 110),
     Red         = Color3.fromRGB(230,  60,  60),
     Shadow      = Color3.fromRGB(  0,   0,   0),
-    NotifBg     = Color3.fromRGB( 20,  22,  28),
+    NotifBg     = Color3.fromRGB( 16,  15,  22),
 }
 KraviX.C = C
+KraviX.Notify = function(self, title, text, duration)
+    if typeof(self) == "string" then
+        title, text, duration = self, title, text
+    end
+    CreateNotification(title, text, duration, "info")
+end
 
 local TWEEN_SPD = 1.0
 
@@ -690,147 +695,124 @@ function KraviX:CreateWindow(config)
     if backdropFx == "snow" then StartSnow(Backdrop)
     elseif backdropFx == "rain" then StartRain(Backdrop) end
 
-    local WIN_W, WIN_H = 760, 520
-    local SIDEBAR_W    = 160
+    local WIN_W, WIN_H = 670, 720
 
     local Main = Instance.new("Frame", ScreenGui)
     Main.Name = "KraviXMain"
     Main.Size = UDim2.new(0,WIN_W,0,WIN_H)
     Main.Position = UDim2.new(0.5,-WIN_W/2,0.5,-WIN_H/2)
-    Main.BackgroundColor3 = C.Bg3
+    Main.BackgroundColor3 = C.Bg2
     Main.BorderSizePixel = 0; Main.Visible = false; Main.ZIndex = 10
-    mkCorner(Main,6); mkStroke(Main,C.Border,1,0)
+    mkCorner(Main,4); mkStroke(Main,C.Border,1,0)
 
     local Shadow = Instance.new("ImageLabel", Main)
     Shadow.Name = "Shadow"
-    Shadow.Size = UDim2.new(1,70,1,70); Shadow.Position = UDim2.new(0,-35,0,-35)
+    Shadow.Size = UDim2.new(1,60,1,60); Shadow.Position = UDim2.new(0,-30,0,-30)
     Shadow.BackgroundTransparency = 1; Shadow.Image = "rbxassetid://6015897843"
-    Shadow.ImageColor3 = C.Shadow; Shadow.ImageTransparency = 0.32; Shadow.ZIndex = 9
+    Shadow.ImageColor3 = C.Shadow; Shadow.ImageTransparency = 0.4; Shadow.ZIndex = 9
     Shadow.ScaleType = Enum.ScaleType.Slice; Shadow.SliceCenter = Rect.new(49,49,450,450)
 
-    -- ===== LEFT SIDEBAR (Neverlose-style nav) =====
-    local Sidebar = Instance.new("Frame", Main)
-    Sidebar.Name = "Sidebar"
-    Sidebar.Size = UDim2.new(0,SIDEBAR_W,1,0)
-    Sidebar.BackgroundColor3 = C.Bg; Sidebar.BorderSizePixel = 0; Sidebar.ZIndex = 11
-    mkCorner(Sidebar, 6)
-    -- Mask the right-side rounded corners so only left corners are round
-    local _SideRMask = Instance.new("Frame", Sidebar)
-    _SideRMask.Size = UDim2.new(0,8,1,0); _SideRMask.Position = UDim2.new(1,-8,0,0)
-    _SideRMask.BackgroundColor3 = C.Bg; _SideRMask.BorderSizePixel = 0; _SideRMask.ZIndex = 12
-
-    -- Brand / Logo area
-    local BrandArea = Instance.new("Frame", Sidebar)
-    BrandArea.Size = UDim2.new(1,0,0,56); BrandArea.BackgroundTransparency = 1; BrandArea.ZIndex = 12
-
-    local LogoBadge = Instance.new("Frame", BrandArea)
-    LogoBadge.Size = UDim2.new(0,34,0,34); LogoBadge.Position = UDim2.new(0,12,0.5,-17)
-    LogoBadge.BackgroundColor3 = C.Accent; LogoBadge.BorderSizePixel = 0; LogoBadge.ZIndex = 13
-    mkCorner(LogoBadge, 8)
-    local LogoLbl = Instance.new("TextLabel", LogoBadge)
-    LogoLbl.Size = UDim2.new(1,0,1,0); LogoLbl.BackgroundTransparency = 1
-    LogoLbl.Text = "Kx"; LogoLbl.TextColor3 = C.White; LogoLbl.TextSize = 13
-    LogoLbl.Font = Enum.Font.GothamBlack; LogoLbl.ZIndex = 14
-
-    local BrandTitle = Instance.new("TextLabel", BrandArea)
-    BrandTitle.Size = UDim2.new(1,-56,0,16); BrandTitle.Position = UDim2.new(0,52,0.5,-14)
-    BrandTitle.BackgroundTransparency = 1; BrandTitle.Text = config.Name or "KraviX"
-    BrandTitle.TextColor3 = C.Text; BrandTitle.TextSize = 11; BrandTitle.Font = Enum.Font.GothamBold
-    BrandTitle.TextXAlignment = Enum.TextXAlignment.Left; BrandTitle.ZIndex = 13
-
-    local BrandVer = Instance.new("TextLabel", BrandArea)
-    BrandVer.Size = UDim2.new(1,-56,0,12); BrandVer.Position = UDim2.new(0,52,0.5,4)
-    BrandVer.BackgroundTransparency = 1; BrandVer.Text = config.Version or "v1.0"
-    BrandVer.TextColor3 = C.Muted; BrandVer.TextSize = 9; BrandVer.Font = Enum.Font.Gotham
-    BrandVer.TextXAlignment = Enum.TextXAlignment.Left; BrandVer.ZIndex = 13
-
-    local BrandDiv = Instance.new("Frame", Sidebar)
-    BrandDiv.Size = UDim2.new(1,-24,0,1); BrandDiv.Position = UDim2.new(0,12,0,56)
-    BrandDiv.BackgroundColor3 = C.Border; BrandDiv.BorderSizePixel = 0; BrandDiv.ZIndex = 12
-
-    -- Close button (top-right of brand area)
-    local CloseBtn = Instance.new("TextButton", BrandArea)
-    CloseBtn.Size = UDim2.new(0,18,0,18); CloseBtn.AnchorPoint = Vector2.new(1,0.5)
-    CloseBtn.Position = UDim2.new(1,-8,0.5,0)
-    CloseBtn.BackgroundColor3 = C.Bg4; CloseBtn.Text = "×"
-    CloseBtn.TextColor3 = C.Muted; CloseBtn.TextSize = 14; CloseBtn.Font = Enum.Font.GothamBold
-    CloseBtn.AutoButtonColor = false; CloseBtn.ZIndex = 14
-    mkCorner(CloseBtn, 4)
-
-    -- Vertical tab nav (replaces horizontal TabBar)
-    local TabBar = Instance.new("ScrollingFrame", Sidebar)
-    TabBar.Name = "TabBar"
-    TabBar.Size = UDim2.new(1,0,1,-66); TabBar.Position = UDim2.new(0,0,0,66)
-    TabBar.BackgroundColor3 = C.Bg; TabBar.BackgroundTransparency = 1
-    TabBar.BorderSizePixel = 0; TabBar.ZIndex = 11
-    TabBar.ScrollBarThickness = 0; TabBar.ScrollingDirection = Enum.ScrollingDirection.Y
-    TabBar.AutomaticCanvasSize = Enum.AutomaticSize.Y
-    TabBar.CanvasSize = UDim2.new(0,0,0,0); TabBar.ElasticBehavior = Enum.ElasticBehavior.Never
-    local TabList = Instance.new("UIListLayout", TabBar)
-    TabList.FillDirection       = Enum.FillDirection.Vertical
-    TabList.SortOrder           = Enum.SortOrder.LayoutOrder
-    TabList.HorizontalAlignment = Enum.HorizontalAlignment.Left
-    TabList.VerticalAlignment   = Enum.VerticalAlignment.Top
-    TabList.Padding             = UDim.new(0,2)
-    mkPad(TabBar,6,6,0,0)
-
-    -- Vertical divider line between sidebar and content
-    local SideBarLine = Instance.new("Frame", Main)
-    SideBarLine.Size = UDim2.new(0,1,1,0); SideBarLine.Position = UDim2.new(0,SIDEBAR_W,0,0)
-    SideBarLine.BackgroundColor3 = C.Border; SideBarLine.BorderSizePixel = 0; SideBarLine.ZIndex = 11
-
-    -- ===== RIGHT: TOP BAR (config selector + search) =====
     local TopBar = Instance.new("Frame", Main)
     TopBar.Name = "TopBar"
-    TopBar.Size = UDim2.new(1,-SIDEBAR_W,0,38)
-    TopBar.Position = UDim2.new(0,SIDEBAR_W,0,0)
+    TopBar.Size = UDim2.new(1,0,0,32)
     TopBar.BackgroundColor3 = C.Bg2; TopBar.BackgroundTransparency = 0
     TopBar.BorderSizePixel = 0; TopBar.ZIndex = 12
-    local TopBarDiv = Instance.new("Frame", Main)
-    TopBarDiv.Size = UDim2.new(1,-SIDEBAR_W,0,1); TopBarDiv.Position = UDim2.new(0,SIDEBAR_W,0,38)
-    TopBarDiv.BackgroundColor3 = C.Border; TopBarDiv.BorderSizePixel = 0; TopBarDiv.ZIndex = 12
 
-    local EditBtn = Instance.new("TextButton", TopBar)
-    EditBtn.Size = UDim2.new(0,26,0,26); EditBtn.AnchorPoint = Vector2.new(0,0.5)
-    EditBtn.Position = UDim2.new(0,8,0.5,0)
-    EditBtn.BackgroundColor3 = C.Bg4; EditBtn.Text = "✎"
-    EditBtn.TextColor3 = C.Muted; EditBtn.TextSize = 13; EditBtn.Font = Enum.Font.Gotham
-    EditBtn.AutoButtonColor = false; EditBtn.ZIndex = 13
-    mkCorner(EditBtn,5); mkStroke(EditBtn,C.Border,1,0)
+    local TopFix = Instance.new("Frame", TopBar)
+    TopFix.Name = "TopFix"
+    TopFix.Size = UDim2.new(1,0,0,6); TopFix.Position = UDim2.new(0,0,1,-6)
+    TopFix.BackgroundColor3 = C.Bg2; TopFix.BorderSizePixel = 0; TopFix.ZIndex = 12
 
-    local ConfigBtn = Instance.new("TextButton", TopBar)
-    ConfigBtn.Size = UDim2.new(0,110,0,26); ConfigBtn.AnchorPoint = Vector2.new(0,0.5)
-    ConfigBtn.Position = UDim2.new(0,40,0.5,0)
-    ConfigBtn.BackgroundColor3 = C.Bg4; ConfigBtn.Text = "  Default"
-    ConfigBtn.TextColor3 = C.Text; ConfigBtn.TextSize = 11; ConfigBtn.Font = Enum.Font.GothamBold
-    ConfigBtn.TextXAlignment = Enum.TextXAlignment.Left
-    ConfigBtn.AutoButtonColor = false; ConfigBtn.ZIndex = 13
-    mkCorner(ConfigBtn,5); mkStroke(ConfigBtn,C.Border,1,0); mkPad(ConfigBtn,0,0,8,8)
-    local ConfigArrow = Instance.new("TextLabel", ConfigBtn)
-    ConfigArrow.Size = UDim2.new(0,20,1,0); ConfigArrow.AnchorPoint = Vector2.new(1,0)
-    ConfigArrow.Position = UDim2.new(1,-4,0,0)
-    ConfigArrow.BackgroundTransparency = 1; ConfigArrow.Text = "▾"
-    ConfigArrow.TextColor3 = C.Muted; ConfigArrow.TextSize = 11; ConfigArrow.Font = Enum.Font.Gotham; ConfigArrow.ZIndex = 14
+    local TopSep = Instance.new("Frame", Main)
+    TopSep.Name = "TopSep"
+    TopSep.Size = UDim2.new(1,0,0,1); TopSep.Position = UDim2.new(0,0,0,32)
+    TopSep.BackgroundColor3 = C.Border; TopSep.BorderSizePixel = 0; TopSep.ZIndex = 12
+
+    local BrandLbl = Instance.new("TextLabel", TopBar)
+    BrandLbl.Name = "BrandLbl"
+    BrandLbl.Size = UDim2.new(0,0,1,0); BrandLbl.AutomaticSize = Enum.AutomaticSize.X
+    BrandLbl.Position = UDim2.new(0,10,0,0)
+    BrandLbl.BackgroundTransparency = 1; BrandLbl.Text = "KraviX"
+    BrandLbl.TextColor3 = C.Accent; BrandLbl.TextSize = 12; BrandLbl.Font = Enum.Font.GothamBlack
+    BrandLbl.TextXAlignment = Enum.TextXAlignment.Left; BrandLbl.ZIndex = 13
+
+    local DotSep = Instance.new("TextLabel", TopBar)
+    DotSep.Size = UDim2.new(0,12,1,0)
+    DotSep.BackgroundTransparency = 1; DotSep.Text = "·"
+    DotSep.TextColor3 = C.Muted2; DotSep.TextSize = 12; DotSep.Font = Enum.Font.GothamBold
+    DotSep.TextXAlignment = Enum.TextXAlignment.Center; DotSep.ZIndex = 13
+
+    local ScriptLbl = Instance.new("TextLabel", TopBar)
+    ScriptLbl.Size = UDim2.new(0,0,1,0); ScriptLbl.AutomaticSize = Enum.AutomaticSize.X
+    ScriptLbl.BackgroundTransparency = 1; ScriptLbl.Text = config.Name
+    ScriptLbl.TextColor3 = C.Sub; ScriptLbl.TextSize = 11; ScriptLbl.Font = Enum.Font.Gotham
+    ScriptLbl.TextXAlignment = Enum.TextXAlignment.Left; ScriptLbl.ZIndex = 13
+
+    local ModePill = Instance.new("TextButton", TopBar)
+    ModePill.Name = "ModePill"
+    ModePill.Size = UDim2.new(0,0,0,18); ModePill.AutomaticSize = Enum.AutomaticSize.X
+    ModePill.BackgroundColor3 = Color3.new(
+        math.clamp(C.Accent.R*0.18,0,1),
+        math.clamp(C.Accent.G*0.12,0,1),
+        math.clamp(C.Accent.B*0.18,0,1))
+    ModePill.BackgroundTransparency = 0; ModePill.Text = config.Mode
+    ModePill.TextColor3 = C.Accent; ModePill.TextSize = 10; ModePill.Font = Enum.Font.GothamBold
+    ModePill.AutoButtonColor = false; ModePill.ZIndex = 13; ModePill.AnchorPoint = Vector2.new(0,0.5)
+    mkCorner(ModePill,9)
+    mkStroke(ModePill,Color3.new(
+        math.clamp(C.Accent.R*0.5,0,1),
+        math.clamp(C.Accent.G*0.3,0,1),
+        math.clamp(C.Accent.B*0.6,0,1)),1,0)
+    mkPad(ModePill,0,0,8,8)
+
+    task.defer(function()
+        local bW  = BrandLbl.AbsoluteSize.X; local gap = 6
+        DotSep.Position  = UDim2.new(0, 10+bW+gap, 0, 0)
+        local dW  = DotSep.AbsoluteSize.X
+        ScriptLbl.Position = UDim2.new(0, 10+bW+gap+dW+2, 0, 0)
+        local sW  = ScriptLbl.AbsoluteSize.X
+        ModePill.Position  = UDim2.new(0, 10+bW+gap+dW+2+sW+8, 0.5, 0)
+    end)
 
     local VerLbl = Instance.new("TextLabel", TopBar)
     VerLbl.Size = UDim2.new(0,80,1,0); VerLbl.AnchorPoint = Vector2.new(1,0)
-    VerLbl.Position = UDim2.new(1,-36,0,0)
+    VerLbl.Position = UDim2.new(1,-32,0,0)
     VerLbl.BackgroundTransparency = 1; VerLbl.Text = config.Version or ""
     VerLbl.TextColor3 = C.Muted; VerLbl.TextSize = 9; VerLbl.Font = Enum.Font.Code
     VerLbl.TextXAlignment = Enum.TextXAlignment.Right; VerLbl.ZIndex = 13
 
-    local SearchBtn = Instance.new("TextButton", TopBar)
-    SearchBtn.Size = UDim2.new(0,26,0,26); SearchBtn.AnchorPoint = Vector2.new(1,0.5)
-    SearchBtn.Position = UDim2.new(1,-8,0.5,0)
-    SearchBtn.BackgroundColor3 = C.Bg4; SearchBtn.Text = "⌕"
-    SearchBtn.TextColor3 = C.Muted; SearchBtn.TextSize = 16; SearchBtn.Font = Enum.Font.Gotham
-    SearchBtn.AutoButtonColor = false; SearchBtn.ZIndex = 13
-    mkCorner(SearchBtn,5); mkStroke(SearchBtn,C.Border,1,0)
+    local CloseBtn = Instance.new("TextButton", TopBar)
+    CloseBtn.Size = UDim2.new(0,18,0,18); CloseBtn.AnchorPoint = Vector2.new(1,0.5)
+    CloseBtn.Position = UDim2.new(1,-8,0.5,0)
+    CloseBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)
+    CloseBtn.BackgroundTransparency = 0; CloseBtn.Text = "×"
+    CloseBtn.TextColor3 = C.Muted; CloseBtn.TextSize = 12; CloseBtn.Font = Enum.Font.GothamBold
+    CloseBtn.AutoButtonColor = false; CloseBtn.ZIndex = 14
+    mkCorner(CloseBtn, 4)
 
-    -- ===== CONTENT FRAME (right side, below topbar) =====
+    local TabBar = Instance.new("ScrollingFrame", Main)
+    TabBar.Name = "TabBar"
+    TabBar.Size = UDim2.new(1,0,0,34); TabBar.Position = UDim2.new(0,0,0,33)
+    TabBar.BackgroundColor3 = C.Bg2; TabBar.BackgroundTransparency = 0
+    TabBar.BorderSizePixel = 0; TabBar.ZIndex = 11
+    TabBar.ScrollBarThickness = 0; TabBar.ScrollingDirection = Enum.ScrollingDirection.X
+    TabBar.AutomaticCanvasSize = Enum.AutomaticSize.X
+    TabBar.CanvasSize = UDim2.new(0,0,0,0); TabBar.ElasticBehavior = Enum.ElasticBehavior.Never
+    local TabList = Instance.new("UIListLayout", TabBar)
+    TabList.FillDirection      = Enum.FillDirection.Horizontal
+    TabList.SortOrder          = Enum.SortOrder.LayoutOrder
+    TabList.HorizontalAlignment = Enum.HorizontalAlignment.Left
+    TabList.VerticalAlignment   = Enum.VerticalAlignment.Center
+    TabList.Padding             = UDim.new(0,4)
+    mkPad(TabBar,0,0,10,10)
+
+    local TabSep = Instance.new("Frame", Main)
+    TabSep.Name = "TabSep"
+    TabSep.Size = UDim2.new(1,0,0,1); TabSep.Position = UDim2.new(0,0,0,67)
+    TabSep.BackgroundColor3 = C.Border; TabSep.BorderSizePixel = 0; TabSep.ZIndex = 11
+
     local ContentFrame = Instance.new("Frame", Main)
-    ContentFrame.Size = UDim2.new(1,-SIDEBAR_W-1,1,-39)
-    ContentFrame.Position = UDim2.new(0,SIDEBAR_W+1,0,39)
+    ContentFrame.Size = UDim2.new(1,0,1,-90); ContentFrame.Position = UDim2.new(0,0,0,68)
     ContentFrame.BackgroundTransparency = 1; ContentFrame.BorderSizePixel = 0
     ContentFrame.ZIndex = 10; ContentFrame.ClipsDescendants = true
 
@@ -2882,6 +2864,13 @@ function KraviX:CreateWindow(config)
     Window.HideWindow   = HideWindow
     Window.ShowWindow   = ShowWindow
     Window.ToggleWindow = ToggleWindow
+    Window.NotifyInfo   = function(self, title, text, duration)
+        if typeof(self) == "string" then
+            title, text, duration = self, title, text
+        end
+        CreateNotification(title, text, duration, "info")
+    end
+    Window.Notify       = Window.NotifyInfo
 
     CloseBtn.MouseEnter:Connect(function()
         Tween(CloseBtn,{BackgroundColor3=C.Red,TextColor3=C.White},0.1):Play()
@@ -2907,36 +2896,19 @@ function KraviX:CreateWindow(config)
         local Tab      = {}
         local tabIndex = #Window.Tabs + 1
 
-        -- Sidebar vertical nav item (Neverlose-style)
         local TabBtn = Instance.new("TextButton", TabBar)
-        TabBtn.Size = UDim2.new(1,0,0,34)
-        TabBtn.BackgroundColor3 = C.BgHover; TabBtn.BackgroundTransparency = 1
-        TabBtn.Text = ""; TabBtn.AutoButtonColor = false
-        TabBtn.ZIndex = 12; TabBtn.LayoutOrder = tabIndex
-        mkCorner(TabBtn, 5)
+        TabBtn.Size = UDim2.new(0,0,0,24); TabBtn.AutomaticSize = Enum.AutomaticSize.X
+        TabBtn.AnchorPoint = Vector2.new(0,0.5)
+        TabBtn.BackgroundColor3 = Color3.fromRGB(34,34,34)
+        TabBtn.BackgroundTransparency = 1
+        TabBtn.Text = (icon and icon.."  " or "")..name
+        TabBtn.TextColor3 = C.Muted; TabBtn.TextSize = 11; TabBtn.Font = Enum.Font.Gotham
+        TabBtn.AutoButtonColor = false; TabBtn.ZIndex = 12; TabBtn.LayoutOrder = tabIndex
+        mkCorner(TabBtn,5); mkPad(TabBtn,0,0,12,12)
 
-        -- Purple left-edge active indicator bar
-        local TabActiveBar = Instance.new("Frame", TabBtn)
-        TabActiveBar.Name = "ActiveBar"
-        TabActiveBar.Size = UDim2.new(0,3,1,-10); TabActiveBar.Position = UDim2.new(0,0,0,5)
-        TabActiveBar.BackgroundColor3 = C.Accent; TabActiveBar.BorderSizePixel = 0
-        TabActiveBar.ZIndex = 13; mkCorner(TabActiveBar,2); TabActiveBar.Visible = false
-
-        -- Small accent dot
-        local TabDot = Instance.new("Frame", TabBtn)
-        TabDot.Size = UDim2.new(0,5,0,5); TabDot.Position = UDim2.new(0,16,0.5,-2.5)
-        TabDot.BackgroundColor3 = C.Muted; TabDot.BorderSizePixel = 0; TabDot.ZIndex = 13
-        mkCorner(TabDot,3)
-
-        -- Tab label text
-        local TabLbl = Instance.new("TextLabel", TabBtn)
-        TabLbl.Size = UDim2.new(1,-28,1,0); TabLbl.Position = UDim2.new(0,27,0,0)
-        TabLbl.BackgroundTransparency = 1
-        TabLbl.Text = (icon and icon.." " or "")..name
-        TabLbl.TextColor3 = C.Muted; TabLbl.TextSize = 11; TabLbl.Font = Enum.Font.Gotham
-        TabLbl.TextXAlignment = Enum.TextXAlignment.Left; TabLbl.ZIndex = 13
-
-        local TabUnder = TabActiveBar -- alias kept for API compat
+        local TabUnder = Instance.new("Frame", TabBtn)
+        TabUnder.Size = UDim2.new(0,0,0,0); TabUnder.BackgroundTransparency = 1
+        TabUnder.BorderSizePixel = 0; TabUnder.ZIndex = 1
 
         local TabContent = Instance.new("Frame", ContentFrame)
         TabContent.Size = UDim2.new(1,0,1,0); TabContent.BackgroundTransparency = 1
@@ -2968,7 +2940,7 @@ function KraviX:CreateWindow(config)
         local tabEntry = Window.Tabs[tabIndex]
 
         local FadeOverlay = Instance.new("Frame", TabContent)
-        FadeOverlay.Size = UDim2.new(1,0,1,0); FadeOverlay.BackgroundColor3 = C.Bg3
+        FadeOverlay.Size = UDim2.new(1,0,1,0); FadeOverlay.BackgroundColor3 = C.Bg2
         FadeOverlay.BackgroundTransparency = 1; FadeOverlay.BorderSizePixel = 0; FadeOverlay.ZIndex = 50
 
         local function SelectTab()
@@ -2976,39 +2948,23 @@ function KraviX:CreateWindow(config)
             for _, t in ipairs(Window.Tabs) do
                 local on = t.Index == activeTabIndex
                 if not on then t.Container.Visible = false end
-                -- Sidebar nav item active/inactive state
-                local aBar = t.Btn:FindFirstChild("ActiveBar")
-                if aBar then aBar.Visible = on end
-                Tween(t.Btn,{BackgroundTransparency = on and 0 or 1},0.13):Play()
-                for _, child in ipairs(t.Btn:GetChildren()) do
-                    if child:IsA("TextLabel") then
-                        Tween(child,{TextColor3 = on and C.Text or C.Muted},0.13):Play()
-                        child.Font = on and Enum.Font.GothamBold or Enum.Font.Gotham
-                    elseif child:IsA("Frame") and child.Name ~= "ActiveBar" then
-                        Tween(child,{BackgroundColor3 = on and C.Accent or C.Muted},0.13):Play()
-                    end
-                end
+                Tween(t.Btn,{TextColor3=on and C.White or C.Muted, BackgroundTransparency=on and 0 or 1},0.12):Play()
+                t.Btn.Font = on and Enum.Font.GothamBold or Enum.Font.Gotham
             end
             TabContent.Visible = true
             FadeOverlay.BackgroundTransparency = 0
-            Tween(FadeOverlay,{BackgroundTransparency=1},0.15,Enum.EasingStyle.Quad):Play()
+            Tween(FadeOverlay,{BackgroundTransparency=1},0.14,Enum.EasingStyle.Quad):Play()
         end
 
         TabBtn.MouseButton1Click:Connect(SelectTab)
         TabBtn.MouseEnter:Connect(function()
             if tabIndex ~= activeTabIndex then
-                Tween(TabBtn,{BackgroundTransparency=0.82},0.1):Play()
-                for _, child in ipairs(TabBtn:GetChildren()) do
-                    if child:IsA("TextLabel") then Tween(child,{TextColor3=C.Sub},0.1):Play() end
-                end
+                Tween(TabBtn,{TextColor3=C.Sub,BackgroundTransparency=0.85},0.1):Play()
             end
         end)
         TabBtn.MouseLeave:Connect(function()
             if tabIndex ~= activeTabIndex then
-                Tween(TabBtn,{BackgroundTransparency=1},0.1):Play()
-                for _, child in ipairs(TabBtn:GetChildren()) do
-                    if child:IsA("TextLabel") then Tween(child,{TextColor3=C.Muted},0.1):Play() end
-                end
+                Tween(TabBtn,{TextColor3=C.Muted,BackgroundTransparency=1},0.1):Play()
             end
         end)
         if #Window.Tabs == 1 then SelectTab() end
@@ -3093,14 +3049,13 @@ function KraviX:CreateWindow(config)
                 local scroll  = (column == "Right") and RightScroll or LeftScroll
 
                 if sectionName and sectionName ~= "" then
-                    -- Neverlose-style uppercase section header
                     local Hdr = Instance.new("TextLabel", scroll)
-                    Hdr.Size = UDim2.new(1,0,0,28); Hdr.BackgroundTransparency = 1
-                    Hdr.Text = sectionName:upper(); Hdr.TextColor3 = C.Muted
-                    Hdr.TextSize = 9; Hdr.Font = Enum.Font.GothamBold
+                    Hdr.Size = UDim2.new(1,0,0,22); Hdr.BackgroundTransparency = 1
+                    Hdr.Text = sectionName; Hdr.TextColor3 = C.Sub
+                    Hdr.TextSize = 10; Hdr.Font = Enum.Font.GothamBold
                     Hdr.TextXAlignment = Enum.TextXAlignment.Left; Hdr.ZIndex = 13
                     local HLine = Instance.new("Frame", Hdr)
-                    HLine.Size = UDim2.new(1,0,0,1); HLine.Position = UDim2.new(0,0,1,-2)
+                    HLine.Size = UDim2.new(1,0,0,1); HLine.Position = UDim2.new(0,0,1,-1)
                     HLine.BackgroundColor3 = C.Border; HLine.BorderSizePixel = 0
                 end
 
@@ -3115,48 +3070,39 @@ function KraviX:CreateWindow(config)
                     Row.Size = UDim2.new(1,0,0,26); Row.BackgroundTransparency = 1
                     Row.ZIndex = 13; mkCorner(Row,3)
 
-                    -- Label (left side)
+                    local Box = Instance.new("Frame", Row)
+                    Box.Size = UDim2.new(0,14,0,14); Box.Position = UDim2.new(0,0,0.5,-7)
+                    Box.BackgroundColor3 = toggled and C.Accent or Color3.fromRGB(22,22,22)
+                    Box.BorderSizePixel = 0; Box.ZIndex = 14; mkCorner(Box,3)
+                    mkStroke(Box, toggled and C.Accent or C.BorderBt, 1, 0)
+
                     local Lbl = Instance.new("TextLabel", Row)
-                    Lbl.Size = UDim2.new(1,-50,1,0); Lbl.Position = UDim2.new(0,0,0,0)
+                    Lbl.Size = UDim2.new(1,-52,1,0); Lbl.Position = UDim2.new(0,20,0,0)
                     Lbl.BackgroundTransparency = 1; Lbl.Text = cfg.Name or "Toggle"
                     Lbl.TextColor3 = toggled and C.Text or C.Sub
                     Lbl.TextSize = 11; Lbl.Font = Enum.Font.Gotham
                     Lbl.TextXAlignment = Enum.TextXAlignment.Left; Lbl.ZIndex = 14
 
-                    -- Optional keybind badge
                     if cfg.Keybind then
                         local KB = Instance.new("TextLabel", Row)
-                        KB.Size = UDim2.new(0,32,0,16); KB.AnchorPoint = Vector2.new(1,0.5)
-                        KB.Position = UDim2.new(1,-42,0.5,0)
-                        KB.BackgroundColor3 = C.Bg4
+                        KB.Size = UDim2.new(0,34,0,18); KB.AnchorPoint = Vector2.new(1,0.5)
+                        KB.Position = UDim2.new(1,0,0.5,0)
+                        KB.BackgroundColor3 = Color3.fromRGB(20,20,20)
                         KB.Text = cfg.Keybind; KB.TextColor3 = C.Sub
                         KB.TextSize = 9; KB.Font = Enum.Font.Code
                         KB.TextXAlignment = Enum.TextXAlignment.Center; KB.ZIndex = 14
                         mkCorner(KB,4); mkStroke(KB,C.BorderBt,1,0)
                     end
 
-                    -- Pill-style iOS toggle switch
-                    local Pill = Instance.new("Frame", Row)
-                    Pill.Size = UDim2.new(0,34,0,17); Pill.AnchorPoint = Vector2.new(1,0.5)
-                    Pill.Position = UDim2.new(1,0,0.5,0)
-                    Pill.BackgroundColor3 = toggled and C.Accent or C.Muted2
-                    Pill.BorderSizePixel = 0; Pill.ZIndex = 14
-                    mkCorner(Pill, 9) -- fully rounded pill
-
-                    local Knob = Instance.new("Frame", Pill)
-                    Knob.Size = UDim2.new(0,11,0,11); Knob.AnchorPoint = Vector2.new(0,0.5)
-                    Knob.Position = toggled and UDim2.new(1,-13,0.5,0) or UDim2.new(0,3,0.5,0)
-                    Knob.BackgroundColor3 = C.White; Knob.BorderSizePixel = 0; Knob.ZIndex = 15
-                    mkCorner(Knob, 6) -- circle knob
-
                     local Toggle = {Value=toggled}
                     local flagKey = registerOption(cfg, Toggle)
 
                     local function Update()
                         local v = Toggle.Value
-                        Tween(Pill,{BackgroundColor3 = v and C.Accent or C.Muted2},0.13):Play()
-                        Tween(Knob,{Position = v and UDim2.new(1,-13,0.5,0) or UDim2.new(0,3,0.5,0)},0.13):Play()
-                        Tween(Lbl,{TextColor3 = v and C.Text or C.Sub},0.13):Play()
+                        Tween(Box,{BackgroundColor3=v and C.Accent or Color3.fromRGB(22,22,22)},0.1):Play()
+                        Tween(Lbl,{TextColor3=v and C.Text or C.Sub},0.1):Play()
+                        local st = Box:FindFirstChildOfClass("UIStroke")
+                        if st then Tween(st,{Color=v and C.Accent or C.BorderBt},0.1):Play() end
                         if flagKey then Window.Flags[flagKey] = v end
                     end
 
