@@ -1,4 +1,4 @@
--- 4.1
+-- 4.2
 local KraviX = {}
 
 local TweenService     = game:GetService("TweenService")
@@ -958,6 +958,88 @@ function KraviX:CreateWindow(config)
         return createDockBtn(opts)
     end
 
+    local ConfigFolder = "KraviX_Configs"
+    local localConfigCache = {}
+
+    function Window:GetConfigs()
+        local list = {}
+        if listfiles and isfolder and isfolder(ConfigFolder) then
+            pcall(function()
+                for _, file in ipairs(listfiles(ConfigFolder)) do
+                    local name = file:match("([^/\\]+)%.json$") or file:match("([^/\\]+)$")
+                    if name then
+                        name = name:gsub("%.json$", "")
+                        table.insert(list, name)
+                    end
+                end
+            end)
+        else
+            for name, _ in pairs(localConfigCache) do
+                table.insert(list, name)
+            end
+        end
+        table.sort(list)
+        return list
+    end
+
+    function Window:SaveConfig(name)
+        if not name or name == "" then return false end
+        local data = {
+            Version = "4.1",
+            Timestamp = os.time(),
+            Flags = _G.KraviX_Flags or {}
+        }
+        local jsonStr = HttpService:JSONEncode(data)
+        if makefolder and writefile then
+            pcall(function()
+                if isfolder and not isfolder(ConfigFolder) then
+                    makefolder(ConfigFolder)
+                end
+                writefile(ConfigFolder .. "/" .. name .. ".json", jsonStr)
+            end)
+        end
+        localConfigCache[name] = data
+        return true
+    end
+
+    function Window:LoadConfig(name)
+        if not name or name == "" then return false end
+        local jsonStr
+        if isfile and readfile then
+            pcall(function()
+                local path = ConfigFolder .. "/" .. name .. ".json"
+                if isfile(path) then
+                    jsonStr = readfile(path)
+                end
+            end)
+        end
+        if jsonStr then
+            local success, decoded = pcall(function() return HttpService:JSONDecode(jsonStr) end)
+            if success and decoded and decoded.Flags then
+                _G.KraviX_Flags = decoded.Flags
+                return true
+            end
+        elseif localConfigCache[name] then
+            _G.KraviX_Flags = localConfigCache[name].Flags or {}
+            return true
+        end
+        return false
+    end
+
+    function Window:DeleteConfig(name)
+        if not name or name == "" then return false end
+        if isfile and delfile then
+            pcall(function()
+                local path = ConfigFolder .. "/" .. name .. ".json"
+                if isfile(path) then
+                    delfile(path)
+                end
+            end)
+        end
+        localConfigCache[name] = nil
+        return true
+    end
+
     -- ===== MINI UI REUTILIZÁVEL =====
     local CreatedMiniUIs = {}
     local topMiniZIndex = 250
@@ -1768,7 +1850,7 @@ function KraviX:CreateWindow(config)
         Tween(cfgSelSt, {Color = C.Border}, 0.12):Play()
     end)
 
-    -- Row 3: Dois botões (Salvar e Carregar)
+    -- Row 3: Três botões (Salvar, Carregar e Deletar)
     local BtnRow = Instance.new("Frame", MiniConfigs.Body)
     BtnRow.Size = UDim2.new(1, 0, 0, 32)
     BtnRow.BackgroundTransparency = 1
@@ -1776,7 +1858,7 @@ function KraviX:CreateWindow(config)
     BtnRow:SetAttribute("RelZIndex", 2)
 
     local SaveBtn = Instance.new("TextButton", BtnRow)
-    SaveBtn.Size = UDim2.new(0.48, -2, 1, 0)
+    SaveBtn.Size = UDim2.new(0.315, 0, 1, 0)
     SaveBtn.Position = UDim2.new(0, 0, 0, 0)
     SaveBtn.BackgroundColor3 = C.Accent
     SaveBtn.Text = "Salvar"
@@ -1791,8 +1873,8 @@ function KraviX:CreateWindow(config)
     SaveBtn.MouseLeave:Connect(function() Tween(SaveBtn, {BackgroundColor3 = C.Accent}, 0.12):Play() end)
 
     local LoadBtn = Instance.new("TextButton", BtnRow)
-    LoadBtn.Size = UDim2.new(0.48, -2, 1, 0)
-    LoadBtn.Position = UDim2.new(0.52, 2, 0, 0)
+    LoadBtn.Size = UDim2.new(0.315, 0, 1, 0)
+    LoadBtn.Position = UDim2.new(0.342, 0, 0, 0)
     LoadBtn.BackgroundColor3 = C.Bg3
     LoadBtn.Text = "Carregar"
     LoadBtn.TextColor3 = C.Text
@@ -1805,6 +1887,30 @@ function KraviX:CreateWindow(config)
     local lSt = mkStroke(LoadBtn, C.Border, 1, 0); lSt:SetAttribute("RelZIndex", 3)
     LoadBtn.MouseEnter:Connect(function() Tween(LoadBtn, {BackgroundColor3 = C.Bg4}, 0.12):Play(); Tween(lSt, {Color = C.Accent}, 0.12):Play() end)
     LoadBtn.MouseLeave:Connect(function() Tween(LoadBtn, {BackgroundColor3 = C.Bg3}, 0.12):Play(); Tween(lSt, {Color = C.Border}, 0.12):Play() end)
+
+    local DelBtn = Instance.new("TextButton", BtnRow)
+    DelBtn.Size = UDim2.new(0.315, 0, 1, 0)
+    DelBtn.Position = UDim2.new(0.685, 0, 0, 0)
+    DelBtn.BackgroundColor3 = C.Bg3
+    DelBtn.Text = "Deletar"
+    DelBtn.TextColor3 = C.Text
+    DelBtn.TextSize = 11
+    DelBtn.Font = Enum.Font.GothamBold
+    DelBtn.AutoButtonColor = false
+    DelBtn.ZIndex = MiniConfigs.Frame.ZIndex + 3
+    DelBtn:SetAttribute("RelZIndex", 3)
+    mkCorner(DelBtn, 6)
+    local dSt = mkStroke(DelBtn, C.Border, 1, 0); dSt:SetAttribute("RelZIndex", 3)
+    DelBtn.MouseEnter:Connect(function()
+        Tween(DelBtn, {BackgroundColor3 = Color3.fromRGB(160, 35, 50)}, 0.12):Play()
+        Tween(dSt, {Color = Color3.fromRGB(220, 60, 75)}, 0.12):Play()
+        Tween(DelBtn, {TextColor3 = Color3.fromRGB(255, 220, 225)}, 0.12):Play()
+    end)
+    DelBtn.MouseLeave:Connect(function()
+        Tween(DelBtn, {BackgroundColor3 = C.Bg3}, 0.12):Play()
+        Tween(dSt, {Color = C.Border}, 0.12):Play()
+        Tween(DelBtn, {TextColor3 = C.Text}, 0.12):Play()
+    end)
 
     local currentConfigList = {}
     local isDropOpen = false
@@ -1910,6 +2016,16 @@ function KraviX:CreateWindow(config)
         local name = cfgBox.Text ~= "" and cfgBox.Text or selectedConfig
         if Window:LoadConfig(name) then
             selectedConfig = name
+            refreshConfigUI()
+        end
+    end)
+
+    DelBtn.MouseButton1Click:Connect(function()
+        closeDropdown()
+        local name = cfgBox.Text ~= "" and cfgBox.Text or selectedConfig
+        if Window:DeleteConfig(name) then
+            selectedConfig = "default"
+            cfgBox.Text = "default"
             refreshConfigUI()
         end
     end)
