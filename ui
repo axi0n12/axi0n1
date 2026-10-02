@@ -1,4 +1,4 @@
--- 4.2
+-- 4.1
 local KraviX = {}
 
 local TweenService     = game:GetService("TweenService")
@@ -276,156 +276,167 @@ local function CreateNotification(title, text, duration, ntype)
     end)
 end
 
+local ASC = {
+    M = {"░░░       ░░░","░░░░     ░░░░","░░ ░░   ░░ ░░","░░  ░░ ░░  ░░","░░   ░░░   ░░","░░    ░    ░░","░░         ░░"},
+    O = {"  ░░░░░░░░░  "," ░░░     ░░░ ","░░░       ░░░","░░░       ░░░","░░░       ░░░"," ░░░     ░░░ ","  ░░░░░░░░░  "},
+    Z = {"░░░░░░░░░░░░░","         ░░░░","        ░░░░ ","      ░░░░   ","    ░░░░     ","  ░░░░       ","░░░░░░░░░░░░░"},
+    E = {"░░░░░░░░░░░░░","░░░          ","░░░          ","░░░░░░░░░░░  ","░░░          ","░░░          ","░░░░░░░░░░░░░"},
+    K = {"░░░      ░░░ ","░░░     ░░░  ","░░░   ░░░    ","░░░░░░░      ","░░░   ░░░    ","░░░     ░░░  ","░░░      ░░░ "},
+    R = {"░░░░░░░░░░░  ","░░░       ░░░","░░░       ░░░","░░░░░░░░░░░  ","░░░   ░░░    ","░░░     ░░░  ","░░░      ░░░ "},
+    A = {"  ░░░░░░░░░  "," ░░░     ░░░ ","░░░       ░░░","░░░░░░░░░░░░░","░░░       ░░░","░░░       ░░░","░░░       ░░░"},
+    V = {"░░░       ░░░","░░░       ░░░","░░░       ░░░"," ░░░     ░░░ ","  ░░░   ░░░  ","   ░░░ ░░░   ","    ░░░░░    "},
+    I = {"░░░░░░░░░░░░░","    ░░░░░    ","    ░░░░░    ","    ░░░░░    ","    ░░░░░    ","    ░░░░░    ","░░░░░░░░░░░░░"},
+    X = {"░░░       ░░░"," ░░░     ░░░ ","  ░░░   ░░░  ","    ░░░░░    ","  ░░░   ░░░  "," ░░░     ░░░ ","░░░       ░░░"},
+}
+
+local function buildAscii(text)
+    local lines = {"", "", "", "", "", "", ""}
+    for i = 1, #text do
+        local c = text:sub(i, i):upper()
+        local art = ASC[c] or ASC["O"]
+        for r = 1, 7 do lines[r] = lines[r] .. art[r] .. "          " end
+    end
+    return table.concat(lines, "\n")
+end
+
 local function CreateLoader(screenGui, onDone)
+    local CFG = {
+        bg = Color3.fromRGB(0, 0, 0),
+        fg = Color3.fromRGB(220, 220, 220),
+        activeColor = Color3.fromRGB(255, 50, 50),
+        loadDuration = 1.2 * TWEEN_SPD,
+        blinkSpeed = 0.4,
+        loadWait = 1.5 * TWEEN_SPD,
+        fadeTime = 0.6 * TWEEN_SPD,
+    }
+
     local Loader = Instance.new("Frame", screenGui)
-    Loader.Name = "KxLoader"; Loader.Size = UDim2.new(1,0,1,0)
-    Loader.BackgroundColor3 = Color3.fromRGB(10, 8, 16)
-    Loader.BackgroundTransparency = 0.15
-    Loader.ZIndex = 500; Loader.BorderSizePixel = 0
+    Loader.Name = "mooze_terminal"
+    Loader.Size = UDim2.new(1, 0, 1, 0)
+    Loader.Position = UDim2.new(0, 0, 0, 0)
+    Loader.BackgroundColor3 = CFG.bg
+    Loader.BorderSizePixel = 0
+    Loader.ZIndex = 500
 
-    local Glow1 = Instance.new("ImageLabel", Loader)
-    Glow1.Size = UDim2.new(0, 480, 0, 480)
-    Glow1.AnchorPoint = Vector2.new(0.5, 0.5)
-    Glow1.Position = UDim2.new(0.5, 0, 0.5, 0)
-    Glow1.BackgroundTransparency = 1
-    Glow1.Image = "rbxassetid://6015897843"
-    Glow1.ImageColor3 = C.Accent
-    Glow1.ImageTransparency = 0.6
-    Glow1.ZIndex = 501
-    Glow1.ScaleType = Enum.ScaleType.Slice
-    Glow1.SliceCenter = Rect.new(49,49,450,450)
+    local ascii = Instance.new("TextLabel", Loader)
+    ascii.Size = UDim2.new(1, -60, 0, 340)
+    ascii.Position = UDim2.new(0, 30, 0.22, 0)
+    ascii.BackgroundTransparency = 1
+    ascii.Text = ""
+    ascii.TextColor3 = CFG.fg
+    ascii.Font = Enum.Font.Code
+    ascii.TextSize = 18
+    ascii.TextXAlignment = Enum.TextXAlignment.Left
+    ascii.TextYAlignment = Enum.TextYAlignment.Top
+    ascii.TextTransparency = 0.1
+    ascii.TextWrapped = false
+    ascii.ZIndex = 502
 
-    local Wrap = Instance.new("Frame", Loader)
-    Wrap.Size = UDim2.new(0, 380, 0, 230)
-    Wrap.AnchorPoint = Vector2.new(0.5, 0.5)
-    Wrap.Position = UDim2.new(0.5, 0, 0.54, 0)
-    Wrap.BackgroundColor3 = C.Bg2
-    Wrap.BackgroundTransparency = 0.05
-    Wrap.ZIndex = 502
-    Wrap.ClipsDescendants = true
-    mkCorner(Wrap, 16)
-    local wrapStroke = mkStroke(Wrap, C.Accent, 1.2, 0)
+    local asciiGhostL = Instance.new("TextLabel", Loader)
+    asciiGhostL.Size = UDim2.new(1, -60, 0, 340)
+    asciiGhostL.Position = UDim2.new(0, 31, 0.22, 1)
+    asciiGhostL.BackgroundTransparency = 1
+    asciiGhostL.Text = ""
+    asciiGhostL.TextColor3 = CFG.fg
+    asciiGhostL.Font = Enum.Font.Code
+    asciiGhostL.TextSize = 18
+    asciiGhostL.TextXAlignment = Enum.TextXAlignment.Left
+    asciiGhostL.TextYAlignment = Enum.TextYAlignment.Top
+    asciiGhostL.TextTransparency = 0.92
+    asciiGhostL.TextWrapped = false
+    asciiGhostL.ZIndex = 501
 
-    local TopLine = Instance.new("Frame", Wrap)
-    TopLine.Size = UDim2.new(1, 0, 0, 3)
-    TopLine.BackgroundColor3 = C.Accent
-    TopLine.BorderSizePixel = 0
-    TopLine.ZIndex = 504
+    local asciiGhostR = Instance.new("TextLabel", Loader)
+    asciiGhostR.Size = UDim2.new(1, -60, 0, 340)
+    asciiGhostR.Position = UDim2.new(0, 29, 0.22, -1)
+    asciiGhostR.BackgroundTransparency = 1
+    asciiGhostR.Text = ""
+    asciiGhostR.TextColor3 = CFG.fg
+    asciiGhostR.Font = Enum.Font.Code
+    asciiGhostR.TextSize = 18
+    asciiGhostR.TextXAlignment = Enum.TextXAlignment.Left
+    asciiGhostR.TextYAlignment = Enum.TextYAlignment.Top
+    asciiGhostR.TextTransparency = 0.92
+    asciiGhostR.TextWrapped = false
+    asciiGhostR.ZIndex = 501
 
-    local IconBadge = Instance.new("Frame", Wrap)
-    IconBadge.Size = UDim2.new(0, 54, 0, 54)
-    IconBadge.Position = UDim2.new(0.5, -27, 0, 24)
-    IconBadge.BackgroundColor3 = Color3.fromRGB(24, 16, 40)
-    IconBadge.ZIndex = 503
-    mkCorner(IconBadge, 14)
-    local iconSt = mkStroke(IconBadge, C.Accent, 1.5, 0)
+    local prompt = Instance.new("TextLabel", Loader)
+    prompt.Size = UDim2.new(1, -60, 0, 30)
+    prompt.Position = UDim2.new(0, 30, 0.22, 360)
+    prompt.BackgroundTransparency = 1
+    prompt.Text = ""
+    prompt.TextColor3 = CFG.fg
+    prompt.Font = Enum.Font.Code
+    prompt.TextSize = 15
+    prompt.TextXAlignment = Enum.TextXAlignment.Left
+    prompt.TextTransparency = 0.2
+    prompt.ZIndex = 502
 
-    local KLogo = Instance.new("TextLabel", IconBadge)
-    KLogo.Size = UDim2.new(1, 0, 1, 0)
-    KLogo.BackgroundTransparency = 1
-    KLogo.Text = "Kx"
-    KLogo.TextColor3 = C.Accent2
-    KLogo.TextSize = 22
-    KLogo.Font = Enum.Font.GothamBlack
-    KLogo.ZIndex = 504
+    local status = Instance.new("TextLabel", Loader)
+    status.Size = UDim2.new(1, -60, 0, 30)
+    status.Position = UDim2.new(0, 30, 0.22, 400)
+    status.BackgroundTransparency = 1
+    status.Text = ""
+    status.TextColor3 = CFG.fg
+    status.Font = Enum.Font.Code
+    status.TextSize = 15
+    status.TextXAlignment = Enum.TextXAlignment.Left
+    status.TextTransparency = 0.2
+    status.ZIndex = 502
 
-    local TitleLbl = Instance.new("TextLabel", Wrap)
-    TitleLbl.Size = UDim2.new(1, 0, 0, 24)
-    TitleLbl.Position = UDim2.new(0, 0, 0, 88)
-    TitleLbl.BackgroundTransparency = 1
-    TitleLbl.Text = "KRAVIX ENGINE"
-    TitleLbl.TextColor3 = C.White
-    TitleLbl.TextSize = 17
-    TitleLbl.Font = Enum.Font.GothamBlack
-    TitleLbl.ZIndex = 503
+    local cursorRunning = true
+    task.spawn(function()
+        local showCursor = true
+        while cursorRunning and prompt and prompt.Parent do
+            showCursor = not showCursor
+            local base = prompt.Text:gsub("_$", ""):gsub(" $", "")
+            prompt.Text = base .. (showCursor and "_" or " ")
+            task.wait(CFG.blinkSpeed)
+        end
+    end)
 
-    local SubTitle = Instance.new("TextLabel", Wrap)
-    SubTitle.Size = UDim2.new(1, 0, 0, 16)
-    SubTitle.Position = UDim2.new(0, 0, 0, 112)
-    SubTitle.BackgroundTransparency = 1
-    SubTitle.Text = "PREMIUM SUITE v4.1"
-    SubTitle.TextColor3 = C.Accent2
-    SubTitle.TextSize = 10
-    SubTitle.Font = Enum.Font.GothamBold
-    SubTitle.ZIndex = 503
-
-    local StatusLbl = Instance.new("TextLabel", Wrap)
-    StatusLbl.Size = UDim2.new(1, -64, 0, 16)
-    StatusLbl.Position = UDim2.new(0, 32, 0, 144)
-    StatusLbl.BackgroundTransparency = 1
-    StatusLbl.Text = "✦ Verificando ambiente..."
-    StatusLbl.TextColor3 = C.Sub
-    StatusLbl.TextSize = 11
-    StatusLbl.Font = Enum.Font.GothamMedium
-    StatusLbl.TextXAlignment = Enum.TextXAlignment.Left
-    StatusLbl.ZIndex = 503
-
-    local PctLbl = Instance.new("TextLabel", Wrap)
-    PctLbl.Size = UDim2.new(0, 60, 0, 16)
-    PctLbl.Position = UDim2.new(1, -92, 0, 144)
-    PctLbl.BackgroundTransparency = 1
-    PctLbl.Text = "0%"
-    PctLbl.TextColor3 = C.Accent2
-    PctLbl.TextSize = 11
-    PctLbl.Font = Enum.Font.Code
-    PctLbl.TextXAlignment = Enum.TextXAlignment.Right
-    PctLbl.ZIndex = 503
-
-    local BarBg = Instance.new("Frame", Wrap)
-    BarBg.Size = UDim2.new(1, -64, 0, 6)
-    BarBg.Position = UDim2.new(0, 32, 0, 168)
-    BarBg.BackgroundColor3 = Color3.fromRGB(24, 22, 34)
-    BarBg.BorderSizePixel = 0
-    BarBg.ZIndex = 503
-    mkCorner(BarBg, 3)
-
-    local BarFill = Instance.new("Frame", BarBg)
-    BarFill.Size = UDim2.new(0, 0, 1, 0)
-    BarFill.BackgroundColor3 = C.Accent
-    BarFill.BorderSizePixel = 0
-    BarFill.ZIndex = 504
-    mkCorner(BarFill, 3)
-
-    local FillGlow = Instance.new("Frame", BarFill)
-    FillGlow.Size = UDim2.new(0, 8, 1, 0)
-    FillGlow.Position = UDim2.new(1, -4, 0, 0)
-    FillGlow.BackgroundColor3 = C.White
-    FillGlow.BorderSizePixel = 0
-    FillGlow.ZIndex = 505
-    mkCorner(FillGlow, 3)
+    local function typeText(text, duration)
+        local speed = math.max(0.005, duration / math.max(1, #text))
+        for i = 1, #text do
+            local slice = text:sub(1, i)
+            ascii.Text = slice
+            asciiGhostL.Text = slice
+            asciiGhostR.Text = slice
+            task.wait(speed)
+        end
+    end
 
     task.spawn(function()
-        Wrap.Position = UDim2.new(0.5, 0, 0.56, 0)
-        Wrap.BackgroundTransparency = 1
-        wrapStroke.Transparency = 1
+        typeText(buildAscii("KRAVIX"), CFG.loadDuration)
+        task.wait(0.3 * TWEEN_SPD)
 
-        Tween(Wrap, {Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundTransparency = 0.05}, 0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out):Play()
-        Tween(wrapStroke, {Transparency = 0}, 0.4):Play()
-        Tween(Glow1, {ImageTransparency = 0.55}, 0.5):Play()
+        prompt.Text = "[ ] Key: _"
+        task.wait(0.5 * TWEEN_SPD)
+        prompt.Text = ""
+        task.wait(0.2 * TWEEN_SPD)
 
-        local steps = {
-            {pct = 0.20, msg = "✦ Carregando módulos visuais..."},
-            {pct = 0.45, msg = "✦ Inicializando Aimbot & ESP..."},
-            {pct = 0.75, msg = "✦ Sincronizando sistema de configs..."},
-            {pct = 1.00, msg = "✦ KRAVIX ENGINE PRONTO!"}
-        }
-
-        local totalDur = 1.2 * TWEEN_SPD
-        Tween(BarFill, {Size = UDim2.new(1, 0, 1, 0)}, totalDur, Enum.EasingStyle.Quint):Play()
-
-        for i, step in ipairs(steps) do
-            task.wait(totalDur / #steps)
-            StatusLbl.Text = step.msg
-            PctLbl.Text = tostring(math.floor(step.pct * 100)) .. "%"
+        local base = "> loading kravix"
+        status.Text = base
+        for i = 1, 4 do
+            task.wait(0.35 * TWEEN_SPD)
+            status.Text = base .. string.rep(".", i)
         end
 
-        task.wait(0.2 * TWEEN_SPD)
-        Tween(Wrap, {Position = UDim2.new(0.5, 0, 0.45, 0), BackgroundTransparency = 1}, 0.35, Enum.EasingStyle.Quint, Enum.EasingDirection.In):Play()
-        Tween(wrapStroke, {Transparency = 1}, 0.25):Play()
-        Tween(Glow1, {ImageTransparency = 1}, 0.3):Play()
-        Tween(Loader, {BackgroundTransparency = 1}, 0.35):Play()
+        task.wait(CFG.loadWait)
+        status.Text = "> loaded kravix"
+        task.wait(0.8 * TWEEN_SPD)
 
-        task.wait(0.38 * TWEEN_SPD)
+        cursorRunning = false
+
+        local ti = TweenInfo.new(CFG.fadeTime, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+        TweenService:Create(Loader, ti, {BackgroundTransparency = 1}):Play()
+        TweenService:Create(ascii, ti, {TextTransparency = 1}):Play()
+        TweenService:Create(asciiGhostL, ti, {TextTransparency = 1}):Play()
+        TweenService:Create(asciiGhostR, ti, {TextTransparency = 1}):Play()
+        TweenService:Create(prompt, ti, {TextTransparency = 1}):Play()
+        TweenService:Create(status, ti, {TextTransparency = 1}):Play()
+
+        task.wait(CFG.fadeTime + 0.1)
         Loader:Destroy()
         onDone()
     end)
