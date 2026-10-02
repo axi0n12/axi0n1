@@ -1,4 +1,4 @@
--- 4.2
+-- 4.1
 local KraviX = {}
 
 local TweenService     = game:GetService("TweenService")
@@ -398,7 +398,7 @@ local function CreateLoader(screenGui, onDone, scriptName)
         bg = Color3.fromRGB(8, 8, 8),
         topBg = Color3.fromRGB(13, 13, 13),
         fg = Color3.fromRGB(220, 220, 220),
-        activeColor = Color3.fromRGB(255, 50, 50),
+        activeColor = Color3.fromRGB(165, 85, 255),
         loadDuration = 1.0 * TWEEN_SPD,
         blinkSpeed = 0.4,
         loadWait = 1.0 * TWEEN_SPD,
@@ -415,7 +415,7 @@ local function CreateLoader(screenGui, onDone, scriptName)
     Loader.ZIndex = 500
     Loader.ClipsDescendants = true
     mkCorner(Loader, 6)
-    mkStroke(Loader, Color3.fromRGB(35, 35, 35), 1, 0)
+    mkStroke(Loader, Color3.fromRGB(60, 40, 90), 1, 0)
 
     local Shadow = Instance.new("ImageLabel", Loader)
     Shadow.Name = "Shadow"
@@ -423,8 +423,8 @@ local function CreateLoader(screenGui, onDone, scriptName)
     Shadow.Position = UDim2.new(0, -20, 0, -20)
     Shadow.BackgroundTransparency = 1
     Shadow.Image = "rbxassetid://6015897843"
-    Shadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
-    Shadow.ImageTransparency = 0.3
+    Shadow.ImageColor3 = Color3.fromRGB(124, 58, 237)
+    Shadow.ImageTransparency = 0.6
     Shadow.ZIndex = 499
     Shadow.ScaleType = Enum.ScaleType.Slice
     Shadow.SliceCenter = Rect.new(49, 49, 450, 450)
@@ -440,7 +440,7 @@ local function CreateLoader(screenGui, onDone, scriptName)
     local TopSep = Instance.new("Frame", TopBar)
     TopSep.Size = UDim2.new(1, 0, 0, 1)
     TopSep.Position = UDim2.new(0, 0, 1, -1)
-    TopSep.BackgroundColor3 = Color3.fromRGB(28, 28, 28)
+    TopSep.BackgroundColor3 = Color3.fromRGB(45, 30, 65)
     TopSep.BorderSizePixel = 0
     TopSep.ZIndex = 502
 
@@ -529,7 +529,7 @@ local function CreateLoader(screenGui, onDone, scriptName)
     status.Position = UDim2.new(0, 20, 0, 240)
     status.BackgroundTransparency = 1
     status.Text = ""
-    status.TextColor3 = Color3.fromRGB(150, 150, 150)
+    status.TextColor3 = Color3.fromRGB(170, 130, 240)
     status.Font = Enum.Font.Code
     status.TextSize = 13
     status.TextXAlignment = Enum.TextXAlignment.Left
@@ -541,7 +541,7 @@ local function CreateLoader(screenGui, onDone, scriptName)
         local showCursor = true
         while cursorRunning and prompt and prompt.Parent do
             showCursor = not showCursor
-            prompt.Text = '<font color="rgb(180,180,180)">[</font><font color="rgb(255,50,50)">-</font><font color="rgb(180,180,180)">]</font> <font color="rgb(220,220,220)">Key:</font> ' .. (showCursor and "_" or " ")
+            prompt.Text = '<font color="rgb(180,180,180)">[</font><font color="rgb(165,85,255)">-</font><font color="rgb(180,180,180)">]</font> <font color="rgb(220,220,220)">Key Verified!</font> ' .. (showCursor and "_" or " ")
             task.wait(CFG.blinkSpeed)
         end
     end)
