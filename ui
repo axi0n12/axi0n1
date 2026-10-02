@@ -1,4 +1,4 @@
--- 4.1
+-- 4.2
 local KraviX = {}
 
 local TweenService     = game:GetService("TweenService")
@@ -1489,7 +1489,7 @@ function KraviX:CreateWindow(config)
                 NameLbl.Position = UDim2.new(0, 10, 0, 0)
                 NameLbl.BackgroundTransparency = 1
                 NameLbl.Text = plr.DisplayName or plr.Name
-                NameLbl.TextColor3 = isSel and Color3.fromRGB(255, 255, 255) or ((isWL) and Color3.fromRGB(168, 125, 255) or Color3.fromRGB(235, 235, 240))
+                NameLbl.TextColor3 = isSel and C.White or ((isWL) and C.Accent2 or C.Text)
                 NameLbl.TextSize = 11
                 NameLbl.Font = Enum.Font.GothamBold
                 NameLbl.TextXAlignment = Enum.TextXAlignment.Left
@@ -1503,7 +1503,7 @@ function KraviX:CreateWindow(config)
                 StatusLbl.Position = UDim2.new(0.62, 0, 0, 0)
                 StatusLbl.BackgroundTransparency = 1
                 StatusLbl.Text = statusText
-                StatusLbl.TextColor3 = isSel and Color3.fromRGB(200, 200, 215) or ((isWL or isView) and Color3.fromRGB(168, 125, 255) or Color3.fromRGB(140, 135, 160))
+                StatusLbl.TextColor3 = isSel and C.White or ((isWL or isView) and C.Accent2 or C.Sub)
                 StatusLbl.TextSize = 10
                 StatusLbl.Font = Enum.Font.GothamBold
                 StatusLbl.TextXAlignment = Enum.TextXAlignment.Right
@@ -1519,14 +1519,16 @@ function KraviX:CreateWindow(config)
 
                 CardBtn.MouseEnter:Connect(function()
                     if not (selectedPlayer == plr) then
-                        Tween(Card, {BackgroundColor3 = Color3.fromRGB(22, 22, 28)}, 0.12):Play()
-                        Tween(cSt, {Color = Color3.fromRGB(160, 160, 180)}, 0.12):Play()
+                        Tween(Card, {BackgroundColor3 = C.BgHover}, 0.12):Play()
+                        Tween(cSt, {Color = C.Accent}, 0.12):Play()
+                        Tween(NameLbl, {TextColor3 = C.White}, 0.12):Play()
                     end
                 end)
                 CardBtn.MouseLeave:Connect(function()
                     if not (selectedPlayer == plr) then
-                        Tween(Card, {BackgroundColor3 = Color3.fromRGB(0, 0, 0)}, 0.12):Play()
-                        Tween(cSt, {Color = Color3.fromRGB(35, 30, 52)}, 0.12):Play()
+                        Tween(Card, {BackgroundColor3 = C.Bg3}, 0.12):Play()
+                        Tween(cSt, {Color = C.Border}, 0.12):Play()
+                        Tween(NameLbl, {TextColor3 = C.Text}, 0.12):Play()
                     end
                 end)
 
@@ -1642,14 +1644,14 @@ function KraviX:CreateWindow(config)
         end
     end)
 
-    -- ===== BOTÃO 3: CONFIGURATIONS (DESIGN MINIMALISTA MATCHA) =====
+    -- ===== BOTÃO 3: CONFIGURATIONS (LUGAR NOME, DROPDOWN, 2 BOTÕES: SALVAR E CARREGAR) =====
     local MiniConfigs = Window:CreateMiniUI({
-        Title = "Configurations", Width = 360, Height = 240,
-        DefaultPosition = UDim2.new(0.5, -180, 0.5, -120),
+        Title = "Configurations", Width = 320, Height = 145,
+        DefaultPosition = UDim2.new(0.5, -160, 0.5, -72),
         OnToggle = function(on) BtnCloud.SetActive(on) end
     })
 
-    -- Clean layout without redundant banners
+    -- Clean layout without redundant banners or extra buttons
     for _, child in ipairs(MiniConfigs.Body:GetChildren()) do
         if child:IsA("UIListLayout") or child:IsA("UIPadding") then
             child:Destroy()
@@ -1661,7 +1663,7 @@ function KraviX:CreateWindow(config)
     CfgLayout.SortOrder = Enum.SortOrder.LayoutOrder
     CfgLayout.Padding = UDim.new(0, 8)
 
-    -- Row 1: Config Name Input Box
+    -- Row 1: Lugar para por o nome da config (Input Box)
     local InputCont = Instance.new("Frame", MiniConfigs.Body)
     InputCont.Size = UDim2.new(1, 0, 0, 30)
     InputCont.BackgroundColor3 = C.Bg3
@@ -1675,7 +1677,7 @@ function KraviX:CreateWindow(config)
     cfgBox.Size = UDim2.new(1, -20, 1, 0)
     cfgBox.Position = UDim2.new(0, 10, 0, 0)
     cfgBox.BackgroundTransparency = 1
-    cfgBox.PlaceholderText = "Nome da configuração..."
+    cfgBox.PlaceholderText = "Nome da config..."
     cfgBox.PlaceholderColor3 = C.Muted
     cfgBox.Text = "default"
     cfgBox.TextColor3 = C.Text
@@ -1689,7 +1691,7 @@ function KraviX:CreateWindow(config)
     cfgBox.Focused:Connect(function() Tween(cfgInSt, {Color = C.Accent}, 0.12):Play() end)
     cfgBox.FocusLost:Connect(function() Tween(cfgInSt, {Color = C.Border}, 0.12):Play() end)
 
-    -- Row 2: Config Selector Button
+    -- Row 2: Dropdown das cfgs que eu tenho (Selector Button)
     local selectedConfig = "default"
 
     local ConfigSelectBtn = Instance.new("TextButton", MiniConfigs.Body)
@@ -1711,7 +1713,7 @@ function KraviX:CreateWindow(config)
     CfgDropArrow.Size = UDim2.new(0, 100, 1, 0)
     CfgDropArrow.Position = UDim2.new(1, -105, 0, 0)
     CfgDropArrow.BackgroundTransparency = 1
-    CfgDropArrow.Text = "[ ▼ Alterar ]"
+    CfgDropArrow.Text = "[ ▼ Configs ]"
     CfgDropArrow.TextColor3 = C.Accent2
     CfgDropArrow.TextSize = 10
     CfgDropArrow.Font = Enum.Font.GothamMedium
@@ -1728,15 +1730,15 @@ function KraviX:CreateWindow(config)
         Tween(cfgSelSt, {Color = C.Border}, 0.12):Play()
     end)
 
-    -- Row 3: Action Buttons 2x2 Grid (Salvar, Carregar, Deletar, Atualizar)
-    local GridCont = Instance.new("Frame", MiniConfigs.Body)
-    GridCont.Size = UDim2.new(1, 0, 0, 68)
-    GridCont.BackgroundTransparency = 1
-    GridCont.ZIndex = MiniConfigs.Frame.ZIndex + 2
-    GridCont:SetAttribute("RelZIndex", 2)
+    -- Row 3: Dois botões (Salvar e Carregar)
+    local BtnRow = Instance.new("Frame", MiniConfigs.Body)
+    BtnRow.Size = UDim2.new(1, 0, 0, 32)
+    BtnRow.BackgroundTransparency = 1
+    BtnRow.ZIndex = MiniConfigs.Frame.ZIndex + 2
+    BtnRow:SetAttribute("RelZIndex", 2)
 
-    local SaveBtn = Instance.new("TextButton", GridCont)
-    SaveBtn.Size = UDim2.new(0.48, -2, 0, 30)
+    local SaveBtn = Instance.new("TextButton", BtnRow)
+    SaveBtn.Size = UDim2.new(0.48, -2, 1, 0)
     SaveBtn.Position = UDim2.new(0, 0, 0, 0)
     SaveBtn.BackgroundColor3 = C.Accent
     SaveBtn.Text = "Salvar"
@@ -1750,8 +1752,8 @@ function KraviX:CreateWindow(config)
     SaveBtn.MouseEnter:Connect(function() Tween(SaveBtn, {BackgroundColor3 = C.Accent2}, 0.12):Play() end)
     SaveBtn.MouseLeave:Connect(function() Tween(SaveBtn, {BackgroundColor3 = C.Accent}, 0.12):Play() end)
 
-    local LoadBtn = Instance.new("TextButton", GridCont)
-    LoadBtn.Size = UDim2.new(0.48, -2, 0, 30)
+    local LoadBtn = Instance.new("TextButton", BtnRow)
+    LoadBtn.Size = UDim2.new(0.48, -2, 1, 0)
     LoadBtn.Position = UDim2.new(0.52, 2, 0, 0)
     LoadBtn.BackgroundColor3 = C.Bg3
     LoadBtn.Text = "Carregar"
@@ -1766,98 +1768,6 @@ function KraviX:CreateWindow(config)
     LoadBtn.MouseEnter:Connect(function() Tween(LoadBtn, {BackgroundColor3 = C.Bg4}, 0.12):Play(); Tween(lSt, {Color = C.Accent}, 0.12):Play() end)
     LoadBtn.MouseLeave:Connect(function() Tween(LoadBtn, {BackgroundColor3 = C.Bg3}, 0.12):Play(); Tween(lSt, {Color = C.Border}, 0.12):Play() end)
 
-    local DelBtn = Instance.new("TextButton", GridCont)
-    DelBtn.Size = UDim2.new(0.48, -2, 0, 30)
-    DelBtn.Position = UDim2.new(0, 0, 0, 36)
-    DelBtn.BackgroundColor3 = Color3.fromRGB(45, 15, 25)
-    DelBtn.Text = "Deletar"
-    DelBtn.TextColor3 = Color3.fromRGB(245, 120, 120)
-    DelBtn.TextSize = 11
-    DelBtn.Font = Enum.Font.GothamBold
-    DelBtn.AutoButtonColor = false
-    DelBtn.ZIndex = MiniConfigs.Frame.ZIndex + 3
-    DelBtn:SetAttribute("RelZIndex", 3)
-    mkCorner(DelBtn, 6)
-    local dSt = mkStroke(DelBtn, Color3.fromRGB(75, 25, 35), 1, 0); dSt:SetAttribute("RelZIndex", 3)
-
-    local RefBtn = Instance.new("TextButton", GridCont)
-    RefBtn.Size = UDim2.new(0.48, -2, 0, 30)
-    RefBtn.Position = UDim2.new(0.52, 2, 0, 36)
-    RefBtn.BackgroundColor3 = C.Bg3
-    RefBtn.Text = "Atualizar"
-    RefBtn.TextColor3 = C.Sub
-    RefBtn.TextSize = 11
-    RefBtn.Font = Enum.Font.GothamBold
-    RefBtn.AutoButtonColor = false
-    RefBtn.ZIndex = MiniConfigs.Frame.ZIndex + 3
-    RefBtn:SetAttribute("RelZIndex", 3)
-    mkCorner(RefBtn, 6)
-    local rSt = mkStroke(RefBtn, C.Border, 1, 0); rSt:SetAttribute("RelZIndex", 3)
-    RefBtn.MouseEnter:Connect(function() Tween(RefBtn, {BackgroundColor3 = C.Bg4}, 0.12):Play() end)
-    RefBtn.MouseLeave:Connect(function() Tween(RefBtn, {BackgroundColor3 = C.Bg3}, 0.12):Play() end)
-
-    -- Row 4: Auto-Load Toggle Row
-    local AutoRow = Instance.new("Frame", MiniConfigs.Body)
-    AutoRow.Size = UDim2.new(1, 0, 0, 28)
-    AutoRow.BackgroundColor3 = C.Bg3
-    AutoRow.ZIndex = MiniConfigs.Frame.ZIndex + 2
-    AutoRow:SetAttribute("RelZIndex", 2)
-    mkCorner(AutoRow, 6)
-    local autoRowSt = mkStroke(AutoRow, C.Border, 1, 0); autoRowSt:SetAttribute("RelZIndex", 2)
-
-    local AutoTitle = Instance.new("TextLabel", AutoRow)
-    AutoTitle.Size = UDim2.new(1, -50, 1, 0)
-    AutoTitle.Position = UDim2.new(0, 10, 0, 0)
-    AutoTitle.BackgroundTransparency = 1
-    AutoTitle.Text = "Auto-Load ao Iniciar"
-    AutoTitle.TextColor3 = C.Sub
-    AutoTitle.TextSize = 10.5
-    AutoTitle.Font = Enum.Font.GothamMedium
-    AutoTitle.TextXAlignment = Enum.TextXAlignment.Left
-    AutoTitle.ZIndex = MiniConfigs.Frame.ZIndex + 3
-    AutoTitle:SetAttribute("RelZIndex", 3)
-
-    local AutoSwitch = Instance.new("TextButton", AutoRow)
-    AutoSwitch.Size = UDim2.new(0, 32, 0, 18)
-    AutoSwitch.Position = UDim2.new(1, -40, 0.5, -9)
-    AutoSwitch.BackgroundColor3 = C.Bg5
-    AutoSwitch.Text = ""
-    AutoSwitch.AutoButtonColor = false
-    AutoSwitch.ZIndex = MiniConfigs.Frame.ZIndex + 3
-    AutoSwitch:SetAttribute("RelZIndex", 3)
-    mkCorner(AutoSwitch, 9)
-
-    local SwitchKnob = Instance.new("Frame", AutoSwitch)
-    SwitchKnob.Size = UDim2.new(0, 12, 0, 12)
-    SwitchKnob.Position = UDim2.new(0, 3, 0.5, -6)
-    SwitchKnob.BackgroundColor3 = C.Sub
-    SwitchKnob.ZIndex = MiniConfigs.Frame.ZIndex + 4
-    SwitchKnob:SetAttribute("RelZIndex", 4)
-    mkCorner(SwitchKnob, 6)
-
-    local autoLoadState = false
-    local function setAutoLoadUI(state)
-        autoLoadState = state
-        if state then
-            Tween(AutoSwitch, {BackgroundColor3 = C.Accent}, 0.15):Play()
-            Tween(SwitchKnob, {Position = UDim2.new(1, -15, 0.5, -6), BackgroundColor3 = C.White}, 0.15):Play()
-        else
-            Tween(AutoSwitch, {BackgroundColor3 = C.Bg5}, 0.15):Play()
-            Tween(SwitchKnob, {Position = UDim2.new(0, 3, 0.5, -6), BackgroundColor3 = C.Sub}, 0.15):Play()
-        end
-    end
-
-    AutoSwitch.MouseButton1Click:Connect(function()
-        local name = (cfgBox.Text ~= "" and cfgBox.Text or selectedConfig)
-        autoLoadState = not autoLoadState
-        if autoLoadState then
-            Window:SetAutoLoad(name)
-        else
-            Window:SetAutoLoad("")
-        end
-        setAutoLoadUI(autoLoadState)
-    end)
-
     local currentConfigList = {}
     local function refreshConfigUI()
         currentConfigList = Window:GetConfigs()
@@ -1868,13 +1778,6 @@ function KraviX:CreateWindow(config)
                 selectedConfig = currentConfigList[1]
             end
             ConfigSelectBtn.Text = "  Config: " .. selectedConfig
-        end
-
-        local autoCfg = Window:GetAutoLoad()
-        if autoCfg ~= "" and autoCfg == selectedConfig then
-            setAutoLoadUI(true)
-        else
-            setAutoLoadUI(false)
         end
     end
 
@@ -1905,18 +1808,6 @@ function KraviX:CreateWindow(config)
             selectedConfig = name
             refreshConfigUI()
         end
-    end)
-
-    DelBtn.MouseButton1Click:Connect(function()
-        local name = cfgBox.Text ~= "" and cfgBox.Text or selectedConfig
-        if Window:DeleteConfig(name) then
-            refreshConfigUI()
-        end
-    end)
-
-    RefBtn.MouseButton1Click:Connect(function()
-        refreshConfigUI()
-        CreateNotification("KraviX Config", "Lista de configurações atualizada!", 2, "info")
     end)
 
     task.defer(refreshConfigUI)
