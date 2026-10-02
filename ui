@@ -1,4 +1,4 @@
--- 4.2
+-- 4.1
 local KraviX = {}
 
 local TweenService     = game:GetService("TweenService")
@@ -984,11 +984,17 @@ function KraviX:CreateWindow(config)
 
     function Window:SaveConfig(name)
         if not name or name == "" then return false end
-        local data = {
-            Version = "4.1",
-            Timestamp = os.time(),
-            Flags = _G.KraviX_Flags or {}
-        }
+        local data = {}
+        if Window._ConfigCollector then
+            local ok, res = pcall(Window._ConfigCollector)
+            if ok and res then data = res end
+        else
+            data = {
+                Version = "4.1",
+                Timestamp = os.time(),
+                Flags = _G.KraviX_Flags or {}
+            }
+        end
         local jsonStr = HttpService:JSONEncode(data)
         if makefolder and writefile then
             pcall(function()
@@ -999,6 +1005,7 @@ function KraviX:CreateWindow(config)
             end)
         end
         localConfigCache[name] = data
+        if Window.Notify then Window.Notify("Config", "Salvo: " .. name, 2) end
         return true
     end
 
@@ -1013,16 +1020,24 @@ function KraviX:CreateWindow(config)
                 end
             end)
         end
+        local decoded
         if jsonStr then
-            local success, decoded = pcall(function() return HttpService:JSONDecode(jsonStr) end)
-            if success and decoded and decoded.Flags then
-                _G.KraviX_Flags = decoded.Flags
-                return true
-            end
+            local success, res = pcall(function() return HttpService:JSONDecode(jsonStr) end)
+            if success and res then decoded = res end
         elseif localConfigCache[name] then
-            _G.KraviX_Flags = localConfigCache[name].Flags or {}
+            decoded = localConfigCache[name]
+        end
+
+        if decoded then
+            if Window._ConfigApplier then
+                pcall(function() Window._ConfigApplier(decoded) end)
+            elseif decoded.Flags then
+                _G.KraviX_Flags = decoded.Flags
+            end
+            if Window.Notify then Window.Notify("Config", "Carregado: " .. name, 2) end
             return true
         end
+        if Window.Notify then Window.Notify("Config", "Não encontrado: " .. name, 2) end
         return false
     end
 
@@ -1037,6 +1052,7 @@ function KraviX:CreateWindow(config)
             end)
         end
         localConfigCache[name] = nil
+        if Window.Notify then Window.Notify("Config", "Deletado: " .. name, 2) end
         return true
     end
 
