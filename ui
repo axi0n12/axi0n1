@@ -1,4 +1,4 @@
--- 4.1
+-- 4.2
 local KraviX = {}
 
 local TweenService     = game:GetService("TweenService")
@@ -1728,8 +1728,8 @@ function KraviX:CreateWindow(config)
 
     -- ===== BOTÃO 3: CONFIGURATIONS (LUGAR NOME, DROPDOWN, 3 BOTÕES: SALVAR, CARREGAR E DELETAR) =====
     local MiniConfigs = Window:CreateMiniUI({
-        Title = "Configurations", Width = 380, Height = 168,
-        DefaultPosition = UDim2.new(0.5, -190, 0.5, -84),
+        Title = "Configurations", Width = 480, Height = 210,
+        DefaultPosition = UDim2.new(0.5, -240, 0.5, -105),
         OnToggle = function(on) BtnCloud.SetActive(on) end
     })
 
@@ -1739,31 +1739,31 @@ function KraviX:CreateWindow(config)
             child:Destroy()
         end
     end
-    mkPad(MiniConfigs.Body, 12, 12, 12, 12)
+    mkPad(MiniConfigs.Body, 16, 16, 16, 16)
 
     local CfgLayout = Instance.new("UIListLayout", MiniConfigs.Body)
     CfgLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    CfgLayout.Padding = UDim.new(0, 10)
+    CfgLayout.Padding = UDim.new(0, 12)
 
     -- Row 1: Lugar para por o nome da config (Input Box)
     local InputCont = Instance.new("Frame", MiniConfigs.Body)
-    InputCont.Size = UDim2.new(1, 0, 0, 32)
+    InputCont.Size = UDim2.new(1, 0, 0, 40)
     InputCont.BackgroundColor3 = C.Bg3
     InputCont.ZIndex = MiniConfigs.Frame.ZIndex + 2
     InputCont:SetAttribute("RelZIndex", 2)
-    mkCorner(InputCont, 6)
+    mkCorner(InputCont, 8)
     local cfgInSt = mkStroke(InputCont, C.Border, 1, 0)
     cfgInSt:SetAttribute("RelZIndex", 2)
 
     local cfgBox = Instance.new("TextBox", InputCont)
-    cfgBox.Size = UDim2.new(1, -20, 1, 0)
-    cfgBox.Position = UDim2.new(0, 10, 0, 0)
+    cfgBox.Size = UDim2.new(1, -24, 1, 0)
+    cfgBox.Position = UDim2.new(0, 12, 0, 0)
     cfgBox.BackgroundTransparency = 1
     cfgBox.PlaceholderText = "Nome da config..."
     cfgBox.PlaceholderColor3 = C.Muted
     cfgBox.Text = "default"
     cfgBox.TextColor3 = C.Text
-    cfgBox.TextSize = 12
+    cfgBox.TextSize = 13
     cfgBox.Font = Enum.Font.GothamMedium
     cfgBox.TextXAlignment = Enum.TextXAlignment.Left
     cfgBox.ClearTextOnFocus = false
@@ -1781,27 +1781,27 @@ function KraviX:CreateWindow(config)
     local selectedConfig = "default"
 
     local ConfigSelectBtn = Instance.new("TextButton", MiniConfigs.Body)
-    ConfigSelectBtn.Size = UDim2.new(1, 0, 0, 32)
+    ConfigSelectBtn.Size = UDim2.new(1, 0, 0, 40)
     ConfigSelectBtn.BackgroundColor3 = C.Bg3
     ConfigSelectBtn.Text = "  Config: default"
     ConfigSelectBtn.TextColor3 = C.Text
-    ConfigSelectBtn.TextSize = 12
+    ConfigSelectBtn.TextSize = 13
     ConfigSelectBtn.Font = Enum.Font.GothamBold
     ConfigSelectBtn.TextXAlignment = Enum.TextXAlignment.Left
     ConfigSelectBtn.AutoButtonColor = false
     ConfigSelectBtn.ZIndex = MiniConfigs.Frame.ZIndex + 2
     ConfigSelectBtn:SetAttribute("RelZIndex", 2)
-    mkCorner(ConfigSelectBtn, 6)
+    mkCorner(ConfigSelectBtn, 8)
     local cfgSelSt = mkStroke(ConfigSelectBtn, C.Border, 1, 0)
     cfgSelSt:SetAttribute("RelZIndex", 2)
 
     local CfgDropArrow = Instance.new("TextLabel", ConfigSelectBtn)
-    CfgDropArrow.Size = UDim2.new(0, 100, 1, 0)
-    CfgDropArrow.Position = UDim2.new(1, -105, 0, 0)
+    CfgDropArrow.Size = UDim2.new(0, 120, 1, 0)
+    CfgDropArrow.Position = UDim2.new(1, -125, 0, 0)
     CfgDropArrow.BackgroundTransparency = 1
     CfgDropArrow.Text = "[ ▼ Configs ]"
     CfgDropArrow.TextColor3 = C.Accent2
-    CfgDropArrow.TextSize = 11
+    CfgDropArrow.TextSize = 12
     CfgDropArrow.Font = Enum.Font.GothamMedium
     CfgDropArrow.TextXAlignment = Enum.TextXAlignment.Right
     CfgDropArrow.ZIndex = MiniConfigs.Frame.ZIndex + 3
@@ -1818,7 +1818,7 @@ function KraviX:CreateWindow(config)
     DropFrame.ClipsDescendants = true
     DropFrame.ZIndex = MiniConfigs.Frame.ZIndex + 50
     DropFrame:SetAttribute("RelZIndex", 50)
-    mkCorner(DropFrame, 6)
+    mkCorner(DropFrame, 8)
     local dropStroke = mkStroke(DropFrame, C.Accent, 1, 0)
     dropStroke:SetAttribute("RelZIndex", 50)
 
@@ -1835,7 +1835,7 @@ function KraviX:CreateWindow(config)
 
     local DropLayout = Instance.new("UIListLayout", DropScroll)
     DropLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    DropLayout.Padding = UDim.new(0, 2)
+    DropLayout.Padding = UDim.new(0, 3)
 
     DropLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
         DropScroll.CanvasSize = UDim2.new(0, 0, 0, DropLayout.AbsoluteContentSize.Y + 4)
@@ -1852,7 +1852,7 @@ function KraviX:CreateWindow(config)
 
     -- Row 3: Três botões (Salvar, Carregar e Deletar)
     local BtnRow = Instance.new("Frame", MiniConfigs.Body)
-    BtnRow.Size = UDim2.new(1, 0, 0, 34)
+    BtnRow.Size = UDim2.new(1, 0, 0, 42)
     BtnRow.BackgroundTransparency = 1
     BtnRow.ZIndex = MiniConfigs.Frame.ZIndex + 2
     BtnRow:SetAttribute("RelZIndex", 2)
@@ -1863,12 +1863,12 @@ function KraviX:CreateWindow(config)
     SaveBtn.BackgroundColor3 = C.Accent
     SaveBtn.Text = "Salvar"
     SaveBtn.TextColor3 = C.White
-    SaveBtn.TextSize = 11
+    SaveBtn.TextSize = 13
     SaveBtn.Font = Enum.Font.GothamBold
     SaveBtn.AutoButtonColor = false
     SaveBtn.ZIndex = MiniConfigs.Frame.ZIndex + 3
     SaveBtn:SetAttribute("RelZIndex", 3)
-    mkCorner(SaveBtn, 6)
+    mkCorner(SaveBtn, 8)
     SaveBtn.MouseEnter:Connect(function() Tween(SaveBtn, {BackgroundColor3 = C.Accent2}, 0.12):Play() end)
     SaveBtn.MouseLeave:Connect(function() Tween(SaveBtn, {BackgroundColor3 = C.Accent}, 0.12):Play() end)
 
@@ -1878,12 +1878,12 @@ function KraviX:CreateWindow(config)
     LoadBtn.BackgroundColor3 = C.Bg3
     LoadBtn.Text = "Carregar"
     LoadBtn.TextColor3 = C.Text
-    LoadBtn.TextSize = 11
+    LoadBtn.TextSize = 13
     LoadBtn.Font = Enum.Font.GothamBold
     LoadBtn.AutoButtonColor = false
     LoadBtn.ZIndex = MiniConfigs.Frame.ZIndex + 3
     LoadBtn:SetAttribute("RelZIndex", 3)
-    mkCorner(LoadBtn, 6)
+    mkCorner(LoadBtn, 8)
     local lSt = mkStroke(LoadBtn, C.Border, 1, 0); lSt:SetAttribute("RelZIndex", 3)
     LoadBtn.MouseEnter:Connect(function() Tween(LoadBtn, {BackgroundColor3 = C.Bg4}, 0.12):Play(); Tween(lSt, {Color = C.Accent}, 0.12):Play() end)
     LoadBtn.MouseLeave:Connect(function() Tween(LoadBtn, {BackgroundColor3 = C.Bg3}, 0.12):Play(); Tween(lSt, {Color = C.Border}, 0.12):Play() end)
@@ -1894,12 +1894,12 @@ function KraviX:CreateWindow(config)
     DelBtn.BackgroundColor3 = C.Bg3
     DelBtn.Text = "Deletar"
     DelBtn.TextColor3 = C.Text
-    DelBtn.TextSize = 11
+    DelBtn.TextSize = 13
     DelBtn.Font = Enum.Font.GothamBold
     DelBtn.AutoButtonColor = false
     DelBtn.ZIndex = MiniConfigs.Frame.ZIndex + 3
     DelBtn:SetAttribute("RelZIndex", 3)
-    mkCorner(DelBtn, 6)
+    mkCorner(DelBtn, 8)
     local dSt = mkStroke(DelBtn, C.Border, 1, 0); dSt:SetAttribute("RelZIndex", 3)
     DelBtn.MouseEnter:Connect(function()
         Tween(DelBtn, {BackgroundColor3 = Color3.fromRGB(160, 35, 50)}, 0.12):Play()
@@ -1943,30 +1943,30 @@ function KraviX:CreateWindow(config)
         currentConfigList = Window:GetConfigs()
         if #currentConfigList == 0 then
             local emptyLbl = Instance.new("TextLabel", DropScroll)
-            emptyLbl.Size = UDim2.new(1, 0, 0, 26)
+            emptyLbl.Size = UDim2.new(1, 0, 0, 30)
             emptyLbl.BackgroundTransparency = 1
             emptyLbl.Text = "Nenhuma config salva"
             emptyLbl.TextColor3 = C.Muted
-            emptyLbl.TextSize = 11
+            emptyLbl.TextSize = 12
             emptyLbl.Font = Enum.Font.GothamMedium
             emptyLbl.ZIndex = MiniConfigs.Frame.ZIndex + 52
             emptyLbl:SetAttribute("RelZIndex", 52)
-            DropFrame.Size = UDim2.new(1, 0, 0, 32)
+            DropFrame.Size = UDim2.new(1, 0, 0, 36)
         else
             for _, cfgName in ipairs(currentConfigList) do
                 local itemBtn = Instance.new("TextButton", DropScroll)
-                itemBtn.Size = UDim2.new(1, 0, 0, 26)
+                itemBtn.Size = UDim2.new(1, 0, 0, 30)
                 itemBtn.BackgroundColor3 = (cfgName == selectedConfig) and Color3.fromRGB(35, 25, 48) or C.Bg3
                 itemBtn.BorderSizePixel = 0
                 itemBtn.Text = "  " .. cfgName
                 itemBtn.TextColor3 = (cfgName == selectedConfig) and C.Accent2 or C.Text
-                itemBtn.TextSize = 11
+                itemBtn.TextSize = 12
                 itemBtn.Font = Enum.Font.GothamMedium
                 itemBtn.TextXAlignment = Enum.TextXAlignment.Left
                 itemBtn.AutoButtonColor = false
                 itemBtn.ZIndex = MiniConfigs.Frame.ZIndex + 52
                 itemBtn:SetAttribute("RelZIndex", 52)
-                mkCorner(itemBtn, 4)
+                mkCorner(itemBtn, 6)
 
                 itemBtn.MouseEnter:Connect(function()
                     if cfgName ~= selectedConfig then
@@ -1986,7 +1986,7 @@ function KraviX:CreateWindow(config)
                     closeDropdown()
                 end)
             end
-            local itemHeight = math.min(#currentConfigList * 28 + 6, 120)
+            local itemHeight = math.min(#currentConfigList * 33 + 8, 160)
             DropFrame.Size = UDim2.new(1, 0, 0, itemHeight)
         end
     end
