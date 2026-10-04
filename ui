@@ -1,4 +1,4 @@
--- 4.1
+-- 4.2
 local KraviX = {}
 
 local TweenService     = game:GetService("TweenService")
@@ -426,23 +426,8 @@ local function CreateWelcomeScreen(screenGui, onDone)
     Card.BackgroundTransparency = 1
     Card.BorderSizePixel = 0
     Card.ZIndex = 610
-    Card.ClipsDescendants = true
+    Card.ClipsDescendants = false
     mkCorner(Card, 18)
-
-    local CardStroke = Instance.new("UIStroke", Card)
-    CardStroke.Color = Color3.fromRGB(32, 28, 42)
-    CardStroke.Thickness = 1.2
-    CardStroke.Transparency = 1
-
-    local CardShadow = Instance.new("ImageLabel", Card)
-    CardShadow.Size = UDim2.new(1, 50, 1, 50)
-    CardShadow.AnchorPoint = Vector2.new(0.5, 0.5)
-    CardShadow.Position = UDim2.new(0.5, 0, 0.5, 0)
-    CardShadow.BackgroundTransparency = 1
-    CardShadow.Image = "rbxassetid://6015897843"
-    CardShadow.ImageColor3 = Color3.fromRGB(124, 58, 237)
-    CardShadow.ImageTransparency = 1
-    CardShadow.ZIndex = 609
 
     local CardScale = Instance.new("UIScale", Card)
     CardScale.Scale = 0.8
@@ -556,8 +541,6 @@ local function CreateWelcomeScreen(screenGui, onDone)
     TweenService:Create(CardScale, TweenInfo.new(0.42, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
         Scale = 1.0
     }):Play()
-    TweenService:Create(CardStroke, inTi, {Transparency = 0}):Play()
-    TweenService:Create(CardShadow, inTi, {ImageTransparency = 0.55}):Play()
     TweenService:Create(AvatarCircle, inTi, {BackgroundTransparency = 0}):Play()
     TweenService:Create(AvatarStroke, inTi, {Transparency = 0}):Play()
     TweenService:Create(AvatarImg, inTi, {ImageTransparency = 0}):Play()
@@ -588,8 +571,6 @@ local function CreateWelcomeScreen(screenGui, onDone)
         BackgroundTransparency = 1
     }):Play()
     TweenService:Create(CardScale, outTi, {Scale = 0.9}):Play()
-    TweenService:Create(CardStroke, outTi, {Transparency = 1}):Play()
-    TweenService:Create(CardShadow, outTi, {ImageTransparency = 1}):Play()
     TweenService:Create(AvatarCircle, outTi, {BackgroundTransparency = 1}):Play()
     TweenService:Create(AvatarStroke, outTi, {Transparency = 1}):Play()
     TweenService:Create(AvatarImg, outTi, {ImageTransparency = 1}):Play()
