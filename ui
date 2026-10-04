@@ -1,4 +1,4 @@
--- 4.2
+-- 4.1
 local KraviX = {}
 
 local TweenService     = game:GetService("TweenService")
@@ -3917,90 +3917,81 @@ function KraviX:CreateWindow(config)
 
                     local PF = Instance.new("Frame", ScreenGui)
                     PF.Name = "KxColorPicker"
-                    PF.Size = UDim2.new(0,234,0,258)
-                    PF.BackgroundColor3 = Color3.fromRGB(18,18,18)
+                    PF.Size = UDim2.new(0,232,0,232)
+                    PF.BackgroundColor3 = Color3.fromRGB(16,16,16)
                     PF.BorderSizePixel = 0; PF.Visible = false; PF.ZIndex = 300
-                    mkCorner(PF,6); mkStroke(PF,C.BorderBt,1,0)
-
-                    local TopAcc = Instance.new("Frame", PF)
-                    TopAcc.Size = UDim2.new(1,0,0,2)
-                    TopAcc.BackgroundColor3 = color
-                    TopAcc.BorderSizePixel = 0; TopAcc.ZIndex = 301
-                    mkCorner(TopAcc,6)
+                    mkCorner(PF,3); mkStroke(PF,Color3.fromRGB(35,35,35),1,0)
 
                     local TitleLbl = Instance.new("TextLabel", PF)
-                    TitleLbl.Size = UDim2.new(1,-8,0,18); TitleLbl.Position = UDim2.new(0,6,0,5)
+                    TitleLbl.Size = UDim2.new(1,-12,0,16); TitleLbl.Position = UDim2.new(0,6,0,5)
                     TitleLbl.BackgroundTransparency = 1; TitleLbl.Text = cfg.Name or "Color"
-                    TitleLbl.TextColor3 = C.Text; TitleLbl.TextSize = 11; TitleLbl.Font = Enum.Font.GothamBold
+                    TitleLbl.TextColor3 = Color3.fromRGB(220,220,220); TitleLbl.TextSize = 13; TitleLbl.Font = Enum.Font.Code
                     TitleLbl.TextXAlignment = Enum.TextXAlignment.Left; TitleLbl.ZIndex = 301
 
                     local CanvasOut = Instance.new("Frame", PF)
                     CanvasOut.Size = UDim2.new(0,200,0,200)
-                    CanvasOut.Position = UDim2.new(0,6,0,26)
+                    CanvasOut.Position = UDim2.new(0,6,0,24)
                     CanvasOut.BackgroundColor3 = Color3.fromRGB(255,255,255)
                     CanvasOut.BorderSizePixel = 0; CanvasOut.ZIndex = 301
-                    mkCorner(CanvasOut,4)
+                    mkStroke(CanvasOut, Color3.fromRGB(0,0,0), 1, 0)
 
                     local SatVibImg = Instance.new("ImageLabel", CanvasOut)
                     SatVibImg.Size = UDim2.new(1,0,1,0); SatVibImg.BorderSizePixel = 0
                     SatVibImg.Image = "rbxassetid://4155801252"; SatVibImg.ZIndex = 302
-                    mkCorner(SatVibImg,4)
+                    SatVibImg.ClipsDescendants = false
 
-                    local CurOut = Instance.new("ImageLabel", SatVibImg)
+                    local CurOut = Instance.new("Frame", SatVibImg)
                     CurOut.AnchorPoint = Vector2.new(0.5,0.5)
-                    CurOut.Size = UDim2.new(0,10,0,10); CurOut.Position = UDim2.new(0,0,0,0)
-                    CurOut.BackgroundTransparency = 1; CurOut.Image = "rbxassetid://4155801252"
-                    CurOut.ImageColor3 = Color3.fromRGB(255,255,255); CurOut.ZIndex = 303
+                    CurOut.Size = UDim2.new(0,6,0,6); CurOut.Position = UDim2.new(0,0,0,0)
+                    CurOut.BackgroundColor3 = Color3.fromRGB(255,255,255)
+                    CurOut.BorderSizePixel = 0
+                    CurOut.ZIndex = 305
+                    mkCorner(CurOut,10)
+                    local curStroke = Instance.new("UIStroke", CurOut)
+                    curStroke.Color = Color3.fromRGB(0,0,0)
+                    curStroke.Thickness = 1
+                    curStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 
                     local CanvasHit = Instance.new("TextButton", CanvasOut)
                     CanvasHit.Size = UDim2.new(1,0,1,0); CanvasHit.BackgroundTransparency = 1
-                    CanvasHit.Text = ""; CanvasHit.ZIndex = 304
+                    CanvasHit.Text = ""; CanvasHit.ZIndex = 306
 
                     local HueBar = Instance.new("Frame", PF)
-                    HueBar.Size = UDim2.new(0,14,0,200); HueBar.Position = UDim2.new(0,212,0,26)
+                    HueBar.Size = UDim2.new(0,14,0,200); HueBar.Position = UDim2.new(0,212,0,24)
                     HueBar.BackgroundColor3 = Color3.fromRGB(255,255,255)
                     HueBar.BorderSizePixel = 0; HueBar.ZIndex = 301
-                    mkCorner(HueBar,4)
+                    mkStroke(HueBar, Color3.fromRGB(0,0,0), 1, 0)
 
-                    local HueIn = Instance.new("ImageLabel", HueBar)
+                    local HueIn = Instance.new("Frame", HueBar)
                     HueIn.Size = UDim2.new(1,0,1,0); HueIn.BorderSizePixel = 0
-                    HueIn.Image = "rbxassetid://359311684"; HueIn.ZIndex = 302
-                    mkCorner(HueIn,4)
+                    HueIn.BackgroundColor3 = Color3.fromRGB(255,255,255)
+                    HueIn.ZIndex = 302
+
+                    local HueGrad = Instance.new("UIGradient", HueIn)
+                    HueGrad.Rotation = 90
+                    HueGrad.Color = ColorSequence.new({
+                        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 0)),
+                        ColorSequenceKeypoint.new(0.17, Color3.fromRGB(255, 255, 0)),
+                        ColorSequenceKeypoint.new(0.33, Color3.fromRGB(0, 255, 0)),
+                        ColorSequenceKeypoint.new(0.50, Color3.fromRGB(0, 255, 255)),
+                        ColorSequenceKeypoint.new(0.67, Color3.fromRGB(0, 0, 255)),
+                        ColorSequenceKeypoint.new(0.83, Color3.fromRGB(255, 0, 255)),
+                        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 0)),
+                    })
 
                     local HueCur = Instance.new("Frame", HueIn)
+                    HueCur.AnchorPoint = Vector2.new(0,0.5)
                     HueCur.Size = UDim2.new(1,0,0,2); HueCur.Position = UDim2.new(0,0,0,0)
                     HueCur.BackgroundColor3 = Color3.fromRGB(255,255,255)
                     HueCur.BorderSizePixel = 0; HueCur.ZIndex = 303
+                    local hStroke = Instance.new("UIStroke", HueCur)
+                    hStroke.Color = Color3.fromRGB(0,0,0)
+                    hStroke.Thickness = 1
+                    hStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 
                     local HBarHit = Instance.new("TextButton", HueBar)
                     HBarHit.Size = UDim2.new(1,0,1,0); HBarHit.BackgroundTransparency = 1
-                    HBarHit.Text = ""; HBarHit.ZIndex = 304
-
-                    local function makeInputBox(xOffset, placeholder, defaultTxt)
-                        local inner = Instance.new("Frame", PF)
-                        inner.Size = UDim2.new(0,110,0,22); inner.Position = UDim2.new(0,xOffset,0,230)
-                        inner.BackgroundColor3 = Color3.fromRGB(25,25,25)
-                        inner.BorderSizePixel = 0; inner.ZIndex = 302
-                        mkCorner(inner,4)
-
-                        local box = Instance.new("TextBox", inner)
-                        box.Size = UDim2.new(1,-8,1,0); box.Position = UDim2.new(0,8,0,0)
-                        box.BackgroundTransparency = 1
-                        box.PlaceholderText = placeholder; box.PlaceholderColor3 = C.Muted
-                        box.Text = defaultTxt; box.TextColor3 = C.White
-                        box.TextSize = 11; box.Font = Enum.Font.Code
-                        box.TextXAlignment = Enum.TextXAlignment.Left
-                        box.ZIndex = 303; box.ClearTextOnFocus = false
-
-                        local fs = mkStroke(inner, C.BorderBt, 1, 0)
-                        box.Focused:Connect(function()   Tween(fs,{Color=C.Sub},0.12):Play()   end)
-                        box.FocusLost:Connect(function() Tween(fs,{Color=C.BorderBt},0.12):Play() end)
-
-                        return box
-                    end
-
-                    local HexBox = makeInputBox(6,   "Hex color", "#FFFFFF")
-                    local RgbBox = makeInputBox(118, "R, G, B",   "255, 255, 255")
+                    HBarHit.Text = ""; HBarHit.ZIndex = 306
 
                     local Picker = {Value=color}
                     local flagKey = registerOption(cfg, Picker)
@@ -4013,68 +4004,58 @@ function KraviX:CreateWindow(config)
                         local c = Color3.fromHSV(ph, ps, pv)
                         Picker.Value = c
                         SwIn.BackgroundColor3      = c
-                        TopAcc.BackgroundColor3    = c
                         SatVibImg.BackgroundColor3 = Color3.fromHSV(ph,1,1)
                         CurOut.Position = UDim2.new(ps, 0, 1-pv, 0)
                         HueCur.Position = UDim2.new(0, 0, ph, 0)
-                        HexBox.Text     = "#"..c:ToHex():upper()
-                        RgbBox.Text     = math.floor(c.R*255)..","
-                                       ..math.floor(c.G*255)..","
-                                       ..math.floor(c.B*255)
                         callback(c)
                         if flagKey then Window.Flags[flagKey] = c end
                     end
 
-                    HexBox.FocusLost:Connect(function(enter)
-                        if enter then
-                            local ok, result = pcall(Color3.fromHex, HexBox.Text)
-                            if ok and typeof(result)=="Color3" then ph,ps,pv = result:ToHSV() end
+                    local function getPointerPos(input)
+                        if input and input.UserInputType == Enum.UserInputType.Touch then
+                            return Vector2.new(input.Position.X, input.Position.Y)
                         end
-                        UpdateAll()
-                    end)
-                    RgbBox.FocusLost:Connect(function(enter)
-                        if enter then
-                            local r,g,b = RgbBox.Text:match("(%d+),?%s*(%d+),?%s*(%d+)")
-                            if r then
-                                ph,ps,pv = Color3.fromRGB(tonumber(r),tonumber(g),tonumber(b)):ToHSV()
-                            end
-                        end
-                        UpdateAll()
-                    end)
+                        return UserInputService:GetMouseLocation()
+                    end
 
                     CanvasHit.InputBegan:Connect(function(i)
-                        if i.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
+                        if i.UserInputType ~= Enum.UserInputType.MouseButton1 and i.UserInputType ~= Enum.UserInputType.Touch then return end
                         cDrag = true
                         local ap = SatVibImg.AbsolutePosition; local as = SatVibImg.AbsoluteSize
-                        ps = math.clamp((Mouse.X-ap.X)/as.X, 0, 1)
-                        pv = 1-math.clamp((Mouse.Y-ap.Y)/as.Y, 0, 1)
+                        local m = getPointerPos(i)
+                        ps = math.clamp((m.X-ap.X)/as.X, 0, 1)
+                        pv = 1-math.clamp((m.Y-ap.Y)/as.Y, 0, 1)
                         UpdateAll()
                     end)
 
                     HBarHit.InputBegan:Connect(function(i)
-                        if i.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
+                        if i.UserInputType ~= Enum.UserInputType.MouseButton1 and i.UserInputType ~= Enum.UserInputType.Touch then return end
                         hDrag = true
                         local ap = HueIn.AbsolutePosition; local as = HueIn.AbsoluteSize
-                        ph = math.clamp((Mouse.Y-ap.Y)/as.Y, 0, 1)
+                        local m = getPointerPos(i)
+                        ph = math.clamp((m.Y-ap.Y)/as.Y, 0, 1)
                         UpdateAll()
                     end)
 
                     UserInputService.InputEnded:Connect(function(i)
-                        if i.UserInputType == Enum.UserInputType.MouseButton1 then
+                        if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
                             cDrag = false; hDrag = false
                         end
                     end)
+
                     UserInputService.InputChanged:Connect(function(i)
-                        if i.UserInputType ~= Enum.UserInputType.MouseMovement then return end
+                        if i.UserInputType ~= Enum.UserInputType.MouseMovement and i.UserInputType ~= Enum.UserInputType.Touch then return end
                         if cDrag then
                             local ap = SatVibImg.AbsolutePosition; local as = SatVibImg.AbsoluteSize
-                            ps = math.clamp((Mouse.X-ap.X)/as.X, 0, 1)
-                            pv = 1-math.clamp((Mouse.Y-ap.Y)/as.Y, 0, 1)
+                            local m = getPointerPos(i)
+                            ps = math.clamp((m.X-ap.X)/as.X, 0, 1)
+                            pv = 1-math.clamp((m.Y-ap.Y)/as.Y, 0, 1)
                             UpdateAll()
                         end
                         if hDrag then
                             local ap = HueIn.AbsolutePosition; local as = HueIn.AbsoluteSize
-                            ph = math.clamp((Mouse.Y-ap.Y)/as.Y, 0, 1)
+                            local m = getPointerPos(i)
+                            ph = math.clamp((m.Y-ap.Y)/as.Y, 0, 1)
                             UpdateAll()
                         end
                     end)
@@ -4091,18 +4072,18 @@ function KraviX:CreateWindow(config)
                             end
                             local abs  = SwOut.AbsolutePosition
                             local sgSz = ScreenGui.AbsoluteSize
-                            local px   = abs.X - 234 + SwOut.AbsoluteSize.X
+                            local px   = abs.X - 232 + SwOut.AbsoluteSize.X
                             local py   = abs.Y + SwOut.AbsoluteSize.Y + 4
-                            if py + 262 > sgSz.Y then py = abs.Y - 262 end
+                            if py + 236 > sgSz.Y then py = abs.Y - 236 end
                             if px < 2 then px = 2 end
-                            if px + 234 > sgSz.X then px = sgSz.X - 236 end
+                            if px + 232 > sgSz.X then px = sgSz.X - 234 end
                             PF.Position = UDim2.fromOffset(px, py)
                         end
                         PF.Visible = pickerOpen
                     end)
 
                     UserInputService.InputBegan:Connect(function(inp)
-                        if inp.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
+                        if inp.UserInputType ~= Enum.UserInputType.MouseButton1 and inp.UserInputType ~= Enum.UserInputType.Touch then return end
                         if _justOpenedPicker then
                             _justOpenedPicker = false
                             return
@@ -4112,7 +4093,10 @@ function KraviX:CreateWindow(config)
                         local fp = PF.AbsolutePosition; local fs = PF.AbsoluteSize
                         if not (mp.X>=fp.X and mp.X<=fp.X+fs.X
                              and mp.Y>=fp.Y and mp.Y<=fp.Y+fs.Y) then
-                            pickerOpen = false; PF.Visible = false
+                            local sp = SwOut.AbsolutePosition; local ss = SwOut.AbsoluteSize
+                            if not (mp.X>=sp.X and mp.X<=sp.X+ss.X and mp.Y>=sp.Y and mp.Y<=sp.Y+ss.Y) then
+                                pickerOpen = false; PF.Visible = false
+                            end
                         end
                     end)
 
@@ -4123,7 +4107,12 @@ function KraviX:CreateWindow(config)
                     task.defer(function() callback(color) end)
 
                     function Picker:Set(c)
-                        Picker.Value = c; ph,ps,pv = c:ToHSV(); UpdateAll()
+                        if typeof(c) ~= "Color3" then return end
+                        Picker.Value = c
+                        local h, s, v = c:ToHSV()
+                        if s > 0.001 then ph = h end
+                        ps, pv = s, v
+                        UpdateAll()
                         if flagKey then Window.Flags[flagKey] = c end
                     end
 
