@@ -1,4 +1,4 @@
--- 4.2
+-- 4.1
 local KraviX = {}
 
 local TweenService     = game:GetService("TweenService")
@@ -390,7 +390,6 @@ end
 
 local function CreateWelcomeScreen(screenGui, onDone)
     local playerNick = (LocalPlayer and LocalPlayer.DisplayName) or (LocalPlayer and LocalPlayer.Name) or "User"
-    local playerUser = (LocalPlayer and LocalPlayer.Name) or "User"
     local userId     = (LocalPlayer and LocalPlayer.UserId) or 1
 
     local WelcomeGui = Instance.new("ScreenGui")
@@ -409,74 +408,34 @@ local function CreateWelcomeScreen(screenGui, onDone)
         end
     end
 
-    local FullBackdrop = Instance.new("Frame", WelcomeGui)
-    FullBackdrop.Name = "FullBackdrop"
-    FullBackdrop.AnchorPoint = Vector2.new(0.5, 0.5)
-    FullBackdrop.Size = UDim2.new(1, 200, 1, 200)
-    FullBackdrop.Position = UDim2.new(0.5, 0, 0.5, 0)
-    FullBackdrop.BackgroundColor3 = Color3.fromRGB(7, 5, 13)
-    FullBackdrop.BackgroundTransparency = 1
-    FullBackdrop.BorderSizePixel = 0
-    FullBackdrop.ZIndex = 600
+    local Backdrop = Instance.new("Frame", WelcomeGui)
+    Backdrop.Name = "Backdrop"
+    Backdrop.Size = UDim2.new(1, 0, 1, 0)
+    Backdrop.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    Backdrop.BackgroundTransparency = 1
+    Backdrop.BorderSizePixel = 0
+    Backdrop.ZIndex = 600
 
-    local BgGrad = Instance.new("UIGradient", FullBackdrop)
-    BgGrad.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(18, 10, 34)),
-        ColorSequenceKeypoint.new(0.45, Color3.fromRGB(9, 6, 16)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(4, 3, 8))
-    })
-    BgGrad.Rotation = 45
-
-    local Nebula1 = Instance.new("ImageLabel", FullBackdrop)
-    Nebula1.Size = UDim2.new(0, 900, 0, 900)
-    Nebula1.AnchorPoint = Vector2.new(0.5, 0.5)
-    Nebula1.Position = UDim2.new(0.5, 0, 0.5, 0)
-    Nebula1.BackgroundTransparency = 1
-    Nebula1.Image = "rbxassetid://6015897843"
-    Nebula1.ImageColor3 = Color3.fromRGB(124, 58, 237)
-    Nebula1.ImageTransparency = 1
-    Nebula1.ZIndex = 601
-
-    local Nebula2 = Instance.new("ImageLabel", FullBackdrop)
-    Nebula2.Size = UDim2.new(0, 500, 0, 500)
-    Nebula2.AnchorPoint = Vector2.new(0.5, 0.5)
-    Nebula2.Position = UDim2.new(0.5, 0, 0.5, -20)
-    Nebula2.BackgroundTransparency = 1
-    Nebula2.Image = "rbxassetid://6015897843"
-    Nebula2.ImageColor3 = Color3.fromRGB(168, 85, 247)
-    Nebula2.ImageTransparency = 1
-    Nebula2.ZIndex = 602
-
-    StartSnow(FullBackdrop)
-
+    local CARD_W, CARD_H = 240, 270
     local Card = Instance.new("Frame", WelcomeGui)
     Card.Name = "WelcomeCard"
-    Card.Size = UDim2.new(0, 530, 0, 360)
+    Card.Size = UDim2.new(0, CARD_W, 0, CARD_H)
     Card.AnchorPoint = Vector2.new(0.5, 0.5)
-    Card.Position = UDim2.new(0.5, 0, 0.5, 35)
-    Card.BackgroundColor3 = Color3.fromRGB(14, 10, 26)
+    Card.Position = UDim2.new(0.5, 0, 0.5, 20)
+    Card.BackgroundColor3 = Color3.fromRGB(12, 12, 16)
     Card.BackgroundTransparency = 1
     Card.BorderSizePixel = 0
     Card.ZIndex = 610
-    Card.ClipsDescendants = false
+    Card.ClipsDescendants = true
     mkCorner(Card, 18)
 
     local CardStroke = Instance.new("UIStroke", Card)
-    CardStroke.Color = Color3.fromRGB(147, 51, 234)
-    CardStroke.Thickness = 1.4
+    CardStroke.Color = Color3.fromRGB(32, 28, 42)
+    CardStroke.Thickness = 1.2
     CardStroke.Transparency = 1
-    CardStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-
-    local CardStrokeGrad = Instance.new("UIGradient", CardStroke)
-    CardStrokeGrad.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(216, 180, 254)),
-        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(124, 58, 237)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(45, 25, 75))
-    })
-    CardStrokeGrad.Rotation = 45
 
     local CardShadow = Instance.new("ImageLabel", Card)
-    CardShadow.Size = UDim2.new(1, 90, 1, 90)
+    CardShadow.Size = UDim2.new(1, 50, 1, 50)
     CardShadow.AnchorPoint = Vector2.new(0.5, 0.5)
     CardShadow.Position = UDim2.new(0.5, 0, 0.5, 0)
     CardShadow.BackgroundTransparency = 1
@@ -486,117 +445,29 @@ local function CreateWelcomeScreen(screenGui, onDone)
     CardShadow.ZIndex = 609
 
     local CardScale = Instance.new("UIScale", Card)
-    CardScale.Scale = 0.65
+    CardScale.Scale = 0.8
 
-    local HeaderRow = Instance.new("Frame", Card)
-    HeaderRow.Size = UDim2.new(1, -40, 0, 28)
-    HeaderRow.Position = UDim2.new(0, 20, 0, 18)
-    HeaderRow.BackgroundTransparency = 1
-    HeaderRow.ZIndex = 611
-
-    local SysBadge = Instance.new("Frame", HeaderRow)
-    SysBadge.Size = UDim2.new(0, 130, 1, 0)
-    SysBadge.Position = UDim2.new(0, 0, 0, 0)
-    SysBadge.BackgroundColor3 = Color3.fromRGB(24, 18, 42)
-    SysBadge.BackgroundTransparency = 0.3
-    SysBadge.BorderSizePixel = 0
-    SysBadge.ZIndex = 612
-    mkCorner(SysBadge, 14)
-    local SysStroke = mkStroke(SysBadge, Color3.fromRGB(124, 58, 237), 1, 0.4)
-
-    local SysDot = Instance.new("Frame", SysBadge)
-    SysDot.Size = UDim2.new(0, 7, 0, 7)
-    SysDot.Position = UDim2.new(0, 10, 0.5, -3)
-    SysDot.BackgroundColor3 = Color3.fromRGB(168, 85, 247)
-    SysDot.BorderSizePixel = 0
-    SysDot.ZIndex = 613
-    mkCorner(SysDot, 4)
-
-    local SysLbl = Instance.new("TextLabel", SysBadge)
-    SysLbl.Size = UDim2.new(1, -24, 1, 0)
-    SysLbl.Position = UDim2.new(0, 22, 0, 0)
-    SysLbl.BackgroundTransparency = 1
-    SysLbl.Text = "AXION SYSTEM"
-    SysLbl.TextColor3 = Color3.fromRGB(216, 180, 254)
-    SysLbl.Font = Enum.Font.GothamBold
-    SysLbl.TextSize = 10
-    SysLbl.TextXAlignment = Enum.TextXAlignment.Left
-    SysLbl.ZIndex = 613
-
-    local StatusBadge = Instance.new("Frame", HeaderRow)
-    StatusBadge.Size = UDim2.new(0, 95, 1, 0)
-    StatusBadge.AnchorPoint = Vector2.new(1, 0)
-    StatusBadge.Position = UDim2.new(1, 0, 0, 0)
-    StatusBadge.BackgroundColor3 = Color3.fromRGB(20, 28, 24)
-    StatusBadge.BackgroundTransparency = 0.3
-    StatusBadge.BorderSizePixel = 0
-    StatusBadge.ZIndex = 612
-    mkCorner(StatusBadge, 14)
-    local StatusStroke = mkStroke(StatusBadge, Color3.fromRGB(60, 210, 110), 1, 0.4)
-
-    local StatusLbl = Instance.new("TextLabel", StatusBadge)
-    StatusLbl.Size = UDim2.new(1, 0, 1, 0)
-    StatusLbl.BackgroundTransparency = 1
-    StatusLbl.Text = "● VERIFIED"
-    StatusLbl.TextColor3 = Color3.fromRGB(60, 210, 110)
-    StatusLbl.Font = Enum.Font.GothamBold
-    StatusLbl.TextSize = 10
-    StatusLbl.ZIndex = 613
-
-    local AVATAR_SIZE = 108
-    local AvatarWrap = Instance.new("Frame", Card)
-    AvatarWrap.Size = UDim2.new(0, AVATAR_SIZE + 24, 0, AVATAR_SIZE + 24)
-    AvatarWrap.AnchorPoint = Vector2.new(0.5, 0)
-    AvatarWrap.Position = UDim2.new(0.5, 0, 0, 56)
-    AvatarWrap.BackgroundTransparency = 1
-    AvatarWrap.ZIndex = 612
-
-    local Shockwave = Instance.new("Frame", AvatarWrap)
-    Shockwave.Size = UDim2.new(1, 0, 1, 0)
-    Shockwave.AnchorPoint = Vector2.new(0.5, 0.5)
-    Shockwave.Position = UDim2.new(0.5, 0, 0.5, 0)
-    Shockwave.BackgroundTransparency = 1
-    Shockwave.ZIndex = 611
-    mkCorner(Shockwave, 999)
-    local SwStroke = mkStroke(Shockwave, Color3.fromRGB(192, 132, 252), 3, 0.1)
-
-    local NeonRing = Instance.new("Frame", AvatarWrap)
-    NeonRing.Size = UDim2.new(1, 0, 1, 0)
-    NeonRing.AnchorPoint = Vector2.new(0.5, 0.5)
-    NeonRing.Position = UDim2.new(0.5, 0, 0.5, 0)
-    NeonRing.BackgroundTransparency = 1
-    NeonRing.ZIndex = 612
-    mkCorner(NeonRing, 999)
-
-    local RingStroke = Instance.new("UIStroke", NeonRing)
-    RingStroke.Thickness = 2.5
-    RingStroke.Color = Color3.fromRGB(168, 85, 247)
-    RingStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-
-    local RingGrad = Instance.new("UIGradient", RingStroke)
-    RingGrad.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(240, 200, 255)),
-        ColorSequenceKeypoint.new(0.3, Color3.fromRGB(168, 85, 247)),
-        ColorSequenceKeypoint.new(0.7, Color3.fromRGB(60, 25, 100)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(240, 200, 255))
-    })
-
-    local AvatarCircle = Instance.new("Frame", AvatarWrap)
-    AvatarCircle.Size = UDim2.new(0, AVATAR_SIZE, 0, AVATAR_SIZE)
-    AvatarCircle.AnchorPoint = Vector2.new(0.5, 0.5)
-    AvatarCircle.Position = UDim2.new(0.5, 0, 0.5, 0)
-    AvatarCircle.BackgroundColor3 = Color3.fromRGB(20, 14, 34)
+    local PHOTO_SIZE = 64
+    local AvatarCircle = Instance.new("Frame", Card)
+    AvatarCircle.Name = "AvatarCircle"
+    AvatarCircle.Size = UDim2.new(0, PHOTO_SIZE, 0, PHOTO_SIZE)
+    AvatarCircle.AnchorPoint = Vector2.new(0.5, 0)
+    AvatarCircle.Position = UDim2.new(0.5, 0, 0, 24)
+    AvatarCircle.BackgroundColor3 = Color3.fromRGB(18, 15, 26)
+    AvatarCircle.BackgroundTransparency = 1
     AvatarCircle.BorderSizePixel = 0
     AvatarCircle.ClipsDescendants = true
-    AvatarCircle.ZIndex = 613
+    AvatarCircle.ZIndex = 612
     mkCorner(AvatarCircle, 999)
-    mkStroke(AvatarCircle, Color3.fromRGB(30, 20, 50), 2, 0)
+
+    local AvatarStroke = mkStroke(AvatarCircle, Color3.fromRGB(124, 58, 237), 2, 1)
 
     local AvatarImg = Instance.new("ImageLabel", AvatarCircle)
     AvatarImg.Size = UDim2.new(1, 0, 1, 0)
     AvatarImg.BackgroundTransparency = 1
+    AvatarImg.ImageTransparency = 1
     AvatarImg.ScaleType = Enum.ScaleType.Fit
-    AvatarImg.ZIndex = 614
+    AvatarImg.ZIndex = 613
     mkCorner(AvatarImg, 999)
 
     local thumbUrl = "rbxthumb://type=AvatarHeadShot&id=" .. tostring(userId) .. "&w=420&h=420"
@@ -610,177 +481,125 @@ local function CreateWelcomeScreen(screenGui, onDone)
         end)
     end)
 
-    local CheckPip = Instance.new("Frame", AvatarWrap)
-    CheckPip.Size = UDim2.new(0, 24, 0, 24)
-    CheckPip.AnchorPoint = Vector2.new(1, 1)
-    CheckPip.Position = UDim2.new(1, -4, 1, -4)
-    CheckPip.BackgroundColor3 = Color3.fromRGB(124, 58, 237)
-    CheckPip.BorderSizePixel = 0
-    CheckPip.ZIndex = 615
-    mkCorner(CheckPip, 12)
-    mkStroke(CheckPip, Color3.fromRGB(14, 10, 26), 2, 0)
-
-    local PipIcon = Instance.new("TextLabel", CheckPip)
-    PipIcon.Size = UDim2.new(1, 0, 1, 0)
-    PipIcon.BackgroundTransparency = 1
-    PipIcon.Text = "✓"
-    PipIcon.TextColor3 = Color3.fromRGB(255, 255, 255)
-    PipIcon.Font = Enum.Font.GothamBold
-    PipIcon.TextSize = 13
-    PipIcon.ZIndex = 616
-
-    local KickerLbl = Instance.new("TextLabel", Card)
-    KickerLbl.Size = UDim2.new(1, -40, 0, 16)
-    KickerLbl.Position = UDim2.new(0, 20, 0, 196)
-    KickerLbl.BackgroundTransparency = 1
-    KickerLbl.Text = "AUTHENTICATION SUCCESSFUL"
-    KickerLbl.TextColor3 = Color3.fromRGB(168, 140, 225)
-    KickerLbl.Font = Enum.Font.GothamBold
-    KickerLbl.TextSize = 10
-    KickerLbl.TextTransparency = 1
-    KickerLbl.ZIndex = 612
-
     local WelcomeLbl = Instance.new("TextLabel", Card)
     WelcomeLbl.Name = "WelcomeLbl"
-    WelcomeLbl.Size = UDim2.new(1, -40, 0, 32)
-    WelcomeLbl.Position = UDim2.new(0, 20, 0, 214)
+    WelcomeLbl.Size = UDim2.new(1, -20, 0, 22)
+    WelcomeLbl.AnchorPoint = Vector2.new(0.5, 0)
+    WelcomeLbl.Position = UDim2.new(0.5, 0, 0, 100)
     WelcomeLbl.BackgroundTransparency = 1
-    WelcomeLbl.RichText = true
-    WelcomeLbl.Text = 'Welcome, <font color="rgb(216,180,254)">' .. playerNick .. '</font> to axion'
-    WelcomeLbl.TextColor3 = Color3.fromRGB(245, 245, 255)
+    WelcomeLbl.Text = "Welcome"
+    WelcomeLbl.TextColor3 = Color3.fromRGB(240, 240, 250)
     WelcomeLbl.Font = Enum.Font.GothamBold
-    WelcomeLbl.TextSize = 22
+    WelcomeLbl.TextSize = 18
     WelcomeLbl.TextTransparency = 1
     WelcomeLbl.ZIndex = 612
 
-    local UserSub = Instance.new("TextLabel", Card)
-    UserSub.Size = UDim2.new(1, -40, 0, 16)
-    UserSub.Position = UDim2.new(0, 20, 0, 248)
-    UserSub.BackgroundTransparency = 1
-    UserSub.Text = "@" .. playerUser .. "  •  ID: " .. tostring(userId) .. "  •  Bypass Active"
-    UserSub.TextColor3 = Color3.fromRGB(130, 120, 155)
-    UserSub.Font = Enum.Font.GothamMedium
-    UserSub.TextSize = 11
-    UserSub.TextTransparency = 1
-    UserSub.ZIndex = 612
+    local NickLbl = Instance.new("TextLabel", Card)
+    NickLbl.Name = "NickLbl"
+    NickLbl.Size = UDim2.new(1, -20, 0, 18)
+    NickLbl.AnchorPoint = Vector2.new(0.5, 0)
+    NickLbl.Position = UDim2.new(0.5, 0, 0, 124)
+    NickLbl.BackgroundTransparency = 1
+    NickLbl.Text = playerNick
+    NickLbl.TextColor3 = Color3.fromRGB(165, 85, 255)
+    NickLbl.Font = Enum.Font.GothamMedium
+    NickLbl.TextSize = 13
+    NickLbl.TextTransparency = 1
+    NickLbl.ZIndex = 612
 
-    local BarTrack = Instance.new("Frame", Card)
-    BarTrack.Size = UDim2.new(0, 360, 0, 4)
-    BarTrack.AnchorPoint = Vector2.new(0.5, 0)
-    BarTrack.Position = UDim2.new(0.5, 0, 0, 282)
-    BarTrack.BackgroundColor3 = Color3.fromRGB(28, 20, 48)
-    BarTrack.BackgroundTransparency = 0.2
-    BarTrack.BorderSizePixel = 0
-    BarTrack.ZIndex = 612
-    mkCorner(BarTrack, 2)
+    local StatusLbl = Instance.new("TextLabel", Card)
+    StatusLbl.Name = "StatusLbl"
+    StatusLbl.Size = UDim2.new(1, -20, 0, 16)
+    StatusLbl.AnchorPoint = Vector2.new(0.5, 0)
+    StatusLbl.Position = UDim2.new(0.5, 0, 0, 146)
+    StatusLbl.BackgroundTransparency = 1
+    StatusLbl.Text = "Ready to load"
+    StatusLbl.TextColor3 = Color3.fromRGB(60, 210, 110)
+    StatusLbl.Font = Enum.Font.Gotham
+    StatusLbl.TextSize = 11
+    StatusLbl.TextTransparency = 1
+    StatusLbl.ZIndex = 612
 
-    local BarFill = Instance.new("Frame", BarTrack)
-    BarFill.Size = UDim2.new(0, 0, 1, 0)
-    BarFill.BackgroundColor3 = Color3.fromRGB(168, 85, 247)
-    BarFill.BorderSizePixel = 0
-    BarFill.ZIndex = 613
-    mkCorner(BarFill, 2)
+    local LoadBtn = Instance.new("Frame", Card)
+    LoadBtn.Name = "LoadBtn"
+    LoadBtn.Size = UDim2.new(1, -32, 0, 40)
+    LoadBtn.AnchorPoint = Vector2.new(0.5, 1)
+    LoadBtn.Position = UDim2.new(0.5, 0, 1, -16)
+    LoadBtn.BackgroundColor3 = Color3.fromRGB(110, 140, 245)
+    LoadBtn.BackgroundTransparency = 1
+    LoadBtn.BorderSizePixel = 0
+    LoadBtn.ZIndex = 612
+    mkCorner(LoadBtn, 12)
 
-    local FillGrad = Instance.new("UIGradient", BarFill)
-    FillGrad.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(124, 58, 237)),
-        ColorSequenceKeypoint.new(0.7, Color3.fromRGB(216, 180, 254)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 255, 255))
+    local BtnGrad = Instance.new("UIGradient", LoadBtn)
+    BtnGrad.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(115, 150, 250)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(124, 75, 245))
     })
 
-    local StepStatusLbl = Instance.new("TextLabel", Card)
-    StepStatusLbl.Size = UDim2.new(1, -40, 0, 20)
-    StepStatusLbl.Position = UDim2.new(0, 20, 0, 294)
-    StepStatusLbl.BackgroundTransparency = 1
-    StepStatusLbl.Text = "Initializing security bypass..."
-    StepStatusLbl.TextColor3 = Color3.fromRGB(180, 150, 235)
-    StepStatusLbl.Font = Enum.Font.GothamMedium
-    StepStatusLbl.TextSize = 11
-    StepStatusLbl.TextTransparency = 1
-    StepStatusLbl.ZIndex = 612
+    local BtnText = Instance.new("TextLabel", LoadBtn)
+    BtnText.Size = UDim2.new(1, 0, 1, 0)
+    BtnText.BackgroundTransparency = 1
+    BtnText.Text = "Loading..."
+    BtnText.TextColor3 = Color3.fromRGB(255, 255, 255)
+    BtnText.Font = Enum.Font.GothamBold
+    BtnText.TextSize = 13
+    BtnText.TextTransparency = 1
+    BtnText.ZIndex = 613
 
-    local rotConn
-    rotConn = RunService.Heartbeat:Connect(function(dt)
-        if not RingGrad or not RingGrad.Parent then
-            if rotConn then rotConn:Disconnect() end
-            return
-        end
-        RingGrad.Rotation = (RingGrad.Rotation + dt * 170) % 360
-    end)
-
-    local inTi = TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
-    TweenService:Create(FullBackdrop, inTi, {BackgroundTransparency = 0}):Play()
-    TweenService:Create(Nebula1, inTi, {ImageTransparency = 0.6}):Play()
-    TweenService:Create(Nebula2, inTi, {ImageTransparency = 0.7}):Play()
-
-    TweenService:Create(Card, TweenInfo.new(0.55, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+    local inTi = TweenInfo.new(0.38, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
+    TweenService:Create(Backdrop, inTi, {BackgroundTransparency = 0.55}):Play()
+    TweenService:Create(Card, TweenInfo.new(0.42, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
         Position = UDim2.new(0.5, 0, 0.5, 0),
-        BackgroundTransparency = 0.08
+        BackgroundTransparency = 0
     }):Play()
-    TweenService:Create(CardScale, TweenInfo.new(0.55, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+    TweenService:Create(CardScale, TweenInfo.new(0.42, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
         Scale = 1.0
     }):Play()
     TweenService:Create(CardStroke, inTi, {Transparency = 0}):Play()
-    TweenService:Create(CardShadow, inTi, {ImageTransparency = 0.4}):Play()
+    TweenService:Create(CardShadow, inTi, {ImageTransparency = 0.55}):Play()
+    TweenService:Create(AvatarCircle, inTi, {BackgroundTransparency = 0}):Play()
+    TweenService:Create(AvatarStroke, inTi, {Transparency = 0}):Play()
+    TweenService:Create(AvatarImg, inTi, {ImageTransparency = 0}):Play()
+    TweenService:Create(WelcomeLbl, inTi, {TextTransparency = 0}):Play()
+    TweenService:Create(NickLbl, inTi, {TextTransparency = 0}):Play()
+    TweenService:Create(StatusLbl, inTi, {TextTransparency = 0}):Play()
+    TweenService:Create(LoadBtn, inTi, {BackgroundTransparency = 0}):Play()
+    TweenService:Create(BtnText, inTi, {TextTransparency = 0}):Play()
 
-    task.delay(0.1, function()
-        TweenService:Create(Shockwave, TweenInfo.new(0.75, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
-            Size = UDim2.new(1, 80, 1, 80)
-        }):Play()
-        TweenService:Create(SwStroke, TweenInfo.new(0.75, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
-            Transparency = 1
-        }):Play()
-    end)
-
-    task.delay(0.18, function()
-        TweenService:Create(KickerLbl, inTi, {TextTransparency = 0}):Play()
-        TweenService:Create(WelcomeLbl, inTi, {TextTransparency = 0}):Play()
-        TweenService:Create(UserSub, inTi, {TextTransparency = 0}):Play()
-        TweenService:Create(StepStatusLbl, inTi, {TextTransparency = 0}):Play()
-    end)
-
-    TweenService:Create(BarFill, TweenInfo.new(1.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-        Size = UDim2.new(1, 0, 1, 0)
-    }):Play()
-
-    task.delay(0.45, function()
-        if StepStatusLbl and StepStatusLbl.Parent then
-            StepStatusLbl.Text = "Synchronizing Axion core modules..."
+    local loadingRunning = true
+    task.spawn(function()
+        local dots = {"Loading.", "Loading..", "Loading..."}
+        local i = 1
+        while loadingRunning and BtnText and BtnText.Parent do
+            BtnText.Text = dots[i]
+            i = (i % #dots) + 1
+            task.wait(0.3)
         end
     end)
 
-    task.delay(0.95, function()
-        if StepStatusLbl and StepStatusLbl.Parent then
-            StepStatusLbl.Text = "All systems operational • Welcome!"
-            StepStatusLbl.TextColor3 = Color3.fromRGB(60, 210, 110)
-        end
-    end)
+    task.wait(1.6)
+    loadingRunning = false
 
-    task.wait(1.75)
-
-    if rotConn then rotConn:Disconnect() end
-
-    local outTi = TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+    local outTi = TweenInfo.new(0.28, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+    TweenService:Create(Backdrop, outTi, {BackgroundTransparency = 1}):Play()
     TweenService:Create(Card, outTi, {
-        Position = UDim2.new(0.5, 0, 0.47, 0),
+        Position = UDim2.new(0.5, 0, 0.5, -12),
         BackgroundTransparency = 1
     }):Play()
-    TweenService:Create(CardScale, outTi, {Scale = 1.05}):Play()
+    TweenService:Create(CardScale, outTi, {Scale = 0.9}):Play()
     TweenService:Create(CardStroke, outTi, {Transparency = 1}):Play()
     TweenService:Create(CardShadow, outTi, {ImageTransparency = 1}):Play()
-    TweenService:Create(FullBackdrop, outTi, {BackgroundTransparency = 1}):Play()
-    TweenService:Create(Nebula1, outTi, {ImageTransparency = 1}):Play()
-    TweenService:Create(Nebula2, outTi, {ImageTransparency = 1}):Play()
+    TweenService:Create(AvatarCircle, outTi, {BackgroundTransparency = 1}):Play()
+    TweenService:Create(AvatarStroke, outTi, {Transparency = 1}):Play()
+    TweenService:Create(AvatarImg, outTi, {ImageTransparency = 1}):Play()
+    TweenService:Create(WelcomeLbl, outTi, {TextTransparency = 1}):Play()
+    TweenService:Create(NickLbl, outTi, {TextTransparency = 1}):Play()
+    TweenService:Create(StatusLbl, outTi, {TextTransparency = 1}):Play()
+    TweenService:Create(LoadBtn, outTi, {BackgroundTransparency = 1}):Play()
+    TweenService:Create(BtnText, outTi, {TextTransparency = 1}):Play()
 
-    for _, desc in ipairs(Card:GetDescendants()) do
-        if desc:IsA("TextLabel") then
-            TweenService:Create(desc, TweenInfo.new(0.25), {TextTransparency = 1}):Play()
-        elseif desc:IsA("ImageLabel") then
-            TweenService:Create(desc, TweenInfo.new(0.25), {ImageTransparency = 1}):Play()
-        end
-    end
-
-    task.wait(0.38)
+    task.wait(0.3)
     WelcomeGui:Destroy()
     onDone()
 end
