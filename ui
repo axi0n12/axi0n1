@@ -1,4 +1,4 @@
--- 4.1
+-- 4.2
 local KraviX = {}
 
 local TweenService     = game:GetService("TweenService")
@@ -388,6 +388,184 @@ local function buildAscii(text)
     return table.concat(lines, "\n")
 end
 
+local function CreateWelcomeScreen(screenGui, onDone)
+    local playerNick = (LocalPlayer and LocalPlayer.Name) or "User"
+    local userId = (LocalPlayer and LocalPlayer.UserId) or 1
+
+    local WelcomeFrame = Instance.new("Frame")
+    WelcomeFrame.Name = "AxionWelcomeScreen"
+    WelcomeFrame.Size = UDim2.new(1, 0, 1, 0)
+    WelcomeFrame.Position = UDim2.new(0, 0, 0, 0)
+    WelcomeFrame.BackgroundColor3 = Color3.fromRGB(11, 7, 20)
+    WelcomeFrame.BackgroundTransparency = 1
+    WelcomeFrame.BorderSizePixel = 0
+    WelcomeFrame.ZIndex = 600
+    WelcomeFrame.ClipsDescendants = true
+    WelcomeFrame.Parent = screenGui
+
+    local BgGradient = Instance.new("UIGradient", WelcomeFrame)
+    BgGradient.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(24, 12, 44)),
+        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(11, 7, 20)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(6, 4, 12))
+    })
+    BgGradient.Rotation = 45
+
+    local RadialGlow = Instance.new("ImageLabel", WelcomeFrame)
+    RadialGlow.Name = "RadialGlow"
+    RadialGlow.Size = UDim2.new(0, 650, 0, 650)
+    RadialGlow.AnchorPoint = Vector2.new(0.5, 0.5)
+    RadialGlow.Position = UDim2.new(0.5, 0, 0.5, 0)
+    RadialGlow.BackgroundTransparency = 1
+    RadialGlow.Image = "rbxassetid://6015897843"
+    RadialGlow.ImageColor3 = Color3.fromRGB(124, 58, 237)
+    RadialGlow.ImageTransparency = 1
+    RadialGlow.ZIndex = 601
+
+    StartSnow(WelcomeFrame)
+
+    local CenterWrap = Instance.new("Frame", WelcomeFrame)
+    CenterWrap.Name = "CenterWrap"
+    CenterWrap.Size = UDim2.new(0, 500, 0, 320)
+    CenterWrap.AnchorPoint = Vector2.new(0.5, 0.5)
+    CenterWrap.Position = UDim2.new(0.5, 0, 0.5, 20)
+    CenterWrap.BackgroundTransparency = 1
+    CenterWrap.ZIndex = 605
+
+    local AVATAR_SIZE = 120
+    local AvatarGlow = Instance.new("ImageLabel", CenterWrap)
+    AvatarGlow.Name = "AvatarGlow"
+    AvatarGlow.Size = UDim2.new(0, AVATAR_SIZE + 40, 0, AVATAR_SIZE + 40)
+    AvatarGlow.AnchorPoint = Vector2.new(0.5, 0.5)
+    AvatarGlow.Position = UDim2.new(0.5, 0, 0, AVATAR_SIZE / 2)
+    AvatarGlow.BackgroundTransparency = 1
+    AvatarGlow.Image = "rbxassetid://6015897843"
+    AvatarGlow.ImageColor3 = Color3.fromRGB(168, 85, 247)
+    AvatarGlow.ImageTransparency = 1
+    AvatarGlow.ZIndex = 606
+
+    local AvatarCircle = Instance.new("Frame", CenterWrap)
+    AvatarCircle.Name = "AvatarCircle"
+    AvatarCircle.Size = UDim2.new(0, AVATAR_SIZE, 0, AVATAR_SIZE)
+    AvatarCircle.AnchorPoint = Vector2.new(0.5, 0)
+    AvatarCircle.Position = UDim2.new(0.5, 0, 0, 0)
+    AvatarCircle.BackgroundColor3 = Color3.fromRGB(22, 14, 38)
+    AvatarCircle.BackgroundTransparency = 1
+    AvatarCircle.BorderSizePixel = 0
+    AvatarCircle.ClipsDescendants = true
+    AvatarCircle.ZIndex = 607
+
+    local CircleCorner = Instance.new("UICorner", AvatarCircle)
+    CircleCorner.CornerRadius = UDim.new(1, 0)
+
+    local CircleStroke = Instance.new("UIStroke", AvatarCircle)
+    CircleStroke.Color = Color3.fromRGB(168, 85, 247)
+    CircleStroke.Thickness = 3.5
+    CircleStroke.Transparency = 1
+    CircleStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+
+    local AvatarImg = Instance.new("ImageLabel", AvatarCircle)
+    AvatarImg.Name = "AvatarImg"
+    AvatarImg.Size = UDim2.new(1, 0, 1, 0)
+    AvatarImg.BackgroundTransparency = 1
+    AvatarImg.ImageTransparency = 1
+    AvatarImg.ScaleType = Enum.ScaleType.Fit
+    AvatarImg.ZIndex = 608
+
+    local ImgCorner = Instance.new("UICorner", AvatarImg)
+    ImgCorner.CornerRadius = UDim.new(1, 0)
+
+    local thumbUrl = "rbxthumb://type=AvatarHeadShot&id=" .. tostring(userId) .. "&w=420&h=420"
+    AvatarImg.Image = thumbUrl
+    task.spawn(function()
+        pcall(function()
+            local content, isReady = Players:GetUserThumbnailAsync(userId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size420x420)
+            if isReady and content and content ~= "" then
+                AvatarImg.Image = content
+            end
+        end)
+    end)
+
+    local WelcomeLbl = Instance.new("TextLabel", CenterWrap)
+    WelcomeLbl.Name = "WelcomeLbl"
+    WelcomeLbl.Size = UDim2.new(1, 0, 0, 38)
+    WelcomeLbl.AnchorPoint = Vector2.new(0.5, 0)
+    WelcomeLbl.Position = UDim2.new(0.5, 0, 0, AVATAR_SIZE + 22)
+    WelcomeLbl.BackgroundTransparency = 1
+    WelcomeLbl.RichText = true
+    WelcomeLbl.Text = 'Welcome, <font color="rgb(192,132,252)">' .. playerNick .. '</font> to axion'
+    WelcomeLbl.TextColor3 = Color3.fromRGB(240, 240, 252)
+    WelcomeLbl.Font = Enum.Font.GothamBold
+    WelcomeLbl.TextSize = 22
+    WelcomeLbl.TextTransparency = 1
+    WelcomeLbl.ZIndex = 609
+
+    local SubLbl = Instance.new("TextLabel", CenterWrap)
+    SubLbl.Name = "SubLbl"
+    SubLbl.Size = UDim2.new(1, 0, 0, 20)
+    SubLbl.AnchorPoint = Vector2.new(0.5, 0)
+    SubLbl.Position = UDim2.new(0.5, 0, 0, AVATAR_SIZE + 62)
+    SubLbl.BackgroundTransparency = 1
+    SubLbl.Text = "Axion Hub is ready"
+    SubLbl.TextColor3 = Color3.fromRGB(150, 140, 180)
+    SubLbl.Font = Enum.Font.GothamMedium
+    SubLbl.TextSize = 13
+    SubLbl.TextTransparency = 1
+    SubLbl.ZIndex = 609
+
+    local GlowBar = Instance.new("Frame", CenterWrap)
+    GlowBar.Name = "GlowBar"
+    GlowBar.Size = UDim2.new(0, 0, 0, 2)
+    GlowBar.AnchorPoint = Vector2.new(0.5, 0)
+    GlowBar.Position = UDim2.new(0.5, 0, 0, AVATAR_SIZE + 90)
+    GlowBar.BackgroundColor3 = Color3.fromRGB(168, 85, 247)
+    GlowBar.BackgroundTransparency = 1
+    GlowBar.BorderSizePixel = 0
+    GlowBar.ZIndex = 609
+    mkCorner(GlowBar, 2)
+
+    local BarGrad = Instance.new("UIGradient", GlowBar)
+    BarGrad.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(124, 58, 237)),
+        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(220, 160, 255)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(124, 58, 237))
+    })
+
+    local inTi = TweenInfo.new(0.35, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
+    TweenService:Create(WelcomeFrame, inTi, {BackgroundTransparency = 0}):Play()
+    TweenService:Create(RadialGlow, inTi, {ImageTransparency = 0.65}):Play()
+    TweenService:Create(CenterWrap, TweenInfo.new(0.45, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+        Position = UDim2.new(0.5, 0, 0.5, 0)
+    }):Play()
+    TweenService:Create(AvatarCircle, inTi, {BackgroundTransparency = 0}):Play()
+    TweenService:Create(CircleStroke, inTi, {Transparency = 0}):Play()
+    TweenService:Create(AvatarGlow, inTi, {ImageTransparency = 0.4}):Play()
+    TweenService:Create(AvatarImg, inTi, {ImageTransparency = 0}):Play()
+    TweenService:Create(WelcomeLbl, inTi, {TextTransparency = 0}):Play()
+    TweenService:Create(SubLbl, inTi, {TextTransparency = 0.2}):Play()
+    TweenService:Create(GlowBar, inTi, {BackgroundTransparency = 0}):Play()
+    TweenService:Create(GlowBar, TweenInfo.new(1.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+        Size = UDim2.new(0, 160, 0, 2)
+    }):Play()
+
+    task.wait(1.4)
+
+    local outTi = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+    TweenService:Create(WelcomeFrame, outTi, {BackgroundTransparency = 1}):Play()
+    TweenService:Create(RadialGlow, outTi, {ImageTransparency = 1}):Play()
+    TweenService:Create(AvatarCircle, outTi, {BackgroundTransparency = 1}):Play()
+    TweenService:Create(CircleStroke, outTi, {Transparency = 1}):Play()
+    TweenService:Create(AvatarGlow, outTi, {ImageTransparency = 1}):Play()
+    TweenService:Create(AvatarImg, outTi, {ImageTransparency = 1}):Play()
+    TweenService:Create(WelcomeLbl, outTi, {TextTransparency = 1}):Play()
+    TweenService:Create(SubLbl, outTi, {TextTransparency = 1}):Play()
+    TweenService:Create(GlowBar, outTi, {BackgroundTransparency = 1}):Play()
+
+    task.wait(0.32)
+    WelcomeFrame:Destroy()
+    onDone()
+end
+
 local function CreateLoader(screenGui, onDone, scriptName)
     local titleText = scriptName or "AXION"
     if titleText == "" or titleText:lower() == "script" or titleText:lower() == "mooze" or titleText:lower() == "kravix" then
@@ -399,15 +577,12 @@ local function CreateLoader(screenGui, onDone, scriptName)
         topBg = Color3.fromRGB(13, 13, 13),
         fg = Color3.fromRGB(220, 220, 220),
         activeColor = Color3.fromRGB(165, 85, 255),
-        loadDuration = 1.0 * TWEEN_SPD,
-        blinkSpeed = 0.4,
-        loadWait = 1.0 * TWEEN_SPD,
-        fadeTime = 0.4 * TWEEN_SPD,
+        fadeTime = 0.22,
     }
 
-    local WIN_W, WIN_H = 670, 350
+    local WIN_W, WIN_H = 670, 360
     local Loader = Instance.new("Frame", screenGui)
-    Loader.Name = "mooze_terminal_window"
+    Loader.Name = "axion_terminal_window"
     Loader.Size = UDim2.new(0, WIN_W, 0, WIN_H)
     Loader.Position = UDim2.new(0.5, -WIN_W/2, 0.5, -WIN_H/2)
     Loader.BackgroundColor3 = CFG.bg
@@ -466,6 +641,8 @@ local function CreateLoader(screenGui, onDone, scriptName)
     TitleLbl.TextXAlignment = Enum.TextXAlignment.Left
     TitleLbl.ZIndex = 502
 
+    local isAborted = false
+
     local CloseBtn = Instance.new("TextButton", TopBar)
     CloseBtn.Size = UDim2.new(0, 24, 1, 0)
     CloseBtn.Position = UDim2.new(1, -24, 0, 0)
@@ -477,7 +654,10 @@ local function CreateLoader(screenGui, onDone, scriptName)
     CloseBtn.ZIndex = 502
     CloseBtn.MouseEnter:Connect(function() CloseBtn.TextColor3 = CFG.activeColor end)
     CloseBtn.MouseLeave:Connect(function() CloseBtn.TextColor3 = Color3.fromRGB(200, 200, 200) end)
-    CloseBtn.MouseButton1Click:Connect(function() Loader:Destroy() end)
+    CloseBtn.MouseButton1Click:Connect(function()
+        isAborted = true
+        Loader:Destroy()
+    end)
 
     local MinBtn = Instance.new("TextButton", TopBar)
     MinBtn.Size = UDim2.new(0, 24, 1, 0)
@@ -498,81 +678,80 @@ local function CreateLoader(screenGui, onDone, scriptName)
     Body.ZIndex = 501
 
     local ascii = Instance.new("TextLabel", Body)
-    ascii.Size = UDim2.new(1, -40, 0, 170)
-    ascii.Position = UDim2.new(0, 20, 0, 20)
+    ascii.Size = UDim2.new(1, -40, 0, 110)
+    ascii.Position = UDim2.new(0, 20, 0, 12)
     ascii.BackgroundTransparency = 1
     ascii.Text = ""
     ascii.TextColor3 = CFG.fg
     ascii.Font = Enum.Font.Code
-    ascii.TextSize = 13
+    ascii.TextSize = 12
     ascii.TextXAlignment = Enum.TextXAlignment.Left
     ascii.TextYAlignment = Enum.TextYAlignment.Top
     ascii.TextTransparency = 0.1
     ascii.TextWrapped = false
     ascii.ZIndex = 502
 
-    local prompt = Instance.new("TextLabel", Body)
-    prompt.Size = UDim2.new(1, -40, 0, 25)
-    prompt.Position = UDim2.new(0, 20, 0, 210)
-    prompt.BackgroundTransparency = 1
-    prompt.RichText = true
-    prompt.Text = ""
-    prompt.TextColor3 = CFG.fg
-    prompt.Font = Enum.Font.Code
-    prompt.TextSize = 14
-    prompt.TextXAlignment = Enum.TextXAlignment.Left
-    prompt.TextTransparency = 0.1
-    prompt.ZIndex = 502
+    local ConsoleContainer = Instance.new("Frame", Body)
+    ConsoleContainer.Name = "ConsoleLogs"
+    ConsoleContainer.Size = UDim2.new(1, -40, 0, 195)
+    ConsoleContainer.Position = UDim2.new(0, 20, 0, 128)
+    ConsoleContainer.BackgroundTransparency = 1
+    ConsoleContainer.ZIndex = 502
 
-    local status = Instance.new("TextLabel", Body)
-    status.Size = UDim2.new(1, -40, 0, 25)
-    status.Position = UDim2.new(0, 20, 0, 240)
-    status.BackgroundTransparency = 1
-    status.Text = ""
-    status.TextColor3 = Color3.fromRGB(170, 130, 240)
-    status.Font = Enum.Font.Code
-    status.TextSize = 13
-    status.TextXAlignment = Enum.TextXAlignment.Left
-    status.TextTransparency = 0.2
-    status.ZIndex = 502
-
-    local cursorRunning = true
-    task.spawn(function()
-        local showCursor = true
-        while cursorRunning and prompt and prompt.Parent do
-            showCursor = not showCursor
-            prompt.Text = '<font color="rgb(180,180,180)">[</font><font color="rgb(165,85,255)">-</font><font color="rgb(180,180,180)">]</font> <font color="rgb(220,220,220)">Key Verified!</font> ' .. (showCursor and "_" or " ")
-            task.wait(CFG.blinkSpeed)
-        end
-    end)
-
-    local function typeText(text, duration)
-        local speed = math.max(0.005, duration / math.max(1, #text))
-        for i = 1, #text do
-            local slice = text:sub(1, i)
-            ascii.Text = slice
-            task.wait(speed)
-        end
-    end
+    local ConsoleList = Instance.new("UIListLayout", ConsoleContainer)
+    ConsoleList.FillDirection = Enum.FillDirection.Vertical
+    ConsoleList.SortOrder = Enum.SortOrder.LayoutOrder
+    ConsoleList.Padding = UDim.new(0, 5)
 
     task.spawn(function()
         local asciiWord = titleText:upper()
         if ASC[asciiWord:sub(1, 1)] == nil then asciiWord = "AXION" end
-        typeText(buildAscii(asciiWord), CFG.loadDuration)
-        task.wait(0.2 * TWEEN_SPD)
+        local fullAscii = buildAscii(asciiWord)
 
-        local base = "> loading " .. string.lower(asciiWord)
-        status.Text = base
-        for i = 1, 3 do
-            task.wait(0.25 * TWEEN_SPD)
-            status.Text = base .. string.rep(".", i)
+        local step = math.max(1, math.floor(#fullAscii / 12))
+        for i = 1, #fullAscii, step do
+            if isAborted or not Loader.Parent then return end
+            ascii.Text = fullAscii:sub(1, i)
+            task.wait(0.012)
+        end
+        ascii.Text = fullAscii
+
+        task.wait(0.08)
+
+        local playerNick = (LocalPlayer and LocalPlayer.Name) or "User"
+        local playerUserId = (LocalPlayer and LocalPlayer.UserId) or 0
+
+        local logItems = {
+            { tag = "[+]", col = "rgb(165,85,255)", text = '<font color="rgb(220,220,220)">Key Verified:</font> <font color="rgb(60,210,110)">Valid License [Lifetime]</font>' },
+            { tag = "[+]", col = "rgb(165,85,255)", text = '<font color="rgb(220,220,220)">User:</font> <font color="rgb(192,132,252)">' .. playerNick .. '</font> <font color="rgb(120,120,130)">(ID: ' .. tostring(playerUserId) .. ')</font>' },
+            { tag = "[+]", col = "rgb(165,85,255)", text = '<font color="rgb(220,220,220)">Bypass:</font> <font color="rgb(60,210,110)">Working</font> <font color="rgb(120,120,130)">[100% Secure]</font>' },
+            { tag = "[+]", col = "rgb(165,85,255)", text = '<font color="rgb(220,220,220)">Axion:</font> <font color="rgb(60,210,110)">ON</font>' },
+            { tag = "[+]", col = "rgb(165,85,255)", text = '<font color="rgb(220,220,220)">Modules:</font> <font color="rgb(165,85,255)">Core Engine Initialized</font>' },
+            { tag = "[✓]", col = "rgb(60,210,110)", text = '<font color="rgb(240,240,240)">Ready! Launching Axion...</font>' },
+        }
+
+        local labels = {}
+        for idx, item in ipairs(logItems) do
+            if isAborted or not Loader.Parent then return end
+
+            local lineLbl = Instance.new("TextLabel", ConsoleContainer)
+            lineLbl.Size = UDim2.new(1, 0, 0, 20)
+            lineLbl.BackgroundTransparency = 1
+            lineLbl.RichText = true
+            lineLbl.Font = Enum.Font.Code
+            lineLbl.TextSize = 13
+            lineLbl.TextXAlignment = Enum.TextXAlignment.Left
+            lineLbl.TextTransparency = 0
+            lineLbl.ZIndex = 503
+            lineLbl.LayoutOrder = idx
+            lineLbl.Text = string.format('<font color="%s">%s</font> %s', item.col, item.tag, item.text)
+            table.insert(labels, lineLbl)
+
+            task.wait(0.09)
         end
 
-        task.wait(0.3 * TWEEN_SPD)
-        status.Text = "> loaded " .. string.lower(asciiWord)
-        task.wait(0.5 * TWEEN_SPD)
-
-        cursorRunning = false
+        task.wait(0.22)
+        if isAborted or not Loader.Parent then return end
 
         local ti = TweenInfo.new(CFG.fadeTime, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
         TweenService:Create(Loader, ti, {BackgroundTransparency = 1}):Play()
@@ -583,12 +762,16 @@ local function CreateLoader(screenGui, onDone, scriptName)
         TweenService:Create(CloseBtn, ti, {TextTransparency = 1}):Play()
         TweenService:Create(MinBtn, ti, {TextTransparency = 1}):Play()
         TweenService:Create(ascii, ti, {TextTransparency = 1}):Play()
-        TweenService:Create(prompt, ti, {TextTransparency = 1}):Play()
-        TweenService:Create(status, ti, {TextTransparency = 1}):Play()
+        for _, lbl in ipairs(labels) do
+            TweenService:Create(lbl, ti, {TextTransparency = 1}):Play()
+        end
 
         task.wait(CFG.fadeTime + 0.05)
         Loader:Destroy()
-        onDone()
+
+        if isAborted then return end
+
+        CreateWelcomeScreen(screenGui, onDone)
     end)
 end
 
@@ -3021,11 +3204,11 @@ function KraviX:CreateWindow(config)
         CreateLoader(ScreenGui, function()
             if useSound then PlaySound(SOUND_OPEN) end
             ShowWindow()
-            CreateNotification("KraviX","Carregado com sucesso!",3,"success")
-        end)
+            CreateNotification("Axion","Carregado com sucesso!",3,"success")
+        end, config.Name)
     else
         ShowWindow()
-        CreateNotification("KraviX","Carregado com sucesso!",3,"success")
+        CreateNotification("Axion","Carregado com sucesso!",3,"success")
     end
     function Window:CreateTab(name, icon)
         local Tab      = {}
