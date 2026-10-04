@@ -1,4 +1,4 @@
--- 4.2
+-- 4.1
 local KraviX = {}
 
 local TweenService     = game:GetService("TweenService")
@@ -392,20 +392,35 @@ local function CreateWelcomeScreen(screenGui, onDone)
     local playerNick = (LocalPlayer and LocalPlayer.Name) or "User"
     local userId = (LocalPlayer and LocalPlayer.UserId) or 1
 
-    local WelcomeFrame = Instance.new("Frame")
+    local WelcomeGui = Instance.new("ScreenGui")
+    WelcomeGui.Name = "AxionWelcomeGui"
+    WelcomeGui.IgnoreGuiInset = true
+    WelcomeGui.ResetOnSpawn = false
+    WelcomeGui.DisplayOrder = 999999
+    WelcomeGui.ZIndexBehavior = Enum.ZIndexBehavior.Global
+    pcall(function() WelcomeGui.ScreenInsets = Enum.ScreenInsets.None end)
+    pcall(function() protect(WelcomeGui) end)
+    if not WelcomeGui.Parent then
+        if screenGui and screenGui.Parent then
+            WelcomeGui.Parent = screenGui.Parent
+        else
+            pcall(function() WelcomeGui.Parent = CoreGui end)
+        end
+    end
+
+    local WelcomeFrame = Instance.new("Frame", WelcomeGui)
     WelcomeFrame.Name = "AxionWelcomeScreen"
-    WelcomeFrame.Size = UDim2.new(1, 0, 1, 0)
-    WelcomeFrame.Position = UDim2.new(0, 0, 0, 0)
+    WelcomeFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+    WelcomeFrame.Size = UDim2.new(1, 200, 1, 200)
+    WelcomeFrame.Position = UDim2.new(0.5, 0, 1.5, 0)
     WelcomeFrame.BackgroundColor3 = Color3.fromRGB(11, 7, 20)
-    WelcomeFrame.BackgroundTransparency = 1
     WelcomeFrame.BorderSizePixel = 0
     WelcomeFrame.ZIndex = 600
     WelcomeFrame.ClipsDescendants = true
-    WelcomeFrame.Parent = screenGui
 
     local BgGradient = Instance.new("UIGradient", WelcomeFrame)
     BgGradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(24, 12, 44)),
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(26, 12, 48)),
         ColorSequenceKeypoint.new(0.5, Color3.fromRGB(11, 7, 20)),
         ColorSequenceKeypoint.new(1, Color3.fromRGB(6, 4, 12))
     })
@@ -413,35 +428,53 @@ local function CreateWelcomeScreen(screenGui, onDone)
 
     local RadialGlow = Instance.new("ImageLabel", WelcomeFrame)
     RadialGlow.Name = "RadialGlow"
-    RadialGlow.Size = UDim2.new(0, 650, 0, 650)
+    RadialGlow.Size = UDim2.new(0, 850, 0, 850)
     RadialGlow.AnchorPoint = Vector2.new(0.5, 0.5)
     RadialGlow.Position = UDim2.new(0.5, 0, 0.5, 0)
     RadialGlow.BackgroundTransparency = 1
     RadialGlow.Image = "rbxassetid://6015897843"
     RadialGlow.ImageColor3 = Color3.fromRGB(124, 58, 237)
-    RadialGlow.ImageTransparency = 1
+    RadialGlow.ImageTransparency = 0.65
     RadialGlow.ZIndex = 601
 
     StartSnow(WelcomeFrame)
 
     local CenterWrap = Instance.new("Frame", WelcomeFrame)
     CenterWrap.Name = "CenterWrap"
-    CenterWrap.Size = UDim2.new(0, 500, 0, 320)
+    CenterWrap.Size = UDim2.new(0, 520, 0, 340)
     CenterWrap.AnchorPoint = Vector2.new(0.5, 0.5)
-    CenterWrap.Position = UDim2.new(0.5, 0, 0.5, 20)
+    CenterWrap.Position = UDim2.new(0.5, 0, 0.5, 40)
     CenterWrap.BackgroundTransparency = 1
     CenterWrap.ZIndex = 605
 
-    local AVATAR_SIZE = 120
+    local CenterScale = Instance.new("UIScale", CenterWrap)
+    CenterScale.Scale = 0.35
+
+    local AVATAR_SIZE = 130
+
+    local Shockwave = Instance.new("Frame", CenterWrap)
+    Shockwave.Name = "Shockwave"
+    Shockwave.Size = UDim2.new(0, AVATAR_SIZE, 0, AVATAR_SIZE)
+    Shockwave.AnchorPoint = Vector2.new(0.5, 0.5)
+    Shockwave.Position = UDim2.new(0.5, 0, 0, AVATAR_SIZE / 2)
+    Shockwave.BackgroundTransparency = 1
+    Shockwave.ZIndex = 605
+    local SwCorner = Instance.new("UICorner", Shockwave)
+    SwCorner.CornerRadius = UDim.new(1, 0)
+    local SwStroke = Instance.new("UIStroke", Shockwave)
+    SwStroke.Color = Color3.fromRGB(192, 132, 252)
+    SwStroke.Thickness = 3
+    SwStroke.Transparency = 0.2
+
     local AvatarGlow = Instance.new("ImageLabel", CenterWrap)
     AvatarGlow.Name = "AvatarGlow"
-    AvatarGlow.Size = UDim2.new(0, AVATAR_SIZE + 40, 0, AVATAR_SIZE + 40)
+    AvatarGlow.Size = UDim2.new(0, AVATAR_SIZE + 50, 0, AVATAR_SIZE + 50)
     AvatarGlow.AnchorPoint = Vector2.new(0.5, 0.5)
     AvatarGlow.Position = UDim2.new(0.5, 0, 0, AVATAR_SIZE / 2)
     AvatarGlow.BackgroundTransparency = 1
     AvatarGlow.Image = "rbxassetid://6015897843"
     AvatarGlow.ImageColor3 = Color3.fromRGB(168, 85, 247)
-    AvatarGlow.ImageTransparency = 1
+    AvatarGlow.ImageTransparency = 0.35
     AvatarGlow.ZIndex = 606
 
     local AvatarCircle = Instance.new("Frame", CenterWrap)
@@ -450,7 +483,6 @@ local function CreateWelcomeScreen(screenGui, onDone)
     AvatarCircle.AnchorPoint = Vector2.new(0.5, 0)
     AvatarCircle.Position = UDim2.new(0.5, 0, 0, 0)
     AvatarCircle.BackgroundColor3 = Color3.fromRGB(22, 14, 38)
-    AvatarCircle.BackgroundTransparency = 1
     AvatarCircle.BorderSizePixel = 0
     AvatarCircle.ClipsDescendants = true
     AvatarCircle.ZIndex = 607
@@ -460,15 +492,13 @@ local function CreateWelcomeScreen(screenGui, onDone)
 
     local CircleStroke = Instance.new("UIStroke", AvatarCircle)
     CircleStroke.Color = Color3.fromRGB(168, 85, 247)
-    CircleStroke.Thickness = 3.5
-    CircleStroke.Transparency = 1
+    CircleStroke.Thickness = 4
     CircleStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 
     local AvatarImg = Instance.new("ImageLabel", AvatarCircle)
     AvatarImg.Name = "AvatarImg"
     AvatarImg.Size = UDim2.new(1, 0, 1, 0)
     AvatarImg.BackgroundTransparency = 1
-    AvatarImg.ImageTransparency = 1
     AvatarImg.ScaleType = Enum.ScaleType.Fit
     AvatarImg.ZIndex = 608
 
@@ -488,15 +518,15 @@ local function CreateWelcomeScreen(screenGui, onDone)
 
     local WelcomeLbl = Instance.new("TextLabel", CenterWrap)
     WelcomeLbl.Name = "WelcomeLbl"
-    WelcomeLbl.Size = UDim2.new(1, 0, 0, 38)
+    WelcomeLbl.Size = UDim2.new(1, 0, 0, 40)
     WelcomeLbl.AnchorPoint = Vector2.new(0.5, 0)
-    WelcomeLbl.Position = UDim2.new(0.5, 0, 0, AVATAR_SIZE + 22)
+    WelcomeLbl.Position = UDim2.new(0.5, 0, 0, AVATAR_SIZE + 24)
     WelcomeLbl.BackgroundTransparency = 1
     WelcomeLbl.RichText = true
     WelcomeLbl.Text = 'Welcome, <font color="rgb(192,132,252)">' .. playerNick .. '</font> to axion'
-    WelcomeLbl.TextColor3 = Color3.fromRGB(240, 240, 252)
+    WelcomeLbl.TextColor3 = Color3.fromRGB(245, 245, 255)
     WelcomeLbl.Font = Enum.Font.GothamBold
-    WelcomeLbl.TextSize = 22
+    WelcomeLbl.TextSize = 24
     WelcomeLbl.TextTransparency = 1
     WelcomeLbl.ZIndex = 609
 
@@ -504,10 +534,10 @@ local function CreateWelcomeScreen(screenGui, onDone)
     SubLbl.Name = "SubLbl"
     SubLbl.Size = UDim2.new(1, 0, 0, 20)
     SubLbl.AnchorPoint = Vector2.new(0.5, 0)
-    SubLbl.Position = UDim2.new(0.5, 0, 0, AVATAR_SIZE + 62)
+    SubLbl.Position = UDim2.new(0.5, 0, 0, AVATAR_SIZE + 68)
     SubLbl.BackgroundTransparency = 1
     SubLbl.Text = "Axion Hub is ready"
-    SubLbl.TextColor3 = Color3.fromRGB(150, 140, 180)
+    SubLbl.TextColor3 = Color3.fromRGB(160, 150, 190)
     SubLbl.Font = Enum.Font.GothamMedium
     SubLbl.TextSize = 13
     SubLbl.TextTransparency = 1
@@ -515,11 +545,10 @@ local function CreateWelcomeScreen(screenGui, onDone)
 
     local GlowBar = Instance.new("Frame", CenterWrap)
     GlowBar.Name = "GlowBar"
-    GlowBar.Size = UDim2.new(0, 0, 0, 2)
+    GlowBar.Size = UDim2.new(0, 0, 0, 3)
     GlowBar.AnchorPoint = Vector2.new(0.5, 0)
-    GlowBar.Position = UDim2.new(0.5, 0, 0, AVATAR_SIZE + 90)
+    GlowBar.Position = UDim2.new(0.5, 0, 0, AVATAR_SIZE + 98)
     GlowBar.BackgroundColor3 = Color3.fromRGB(168, 85, 247)
-    GlowBar.BackgroundTransparency = 1
     GlowBar.BorderSizePixel = 0
     GlowBar.ZIndex = 609
     mkCorner(GlowBar, 2)
@@ -531,38 +560,53 @@ local function CreateWelcomeScreen(screenGui, onDone)
         ColorSequenceKeypoint.new(1, Color3.fromRGB(124, 58, 237))
     })
 
-    local inTi = TweenInfo.new(0.35, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
-    TweenService:Create(WelcomeFrame, inTi, {BackgroundTransparency = 0}):Play()
-    TweenService:Create(RadialGlow, inTi, {ImageTransparency = 0.65}):Play()
-    TweenService:Create(CenterWrap, TweenInfo.new(0.45, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+    -- Animação da tela surgindo de baixo para cima cobrindo tudo
+    TweenService:Create(WelcomeFrame, TweenInfo.new(0.48, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
         Position = UDim2.new(0.5, 0, 0.5, 0)
     }):Play()
-    TweenService:Create(AvatarCircle, inTi, {BackgroundTransparency = 0}):Play()
-    TweenService:Create(CircleStroke, inTi, {Transparency = 0}):Play()
-    TweenService:Create(AvatarGlow, inTi, {ImageTransparency = 0.4}):Play()
-    TweenService:Create(AvatarImg, inTi, {ImageTransparency = 0}):Play()
-    TweenService:Create(WelcomeLbl, inTi, {TextTransparency = 0}):Play()
-    TweenService:Create(SubLbl, inTi, {TextTransparency = 0.2}):Play()
-    TweenService:Create(GlowBar, inTi, {BackgroundTransparency = 0}):Play()
-    TweenService:Create(GlowBar, TweenInfo.new(1.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-        Size = UDim2.new(0, 160, 0, 2)
+
+    TweenService:Create(CenterScale, TweenInfo.new(0.55, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+        Scale = 1.0
+    }):Play()
+    TweenService:Create(CenterWrap, TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
+        Position = UDim2.new(0.5, 0, 0.5, 0)
     }):Play()
 
-    task.wait(1.4)
+    task.delay(0.12, function()
+        TweenService:Create(Shockwave, TweenInfo.new(0.7, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
+            Size = UDim2.new(0, AVATAR_SIZE + 80, 0, AVATAR_SIZE + 80)
+        }):Play()
+        TweenService:Create(SwStroke, TweenInfo.new(0.7, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
+            Transparency = 1
+        }):Play()
+    end)
 
-    local outTi = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
-    TweenService:Create(WelcomeFrame, outTi, {BackgroundTransparency = 1}):Play()
-    TweenService:Create(RadialGlow, outTi, {ImageTransparency = 1}):Play()
-    TweenService:Create(AvatarCircle, outTi, {BackgroundTransparency = 1}):Play()
-    TweenService:Create(CircleStroke, outTi, {Transparency = 1}):Play()
-    TweenService:Create(AvatarGlow, outTi, {ImageTransparency = 1}):Play()
-    TweenService:Create(AvatarImg, outTi, {ImageTransparency = 1}):Play()
-    TweenService:Create(WelcomeLbl, outTi, {TextTransparency = 1}):Play()
-    TweenService:Create(SubLbl, outTi, {TextTransparency = 1}):Play()
-    TweenService:Create(GlowBar, outTi, {BackgroundTransparency = 1}):Play()
+    task.delay(0.15, function()
+        TweenService:Create(WelcomeLbl, TweenInfo.new(0.35, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
+            TextTransparency = 0
+        }):Play()
+        TweenService:Create(SubLbl, TweenInfo.new(0.35, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
+            TextTransparency = 0.2
+        }):Play()
+        TweenService:Create(GlowBar, TweenInfo.new(0.8, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+            Size = UDim2.new(0, 180, 0, 3)
+        }):Play()
+    end)
 
-    task.wait(0.32)
-    WelcomeFrame:Destroy()
+    task.wait(1.7)
+
+    local outTi = TweenInfo.new(0.38, Enum.EasingStyle.Quint, Enum.EasingDirection.In)
+    TweenService:Create(WelcomeFrame, outTi, {
+        Position = UDim2.new(0.5, 0, -0.6, 0)
+    }):Play()
+    TweenService:Create(CenterScale, TweenInfo.new(0.32, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+        Scale = 0.8
+    }):Play()
+    TweenService:Create(WelcomeLbl, TweenInfo.new(0.25), {TextTransparency = 1}):Play()
+    TweenService:Create(SubLbl, TweenInfo.new(0.25), {TextTransparency = 1}):Play()
+
+    task.wait(0.4)
+    WelcomeGui:Destroy()
     onDone()
 end
 
