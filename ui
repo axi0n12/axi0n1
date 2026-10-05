@@ -1,4 +1,4 @@
--- 4.1
+-- 4.2
 local KraviX = {}
 
 local TweenService     = game:GetService("TweenService")
@@ -2511,6 +2511,10 @@ function KraviX:CreateWindow(config)
     EspBoxFill:SetAttribute("RelZIndex", 3)
     EspBoxFill.Visible = false
 
+    local EspBoxFillGradient = Instance.new("UIGradient", EspBoxFill)
+    EspBoxFillGradient.Rotation = 90
+    EspBoxFillGradient.Enabled = false
+
     local HealthLine = Instance.new("Frame", EspBox)
     HealthLine.Size = UDim2.new(0, 4, 1, 0)
     HealthLine.Position = UDim2.new(0, -8, 0, 0)
@@ -2519,6 +2523,16 @@ function KraviX:CreateWindow(config)
     HealthLine.ZIndex = MiniESP.Frame.ZIndex + 5
     HealthLine:SetAttribute("RelZIndex", 5)
     mkCorner(HealthLine, 2)
+
+    local ArmorLine = Instance.new("Frame", EspBox)
+    ArmorLine.Size = UDim2.new(0, 4, 1, 0)
+    ArmorLine.Position = UDim2.new(1, 4, 0, 0)
+    ArmorLine.BackgroundColor3 = Color3.fromRGB(80, 160, 255)
+    ArmorLine.BorderSizePixel = 0
+    ArmorLine.ZIndex = MiniESP.Frame.ZIndex + 5
+    ArmorLine:SetAttribute("RelZIndex", 5)
+    ArmorLine.Visible = false
+    mkCorner(ArmorLine, 2)
 
     local NameLbl = Instance.new("TextLabel", EspBox)
     NameLbl.AnchorPoint = Vector2.new(0.5, 1)
@@ -2933,8 +2947,14 @@ function KraviX:CreateWindow(config)
         BoxFill           = false,
         BoxFillColor      = C.Accent,
         BoxFillTrans      = 0.7,
+        GradientFill      = false,
+        GradientTopColor  = Color3.fromRGB(65, 105, 205),
+        GradientBottomColor = Color3.fromRGB(15, 20, 35),
         Health            = true,
         HealthBar         = true,
+        HpColorFull       = Color3.fromRGB(0, 255, 0),
+        ArmorBar          = false,
+        ArmorColorFull    = Color3.fromRGB(80, 160, 255),
         Name              = true,
         NameColor         = C.White,
         Distance          = true,
@@ -2969,14 +2989,48 @@ function KraviX:CreateWindow(config)
         if cfg.Boxes ~= nil then EspBox.Visible = cfg.Boxes end
         if cfg.BoxColor ~= nil and espBoxStroke then espBoxStroke.Color = cfg.BoxColor end
 
-        if cfg.BoxFill ~= nil then EspBoxFill.Visible = cfg.BoxFill end
+        if cfg.BoxFill ~= nil then
+            EspBoxFill.Visible = (cfg.BoxFill == true) or (Window.ESPPreviewState.GradientFill == true)
+        end
         if cfg.BoxFillColor ~= nil then EspBoxFill.BackgroundColor3 = cfg.BoxFillColor end
         if cfg.BoxFillTrans ~= nil then EspBoxFill.BackgroundTransparency = cfg.BoxFillTrans end
+
+        if cfg.GradientFill ~= nil then
+            EspBoxFillGradient.Enabled = (cfg.GradientFill == true)
+            if cfg.GradientFill == true then
+                EspBoxFill.Visible = true
+                EspBoxFill.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            else
+                if Window.ESPPreviewState.BoxFill ~= nil then
+                    EspBoxFill.Visible = Window.ESPPreviewState.BoxFill
+                else
+                    EspBoxFill.Visible = false
+                end
+                if Window.ESPPreviewState.BoxFillColor then
+                    EspBoxFill.BackgroundColor3 = Window.ESPPreviewState.BoxFillColor
+                end
+            end
+        end
+
+        if cfg.GradientTopColor ~= nil or cfg.GradientBottomColor ~= nil then
+            local topC = cfg.GradientTopColor or Window.ESPPreviewState.GradientTopColor or Color3.fromRGB(65, 105, 205)
+            local botC = cfg.GradientBottomColor or Window.ESPPreviewState.GradientBottomColor or Color3.fromRGB(15, 20, 35)
+            EspBoxFillGradient.Color = ColorSequence.new({
+                ColorSequenceKeypoint.new(0, topC),
+                ColorSequenceKeypoint.new(1, botC)
+            })
+        end
 
         if cfg.Health ~= nil then HealthLine.Visible = cfg.Health end
         if cfg.Healthbar ~= nil then HealthLine.Visible = cfg.Healthbar end
         if cfg.HealthBar ~= nil then HealthLine.Visible = cfg.HealthBar end
         if cfg.HealthColor ~= nil then HealthLine.BackgroundColor3 = cfg.HealthColor end
+        if cfg.HpColorFull ~= nil then HealthLine.BackgroundColor3 = cfg.HpColorFull end
+
+        if cfg.Armor ~= nil then ArmorLine.Visible = cfg.Armor end
+        if cfg.ArmorBar ~= nil then ArmorLine.Visible = cfg.ArmorBar end
+        if cfg.ArmorColor ~= nil then ArmorLine.BackgroundColor3 = cfg.ArmorColor end
+        if cfg.ArmorColorFull ~= nil then ArmorLine.BackgroundColor3 = cfg.ArmorColorFull end
 
         if cfg.Name ~= nil and NameLbl then NameLbl.Visible = cfg.Name end
         if cfg.Names ~= nil and NameLbl then NameLbl.Visible = cfg.Names end
