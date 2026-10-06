@@ -1,4 +1,4 @@
--- 4.6
+-- 4.5
 local KraviX = {}
 
 local TweenService     = game:GetService("TweenService")
@@ -2122,6 +2122,12 @@ function KraviX:CreateWindow(config)
 
     updateSelectedPanel()
     refreshPlayerList()
+
+    Window.MiniPlayers = MiniPlayers
+    Window.TogglePlayerList = function()
+        refreshPlayerList()
+        MiniPlayers:Toggle()
+    end
 
     BtnTheme.Button.MouseButton1Click:Connect(function()
         refreshPlayerList()
