@@ -1,4 +1,4 @@
--- 4.5
+-- 4.6
 local KraviX = {}
 
 local TweenService     = game:GetService("TweenService")
@@ -2619,7 +2619,7 @@ function KraviX:CreateWindow(config)
     NameLbl.Size = UDim2.new(0, 200, 0, 16)
     NameLbl.Position = UDim2.new(0.5, 0, 0, -4)
     NameLbl.BackgroundTransparency = 1
-    NameLbl.Text = (LocalPlayer and LocalPlayer.DisplayName or "Player")
+    NameLbl.Text = (LocalPlayer and ((LocalPlayer.DisplayName or LocalPlayer.Name) .. " (@" .. LocalPlayer.Name .. ")") or "Player (@Player)")
     NameLbl.TextColor3 = C.White
     NameLbl.TextSize = 10
     NameLbl.Font = Enum.Font.GothamBold
