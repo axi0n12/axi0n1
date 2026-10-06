@@ -1,4 +1,3 @@
--- 4.6
 local KraviX = {}
 
 local TweenService     = game:GetService("TweenService")
@@ -214,9 +213,6 @@ local function CreateNotification(title, text, duration, ntype)
     while _notifSlots[slot] do slot += 1 end
     _notifSlots[slot] = true
 
-    -- Largura máxima da notificação: nunca mais que a tela menos margens
-    -- dos dois lados. Isso evita que textos longos empurrem o card pra
-    -- fora da borda esquerda da tela (o bug da "bolinha roxa cortada").
     local viewW = workspace.CurrentCamera and workspace.CurrentCamera.ViewportSize.X or 800
     local MAXW  = math.min(320, viewW - MARGIN*2)
 
@@ -244,8 +240,6 @@ local function CreateNotification(title, text, duration, ntype)
     Sep.BackgroundColor3 = Color3.fromRGB(40,40,40)
     Sep.BorderSizePixel = 0; Sep.LayoutOrder = 1
 
-    -- Coluna de texto: largura fixa máxima (não AutomaticSize), permitindo
-    -- quebra de linha (TextWrapped) em vez de crescer pra fora da tela.
     local TextCol = Instance.new("Frame", F)
     TextCol.Size = UDim2.new(0, MAXW - 40, 0, 0)
     TextCol.AutomaticSize = Enum.AutomaticSize.Y
@@ -929,7 +923,7 @@ function KraviX:CreateWindow(config)
         local jsonStr
         local encOk, err = pcall(function() jsonStr = HttpService:JSONEncode(data) end)
         if not encOk or not jsonStr then
-            CreateNotification("KraviX Config", "Erro ao serializar config: " .. tostring(err), 3, "error")
+            CreateNotification("KraviX Config", "Error serializing config: " .. tostring(err), 3, "error")
             return false
         end
 
@@ -937,10 +931,10 @@ function KraviX:CreateWindow(config)
             local filePath = folder .. "/" .. cfgName .. ".json"
             local writeOk, writeErr = pcall(function() writefile(filePath, jsonStr) end)
             if writeOk then
-                CreateNotification("KraviX Config", "Configuração '" .. cfgName .. "' salva com sucesso!", 3, "success")
+                CreateNotification("KraviX Config", "Configuração '" .. cfgName .. "' saved successfully!", 3, "success")
                 return true
             else
-                CreateNotification("KraviX Config", "Erro ao salvar arquivo: " .. tostring(writeErr), 3, "error")
+                CreateNotification("KraviX Config", "Error saving file: " .. tostring(writeErr), 3, "error")
             end
         else
             CreateNotification("KraviX Config", "Executor não suporta writefile!", 3, "error")
@@ -962,14 +956,14 @@ function KraviX:CreateWindow(config)
         local fileContent
         local readOk, readErr = pcall(function() fileContent = readfile(filePath) end)
         if not readOk or not fileContent then
-            CreateNotification("KraviX Config", "Erro ao ler config: " .. tostring(readErr), 3, "error")
+            CreateNotification("KraviX Config", "Error reading config: " .. tostring(readErr), 3, "error")
             return false
         end
 
         local decoded
         local decOk, decErr = pcall(function() decoded = HttpService:JSONDecode(fileContent) end)
         if not decOk or type(decoded) ~= "table" then
-            CreateNotification("KraviX Config", "Arquivo de config corrompido!", 3, "error")
+            CreateNotification("KraviX Config", "Corrupted config file!", 3, "error")
             return false
         end
 
@@ -1002,7 +996,7 @@ function KraviX:CreateWindow(config)
             end
         end
 
-        CreateNotification("KraviX Config", "Configuração '" .. cfgName .. "' carregada com sucesso! (" .. loadedCount .. " opções)", 3, "success")
+        CreateNotification("KraviX Config", "Configuração '" .. cfgName .. "' loaded successfully! (" .. loadedCount .. " opções)", 3, "success")
         return true
     end
 
@@ -1015,10 +1009,10 @@ function KraviX:CreateWindow(config)
         if isfile and isfile(filePath) and delfile then
             local delOk, err = pcall(function() delfile(filePath) end)
             if delOk then
-                CreateNotification("KraviX Config", "Configuração '" .. cfgName .. "' deletada!", 3, "info")
+                CreateNotification("KraviX Config", "Configuração '" .. cfgName .. "' deleted!", 3, "info")
                 return true
             else
-                CreateNotification("KraviX Config", "Erro ao deletar: " .. tostring(err), 3, "error")
+                CreateNotification("KraviX Config", "Error deleting: " .. tostring(err), 3, "error")
             end
         else
             CreateNotification("KraviX Config", "Arquivo não encontrado para deletar!", 3, "error")
@@ -1056,9 +1050,9 @@ function KraviX:CreateWindow(config)
         if writefile then
             pcall(function() writefile(autoFile, cfgName or "") end)
             if cfgName and cfgName ~= "" then
-                CreateNotification("KraviX Config", "Auto Load definido para '" .. cfgName .. "'", 3, "success")
+                CreateNotification("KraviX Config", "Auto Load set to '" .. cfgName .. "'", 3, "success")
             else
-                CreateNotification("KraviX Config", "Auto Load desativado!", 3, "info")
+                CreateNotification("KraviX Config", "Auto Load disabled!", 3, "info")
             end
         end
     end
@@ -1223,7 +1217,6 @@ function KraviX:CreateWindow(config)
     ContentFrame.BackgroundTransparency = 1; ContentFrame.BorderSizePixel = 0
     ContentFrame.ZIndex = 10; ContentFrame.ClipsDescendants = true
 
-    -- ===== DOCK CAIXINHA (DESIGN KRAVIX MODERN COM ÍCONES DA UI) =====
     local DockOutline = Instance.new("Frame", ScreenGui)
     DockOutline.Name = "KxDockOutline"
     DockOutline.AnchorPoint = Vector2.new(0.5, 0)
@@ -1415,7 +1408,7 @@ function KraviX:CreateWindow(config)
             end)
         end
         localConfigCache[name] = data
-        if Window.Notify then Window.Notify("Config", "Salvo: " .. name, 2) end
+        if Window.Notify then Window.Notify("Config", "Saved: " .. name, 2) end
         return true
     end
 
@@ -1444,7 +1437,7 @@ function KraviX:CreateWindow(config)
             elseif decoded.Flags then
                 _G.KraviX_Flags = decoded.Flags
             end
-            if Window.Notify then Window.Notify("Config", "Carregado: " .. name, 2) end
+            if Window.Notify then Window.Notify("Config", "Loaded: " .. name, 2) end
             return true
         end
         if Window.Notify then Window.Notify("Config", "Não encontrado: " .. name, 2) end
@@ -1462,11 +1455,10 @@ function KraviX:CreateWindow(config)
             end)
         end
         localConfigCache[name] = nil
-        if Window.Notify then Window.Notify("Config", "Deletado: " .. name, 2) end
+        if Window.Notify then Window.Notify("Config", "Deleted: " .. name, 2) end
         return true
     end
 
-    -- ===== MINI UI REUTILIZÁVEL =====
     local CreatedMiniUIs = {}
     local topMiniZIndex = 250
 
@@ -1545,7 +1537,6 @@ function KraviX:CreateWindow(config)
 
         MakeDraggable(Mini, MTop)
 
-        -- Focus management on click
         Mini.InputBegan:Connect(function(inp)
             if inp.UserInputType == Enum.UserInputType.MouseButton1 or inp.UserInputType == Enum.UserInputType.Touch then
                 BringMiniToFront(Mini)
@@ -1640,7 +1631,7 @@ function KraviX:CreateWindow(config)
             local Row = Instance.new("Frame", MBody)
             Row.Size = UDim2.new(1, 0, 0, 24); Row.BackgroundTransparency = 1
             Row.ZIndex = Mini.ZIndex + 2; Row:SetAttribute("RelZIndex", 2)
-            
+
             local Box = Instance.new("Frame", Row)
             Box.Size = UDim2.new(0, 16, 0, 16); Box.Position = UDim2.new(0, 0, 0.5, -8)
             Box.BackgroundColor3 = state and C.Accent or Color3.fromRGB(22, 22, 30)
@@ -1658,7 +1649,7 @@ function KraviX:CreateWindow(config)
             local Hit = Instance.new("TextButton", Row)
             Hit.Size = UDim2.new(1, 0, 1, 0); Hit.BackgroundTransparency = 1; Hit.Text = ""
             Hit.ZIndex = Mini.ZIndex + 4; Hit:SetAttribute("RelZIndex", 4)
-            
+
             Hit.MouseButton1Click:Connect(function()
                 state = not state
                 Tween(Box, {BackgroundColor3 = state and C.Accent or Color3.fromRGB(22, 22, 30)}, 0.1):Play()
@@ -1692,12 +1683,10 @@ function KraviX:CreateWindow(config)
         return MiniHandle
     end
 
-    -- ===== BOTÃO 1: HOME (MAIN WINDOW) =====
     BtnHome.Button.MouseButton1Click:Connect(function()
         ToggleWindow()
     end)
 
-    -- ===== BOTÃO 2: PLAYER LIST / WHITELIST & VIEW =====
     _G.KraviX_GlobalWhitelist = _G.KraviX_GlobalWhitelist or {}
     _G.KraviX_ViewingPlayer   = nil
 
@@ -1707,7 +1696,6 @@ function KraviX:CreateWindow(config)
         OnToggle = function(on) BtnTheme.SetActive(on) end
     })
 
-    -- Clean layout
     for _, child in ipairs(MiniPlayers.Body:GetChildren()) do
         if child:IsA("UIListLayout") or child:IsA("UIPadding") then
             child:Destroy()
@@ -1717,7 +1705,6 @@ function KraviX:CreateWindow(config)
 
     local selectedPlayer = LocalPlayer
 
-    -- Divisor vertical sutil
     local Divider = Instance.new("Frame", MiniPlayers.Body)
     Divider.Size = UDim2.new(0, 1, 1, 0)
     Divider.Position = UDim2.new(0, 240, 0, 0)
@@ -1726,7 +1713,6 @@ function KraviX:CreateWindow(config)
     Divider.ZIndex = MiniPlayers.Frame.ZIndex + 2
     Divider:SetAttribute("RelZIndex", 2)
 
-    -- Left Column Frame (Player List)
     local LeftCol = Instance.new("Frame", MiniPlayers.Body)
     LeftCol.Size = UDim2.new(0, 230, 1, 0)
     LeftCol.Position = UDim2.new(0, 0, 0, 0)
@@ -1734,7 +1720,6 @@ function KraviX:CreateWindow(config)
     LeftCol.ZIndex = MiniPlayers.Frame.ZIndex + 2
     LeftCol:SetAttribute("RelZIndex", 2)
 
-    -- Search Box Container
     local SearchCont = Instance.new("Frame", LeftCol)
     SearchCont.Size = UDim2.new(1, 0, 0, 28)
     SearchCont.Position = UDim2.new(0, 0, 0, 0)
@@ -1760,7 +1745,6 @@ function KraviX:CreateWindow(config)
     SearchBox.ZIndex = MiniPlayers.Frame.ZIndex + 3
     SearchBox:SetAttribute("RelZIndex", 3)
 
-    -- Scrolling Frame for Player Cards
     local PlayerScroll = Instance.new("ScrollingFrame", LeftCol)
     PlayerScroll.Size = UDim2.new(1, 0, 1, -34)
     PlayerScroll.Position = UDim2.new(0, 0, 0, 34)
@@ -1781,7 +1765,6 @@ function KraviX:CreateWindow(config)
     end
     ScrollLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(updateCanvas)
 
-    -- Right Column Frame (Selected Player Inspector)
     local RightCol = Instance.new("Frame", MiniPlayers.Body)
     RightCol.Size = UDim2.new(0, 210, 1, 0)
     RightCol.Position = UDim2.new(0, 250, 0, 0)
@@ -1789,7 +1772,6 @@ function KraviX:CreateWindow(config)
     RightCol.ZIndex = MiniPlayers.Frame.ZIndex + 2
     RightCol:SetAttribute("RelZIndex", 2)
 
-    -- Profile Card Container
     local ProfileCard = Instance.new("Frame", RightCol)
     ProfileCard.Size = UDim2.new(1, 0, 0, 136)
     ProfileCard.Position = UDim2.new(0, 0, 0, 0)
@@ -1853,7 +1835,6 @@ function KraviX:CreateWindow(config)
     StatusBadgeText.ZIndex = MiniPlayers.Frame.ZIndex + 4
     StatusBadgeText:SetAttribute("RelZIndex", 4)
 
-    -- Container de Ações (APENAS 2 BOTÕES: VIEW & WHITELIST)
     local ActionsCont = Instance.new("Frame", RightCol)
     ActionsCont.Size = UDim2.new(1, 0, 0, 32)
     ActionsCont.Position = UDim2.new(0, 0, 0, 144)
@@ -1904,7 +1885,6 @@ function KraviX:CreateWindow(config)
         SelNameLabel.Text = selectedPlayer.DisplayName or selectedPlayer.Name
         SelIdLabel.Text = "@" .. selectedPlayer.Name .. "  •  ID: " .. selectedPlayer.UserId
 
-        -- Animação suave de pop/bounce no Avatar Headshot
         AvatarImg.Size = UDim2.new(0, 52, 0, 52)
         AvatarImg.Position = UDim2.new(0.5, -26, 0, 14)
         Tween(AvatarImg, {Size = UDim2.new(0, 60, 0, 60), Position = UDim2.new(0.5, -30, 0, 10)}, 0.22, Enum.EasingStyle.Back, Enum.EasingDirection.Out):Play()
@@ -1926,7 +1906,6 @@ function KraviX:CreateWindow(config)
             Tween(StatusBadge, {BackgroundColor3 = Color3.fromRGB(28, 25, 40)}, 0.15):Play()
         end
 
-        -- View Button State (Transição Suave de Cor)
         if isView then
             Tween(ViewBtn, {BackgroundColor3 = C.Accent2}, 0.15):Play()
             ViewBtn.Text = "Viewing"
@@ -1937,7 +1916,6 @@ function KraviX:CreateWindow(config)
             Tween(vSt, {Color = C.Accent2}, 0.15):Play()
         end
 
-        -- Whitelist Button State (Transição Suave de Cor)
         if isWL then
             Tween(WlBtn, {BackgroundColor3 = C.Accent2}, 0.15):Play()
             WlBtn.Text = "Whitelisted"
@@ -1982,7 +1960,6 @@ function KraviX:CreateWindow(config)
                 local cSt = mkStroke(Card, isSel and C.Accent or C.Border, 1, 0)
                 cSt:SetAttribute("RelZIndex", 2)
 
-                -- Left indicator vertical line
                 local IndBar = Instance.new("Frame", Card)
                 IndBar.Size = UDim2.new(0, isSel and 4 or 3, 1, 0)
                 IndBar.Position = UDim2.new(0, 0, 0, 0)
@@ -1991,7 +1968,6 @@ function KraviX:CreateWindow(config)
                 IndBar.ZIndex = MiniPlayers.Frame.ZIndex + 3
                 IndBar:SetAttribute("RelZIndex", 3)
 
-                -- Name Label
                 local NameLbl = Instance.new("TextLabel", Card)
                 NameLbl.Size = UDim2.new(0.62, -12, 1, 0)
                 NameLbl.Position = UDim2.new(0, 10, 0, 0)
@@ -2005,7 +1981,6 @@ function KraviX:CreateWindow(config)
                 NameLbl.ZIndex = MiniPlayers.Frame.ZIndex + 3
                 NameLbl:SetAttribute("RelZIndex", 3)
 
-                -- Status Label Badge
                 local StatusLbl = Instance.new("TextLabel", Card)
                 StatusLbl.Size = UDim2.new(0.38, -10, 1, 0)
                 StatusLbl.Position = UDim2.new(0.62, 0, 0, 0)
@@ -2044,7 +2019,6 @@ function KraviX:CreateWindow(config)
                     if selectedPlayer == plr then return end
                     selectedPlayer = plr
 
-                    -- Animação ultra-suave ao selecionar o card
                     Tween(Card, {Size = UDim2.new(0.98, 0, 0, 34)}, 0.06, Enum.EasingStyle.Sine, Enum.EasingDirection.Out):Play()
                     Tween(Card, {BackgroundColor3 = Color3.fromRGB(34, 34, 46)}, 0.16, Enum.EasingStyle.Quad, Enum.EasingDirection.Out):Play()
                     Tween(cSt, {Color = Color3.fromRGB(245, 245, 255)}, 0.16):Play()
@@ -2080,9 +2054,9 @@ function KraviX:CreateWindow(config)
             if selectedPlayer.Character and selectedPlayer.Character:FindFirstChildOfClass("Humanoid") then
                 _G.KraviX_ViewingPlayer = selectedPlayer
                 workspace.CurrentCamera.CameraSubject = selectedPlayer.Character:FindFirstChildOfClass("Humanoid")
-                CreateNotification("View", "Assistindo: " .. (selectedPlayer.DisplayName or selectedPlayer.Name), 2, "success")
+                CreateNotification("View", "Spectating: " .. (selectedPlayer.DisplayName or selectedPlayer.Name), 2, "success")
             else
-                CreateNotification("View", "Jogador sem personagem ativo.", 2, "error")
+                CreateNotification("View", "Player has no active character.", 2, "error")
             end
         end
         updateSelectedPanel()
@@ -2096,7 +2070,7 @@ function KraviX:CreateWindow(config)
         if isWL then
             _G.KraviX_GlobalWhitelist[selectedPlayer.UserId] = nil
             _G.KraviX_GlobalWhitelist[selectedPlayer.Name] = nil
-            CreateNotification("Whitelist", dName .. " removido da Whitelist!", 2, "info")
+            CreateNotification("Whitelist", dName .. " removed from Whitelist!", 2, "info")
         else
             _G.KraviX_GlobalWhitelist[selectedPlayer.UserId] = true
             _G.KraviX_GlobalWhitelist[selectedPlayer.Name] = true
@@ -2158,14 +2132,12 @@ function KraviX:CreateWindow(config)
         end
     end)
 
-    -- ===== BOTÃO 3: CONFIGURATIONS (LUGAR NOME, DROPDOWN, 3 BOTÕES: SALVAR, CARREGAR E DELETAR) =====
     local MiniConfigs = Window:CreateMiniUI({
         Title = "Configurations", Width = 480, Height = 210,
         DefaultPosition = UDim2.new(0.5, -240, 0.5, -105),
         OnToggle = function(on) BtnCloud.SetActive(on) end
     })
 
-    -- Clean layout without redundant banners or extra buttons
     for _, child in ipairs(MiniConfigs.Body:GetChildren()) do
         if child:IsA("UIListLayout") or child:IsA("UIPadding") then
             child:Destroy()
@@ -2177,7 +2149,6 @@ function KraviX:CreateWindow(config)
     CfgLayout.SortOrder = Enum.SortOrder.LayoutOrder
     CfgLayout.Padding = UDim.new(0, 12)
 
-    -- Row 1: Lugar para por o nome da config (Input Box)
     local InputCont = Instance.new("Frame", MiniConfigs.Body)
     InputCont.Size = UDim2.new(1, 0, 0, 40)
     InputCont.BackgroundColor3 = C.Bg3
@@ -2191,7 +2162,7 @@ function KraviX:CreateWindow(config)
     cfgBox.Size = UDim2.new(1, -24, 1, 0)
     cfgBox.Position = UDim2.new(0, 12, 0, 0)
     cfgBox.BackgroundTransparency = 1
-    cfgBox.PlaceholderText = "Nome da config..."
+    cfgBox.PlaceholderText = "Config name..."
     cfgBox.PlaceholderColor3 = C.Muted
     cfgBox.Text = "default"
     cfgBox.TextColor3 = C.Text
@@ -2205,11 +2176,9 @@ function KraviX:CreateWindow(config)
     cfgBox.Focused:Connect(function() Tween(cfgInSt, {Color = C.Accent}, 0.12):Play() end)
     cfgBox.FocusLost:Connect(function() Tween(cfgInSt, {Color = C.Border}, 0.12):Play() end)
 
-    -- Make MiniConfigs non-clipping so dropdown menu can pop outside if needed
     MiniConfigs.Frame.ClipsDescendants = false
     MiniConfigs.Body.ClipsDescendants = false
 
-    -- Row 2: Dropdown das cfgs que eu tenho (Selector Button)
     local selectedConfig = "default"
 
     local ConfigSelectBtn = Instance.new("TextButton", MiniConfigs.Body)
@@ -2239,7 +2208,6 @@ function KraviX:CreateWindow(config)
     CfgDropArrow.ZIndex = MiniConfigs.Frame.ZIndex + 3
     CfgDropArrow:SetAttribute("RelZIndex", 3)
 
-    -- Dropdown Popover Frame (Attached below ConfigSelectBtn)
     local DropFrame = Instance.new("Frame", ConfigSelectBtn)
     DropFrame.Name = "CfgDropdownFrame"
     DropFrame.Size = UDim2.new(1, 0, 0, 0)
@@ -2282,7 +2250,6 @@ function KraviX:CreateWindow(config)
         Tween(cfgSelSt, {Color = C.Border}, 0.12):Play()
     end)
 
-    -- Row 3: Três botões (Salvar, Carregar e Deletar)
     local BtnRow = Instance.new("Frame", MiniConfigs.Body)
     BtnRow.Size = UDim2.new(1, 0, 0, 42)
     BtnRow.BackgroundTransparency = 1
@@ -2293,7 +2260,7 @@ function KraviX:CreateWindow(config)
     SaveBtn.Size = UDim2.new(0.315, 0, 1, 0)
     SaveBtn.Position = UDim2.new(0, 0, 0, 0)
     SaveBtn.BackgroundColor3 = C.Accent
-    SaveBtn.Text = "Salvar"
+    SaveBtn.Text = "Save"
     SaveBtn.TextColor3 = C.White
     SaveBtn.TextSize = 13
     SaveBtn.Font = Enum.Font.GothamBold
@@ -2308,7 +2275,7 @@ function KraviX:CreateWindow(config)
     LoadBtn.Size = UDim2.new(0.315, 0, 1, 0)
     LoadBtn.Position = UDim2.new(0.342, 0, 0, 0)
     LoadBtn.BackgroundColor3 = C.Bg3
-    LoadBtn.Text = "Carregar"
+    LoadBtn.Text = "Load"
     LoadBtn.TextColor3 = C.Text
     LoadBtn.TextSize = 13
     LoadBtn.Font = Enum.Font.GothamBold
@@ -2324,7 +2291,7 @@ function KraviX:CreateWindow(config)
     DelBtn.Size = UDim2.new(0.315, 0, 1, 0)
     DelBtn.Position = UDim2.new(0.685, 0, 0, 0)
     DelBtn.BackgroundColor3 = C.Bg3
-    DelBtn.Text = "Deletar"
+    DelBtn.Text = "Delete"
     DelBtn.TextColor3 = C.Text
     DelBtn.TextSize = 13
     DelBtn.Font = Enum.Font.GothamBold
@@ -2356,7 +2323,7 @@ function KraviX:CreateWindow(config)
     local function refreshConfigUI()
         currentConfigList = Window:GetConfigs()
         if #currentConfigList == 0 then
-            ConfigSelectBtn.Text = "  Nenhuma config salva"
+            ConfigSelectBtn.Text = "  No configs saved"
         else
             if not table.find(currentConfigList, selectedConfig) then
                 selectedConfig = currentConfigList[1]
@@ -2377,7 +2344,7 @@ function KraviX:CreateWindow(config)
             local emptyLbl = Instance.new("TextLabel", DropScroll)
             emptyLbl.Size = UDim2.new(1, 0, 0, 30)
             emptyLbl.BackgroundTransparency = 1
-            emptyLbl.Text = "Nenhuma config salva"
+            emptyLbl.Text = "No configs saved"
             emptyLbl.TextColor3 = C.Muted
             emptyLbl.TextSize = 12
             emptyLbl.Font = Enum.Font.GothamMedium
@@ -2465,7 +2432,6 @@ function KraviX:CreateWindow(config)
     task.defer(refreshConfigUI)
     BtnCloud.Button.MouseButton1Click:Connect(function() MiniConfigs:Toggle() end)
 
-    -- ===== BOTÃO 4: REAL 3D VIEWPORT ESP PREVIEW =====
     local MiniESP = Window:CreateMiniUI({
         Title = "ESP Preview", Width = 300, Height = 310,
         DefaultPosition = UDim2.new(0.5, -150, 0.5, -155),
@@ -2930,13 +2896,13 @@ function KraviX:CreateWindow(config)
         local aspect = viewSize.X / viewSize.Y
         local h = math.tan(math.rad(fov / 2)) * math.abs(localPos.Z)
         local w = h * aspect
-        
+
         local xNorm = (localPos.X / w + 1) / 2
         local yNorm = (-localPos.Y / h + 1) / 2
-        
+
         local pixelX = xNorm * viewSize.X
         local pixelY = yNorm * viewSize.Y
-        
+
         local inBounds = (xNorm >= -0.2 and xNorm <= 1.2 and yNorm >= -0.2 and yNorm <= 1.2)
         return Vector2.new(pixelX, pixelY), inBounds
     end
@@ -2991,7 +2957,7 @@ function KraviX:CreateWindow(config)
                 local orig2 = CurrentPreviewModel:FindFirstChild(p2Name)
                 local clone1 = orig1 and RenderObjects[orig1]
                 local clone2 = orig2 and RenderObjects[orig2]
-                
+
                 if clone1 and clone2 then
                     local pos1, vis1 = ProjectViewportPoint(clone1.Position)
                     local pos2, vis2 = ProjectViewportPoint(clone2.Position)
@@ -3391,7 +3357,6 @@ function KraviX:CreateWindow(config)
         TopBar.BackgroundTransparency = 0; TabBar.BackgroundTransparency = 0
         Backdrop.BackgroundTransparency = 0.55; Main.ClipsDescendants = false
 
-        -- FECHA O DOCK BAR E TODAS AS MINI UIS ABERTAS
         SidePanel.Visible = false
         for _, mini in ipairs(CreatedMiniUIs) do
             pcall(function() mini:Close() end)
@@ -3440,11 +3405,11 @@ function KraviX:CreateWindow(config)
         CreateLoader(ScreenGui, function()
             if useSound then PlaySound(SOUND_OPEN) end
             ShowWindow()
-            CreateNotification("Axion","Carregado com sucesso!",3,"success")
+            CreateNotification("Axion","Loaded successfully!",3,"success")
         end, config.LoaderTitle or config.Name)
     else
         ShowWindow()
-        CreateNotification("Axion","Carregado com sucesso!",3,"success")
+        CreateNotification("Axion","Loaded successfully!",3,"success")
     end
     function Window:CreateTab(name, icon)
         local Tab      = {}
