@@ -1,4 +1,4 @@
--- 4.3
+-- 4.4
 local KraviX = {}
 
 local TweenService     = game:GetService("TweenService")
@@ -3874,9 +3874,7 @@ function KraviX:CreateWindow(config)
                     DFrame.ScrollBarThickness = hasScroll and 3 or 0
                     DFrame.ScrollBarImageColor3 = C.Accent
                     DFrame.CanvasSize = UDim2.new(0, 0, 0, #options * 24 + 8)
-                    DFrame.AutomaticCanvasSize = Enum.AutomaticCanvasSize.None
                     DFrame.ScrollingDirection = Enum.ScrollingDirection.Y
-                    DFrame.ElasticBehavior = Enum.ElasticBehavior.Never
                     mkCorner(DFrame,5); mkStroke(DFrame,C.BorderBt,1,0)
                     local DL = Instance.new("UIListLayout", DFrame)
                     DL.Padding = UDim.new(0,2); DL.SortOrder = Enum.SortOrder.LayoutOrder
@@ -3972,12 +3970,6 @@ function KraviX:CreateWindow(config)
                     Main:GetPropertyChangedSignal("Visible"):Connect(function()
                         if opened then closeDropdown() end
                         _hover = false
-                    end)
-                    Main:GetPropertyChangedSignal("Position"):Connect(function()
-                        if opened then closeDropdown() end
-                    end)
-                    scroll:GetPropertyChangedSignal("CanvasPosition"):Connect(function()
-                        if opened then closeDropdown() end
                     end)
 
                     function Dropdown:Set(v)
