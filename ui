@@ -1,4 +1,4 @@
--- 4.5
+-- 4.6
 local KraviX = {}
 
 local TweenService     = game:GetService("TweenService")
@@ -2549,20 +2549,6 @@ function KraviX:CreateWindow(config)
         ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0)),
     })
 
-    local HealthTextLbl = Instance.new("TextLabel", HealthLineBg)
-    HealthTextLbl.Size = UDim2.new(0, 24, 0, 12)
-    HealthTextLbl.AnchorPoint = Vector2.new(1, 0.5)
-    HealthTextLbl.Position = UDim2.new(0, -2, 0.5, 0)
-    HealthTextLbl.BackgroundTransparency = 1
-    HealthTextLbl.Text = "100"
-    HealthTextLbl.TextColor3 = Color3.fromRGB(255, 255, 255)
-    HealthTextLbl.TextSize = 9
-    HealthTextLbl.Font = Enum.Font.GothamBold
-    HealthTextLbl.ZIndex = MiniESP.Frame.ZIndex + 6
-    HealthTextLbl:SetAttribute("RelZIndex", 6)
-    HealthTextLbl.Visible = false
-    mkStroke(HealthTextLbl, Color3.fromRGB(0, 0, 0), 1, 0)
-
     local ArmorLineBg = Instance.new("Frame", EspBox)
     ArmorLineBg.Size = UDim2.new(0, 4, 1, 0)
     ArmorLineBg.Position = UDim2.new(1, 4, 0, 0)
@@ -3085,7 +3071,7 @@ function KraviX:CreateWindow(config)
         HpColorFull       = Color3.fromRGB(0, 255, 0),
         HpColorMid        = Color3.fromRGB(255, 170, 0),
         HpColorEmpty      = Color3.fromRGB(255, 0, 0),
-        HealthText        = true,
+        HealthText        = false,
         ArmorBar          = false,
         ArmorColorFull    = Color3.fromRGB(80, 160, 255),
         Name              = true,
@@ -3173,12 +3159,6 @@ function KraviX:CreateWindow(config)
             Window.ESPPreviewState.HealthBar = hpOn
             HealthLineBg.Visible = hpOn
             HealthLine.Visible = hpOn
-            if HealthTextLbl then HealthTextLbl.Visible = hpOn and (Window.ESPPreviewState.HealthText ~= false) end
-        end
-
-        if cfg.HealthText ~= nil then
-            Window.ESPPreviewState.HealthText = (cfg.HealthText == true)
-            if HealthTextLbl then HealthTextLbl.Visible = (Window.ESPPreviewState.HealthBar == true) and (cfg.HealthText == true) end
         end
 
         local topHp = cfg.HpColorFull or Window.ESPPreviewState.HpColorFull or Color3.fromRGB(0, 255, 0)
@@ -3897,58 +3877,69 @@ function KraviX:CreateWindow(config)
                     local closeDropdown
 
                     local optBtns = {}
-                    for _, opt in ipairs(options) do
-                        local isOptSel = isMulti and (selected[opt] == true) or (opt == selected)
-                        local OBtn = Instance.new("TextButton", DFrame)
-                        OBtn.Size = UDim2.new(1, hasScroll and -6 or 0, 0, 22)
-                        OBtn.BackgroundColor3 = C.Bg5
-                        OBtn.BackgroundTransparency = isOptSel and 0.5 or 1
-                        OBtn.Text = opt; OBtn.TextColor3 = isOptSel and C.Accent or C.Sub
-                        OBtn.TextSize = 11; OBtn.Font = Enum.Font.Gotham
-                        OBtn.AutoButtonColor = false; OBtn.ZIndex = 201
-                        mkCorner(OBtn,3); mkPad(OBtn,0,0,8,8)
-                        optBtns[opt] = OBtn
-                        OBtn.MouseEnter:Connect(function()
-                            _hover = true
-                            local curActive = isMulti and (selected[opt] == true) or (opt == Dropdown.Value)
-                            if not curActive then
-                                Tween(OBtn,{BackgroundTransparency=0.6,TextColor3=C.Text},0.08):Play()
-                            end
-                        end)
-                        OBtn.MouseLeave:Connect(function()
-                            local curActive = isMulti and (selected[opt] == true) or (opt == Dropdown.Value)
-                            if not curActive then
-                                Tween(OBtn,{BackgroundTransparency=1,TextColor3=C.Sub},0.08):Play()
-                            end
-                        end)
-                        OBtn.MouseButton1Click:Connect(function()
-                            if isMulti then
-                                selected[opt] = not selected[opt]
-                                local nowSel = selected[opt] == true
-                                OBtn.TextColor3 = nowSel and C.Accent or C.Sub
-                                OBtn.BackgroundTransparency = nowSel and 0.5 or 1
-                                Sel.Text = getMultiDisplay()
-                                Dropdown.Value = selected
-                                callback(selected)
-                                if flagKey then Window.Flags[flagKey] = selected end
-                            else
-                                local prev = Dropdown.Value; Dropdown.Value = opt
-                                Sel.Text = opt
-                                for o, b in pairs(optBtns) do
-                                    b.TextColor3 = o==opt and C.Accent or C.Sub
-                                    b.BackgroundTransparency = o==opt and 0.5 or 1
+                    local function buildOptions()
+                        for _, child in ipairs(DFrame:GetChildren()) do
+                            if child:IsA("TextButton") then child:Destroy() end
+                        end
+                        table.clear(optBtns)
+                        hasScroll = #options > 6
+                        DFrame.ScrollBarThickness = hasScroll and 3 or 0
+                        DFrame.CanvasSize = UDim2.new(0, 0, 0, #options * 24 + 8)
+
+                        for _, opt in ipairs(options) do
+                            local isOptSel = isMulti and (selected[opt] == true) or (opt == selected)
+                            local OBtn = Instance.new("TextButton", DFrame)
+                            OBtn.Size = UDim2.new(1, hasScroll and -6 or 0, 0, 22)
+                            OBtn.BackgroundColor3 = C.Bg5
+                            OBtn.BackgroundTransparency = isOptSel and 0.5 or 1
+                            OBtn.Text = opt; OBtn.TextColor3 = isOptSel and C.Accent or C.Sub
+                            OBtn.TextSize = 11; OBtn.Font = Enum.Font.Gotham
+                            OBtn.AutoButtonColor = false; OBtn.ZIndex = 201
+                            mkCorner(OBtn,3); mkPad(OBtn,0,0,8,8)
+                            optBtns[opt] = OBtn
+                            OBtn.MouseEnter:Connect(function()
+                                _hover = true
+                                local curActive = isMulti and (selected[opt] == true) or (opt == Dropdown.Value)
+                                if not curActive then
+                                    Tween(OBtn,{BackgroundTransparency=0.6,TextColor3=C.Text},0.08):Play()
                                 end
-                                if closeDropdown then
-                                    closeDropdown()
+                            end)
+                            OBtn.MouseLeave:Connect(function()
+                                local curActive = isMulti and (selected[opt] == true) or (opt == Dropdown.Value)
+                                if not curActive then
+                                    Tween(OBtn,{BackgroundTransparency=1,TextColor3=C.Sub},0.08):Play()
+                                end
+                            end)
+                            OBtn.MouseButton1Click:Connect(function()
+                                if isMulti then
+                                    selected[opt] = not selected[opt]
+                                    local nowSel = selected[opt] == true
+                                    OBtn.TextColor3 = nowSel and C.Accent or C.Sub
+                                    OBtn.BackgroundTransparency = nowSel and 0.5 or 1
+                                    Sel.Text = getMultiDisplay()
+                                    Dropdown.Value = selected
+                                    callback(selected)
+                                    if flagKey then Window.Flags[flagKey] = selected end
                                 else
-                                    opened = false; DFrame.Visible = false; _hover = false
-                                    Tween(Arrow,{Rotation=0},0.15):Play()
+                                    local prev = Dropdown.Value; Dropdown.Value = opt
+                                    Sel.Text = opt
+                                    for o, b in pairs(optBtns) do
+                                        b.TextColor3 = o==opt and C.Accent or C.Sub
+                                        b.BackgroundTransparency = o==opt and 0.5 or 1
+                                    end
+                                    if closeDropdown then
+                                        closeDropdown()
+                                    else
+                                        opened = false; DFrame.Visible = false; _hover = false
+                                        Tween(Arrow,{Rotation=0},0.15):Play()
+                                    end
+                                    if prev ~= opt then callback(opt) end
+                                    if flagKey then Window.Flags[flagKey] = opt end
                                 end
-                                if prev ~= opt then callback(opt) end
-                                if flagKey then Window.Flags[flagKey] = opt end
-                            end
-                        end)
+                            end)
+                        end
                     end
+                    buildOptions()
 
                     local _justOpenedDrop = false
                     closeDropdown = function()
@@ -4043,6 +4034,25 @@ function KraviX:CreateWindow(config)
 
                     function Dropdown:Get()
                         return Dropdown.Value
+                    end
+
+                    function Dropdown:Refresh(newOpts, keepSelected)
+                        options = newOpts or {}
+                        if not keepSelected then
+                            if isMulti then
+                                table.clear(selected)
+                                Sel.Text = getMultiDisplay()
+                                Dropdown.Value = selected
+                            else
+                                selected = options[1] or ""
+                                Sel.Text = tostring(selected)
+                                Dropdown.Value = selected
+                            end
+                        end
+                        buildOptions()
+                        if isMulti then
+                            Sel.Text = getMultiDisplay()
+                        end
                     end
 
                     if selected then task.defer(function() callback(selected) end) end
