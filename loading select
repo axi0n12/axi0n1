@@ -13,12 +13,12 @@ local GAMES = {
     {
         Name   = "Das Hood",
         Color  = GREEN,
-        Source = [[loadstring(game:HttpGet(""))()]],
+        Source = [[loadstring(game:HttpGet("https://raw.githubusercontent.com/axi0n12/axi0n1/refs/heads/main/das"))()]],
     },
     {
         Name   = "Da Hood",
         Color  = GREEN,
-        Source = [[loadstring(game:HttpGet(""))()]],
+        Source = [[loadstring(game:HttpGet("https://raw.githubusercontent.com/axi0n12/axi0n1/refs/heads/main/dahoooodiii"))()]],
     },
     {
         Name   = "MM2",
