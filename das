@@ -1,3 +1,6 @@
+pcall(function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/rizemtech0123/all/refs/heads/main/bypass"))()
+end)
 
 local KraviX = _G.KraviX or (getgenv and getgenv().KraviX) or loadstring(game:HttpGet("https://raw.githubusercontent.com/axi0n12/axi0n1/refs/heads/main/ui"))()
 
