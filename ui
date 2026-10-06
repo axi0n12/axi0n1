@@ -1,4 +1,4 @@
--- 4.1
+-- 4.2
 local KraviX = {}
 
 local TweenService     = game:GetService("TweenService")
@@ -2505,7 +2505,7 @@ function KraviX:CreateWindow(config)
     local EspBoxFill = Instance.new("Frame", EspBox)
     EspBoxFill.Size = UDim2.new(1, 0, 1, 0)
     EspBoxFill.BackgroundColor3 = C.Accent
-    EspBoxFill.BackgroundTransparency = 0.7
+    EspBoxFill.BackgroundTransparency = 0.5
     EspBoxFill.BorderSizePixel = 0
     EspBoxFill.ZIndex = MiniESP.Frame.ZIndex + 3
     EspBoxFill:SetAttribute("RelZIndex", 3)
@@ -2514,6 +2514,10 @@ function KraviX:CreateWindow(config)
     local EspBoxFillGradient = Instance.new("UIGradient", EspBoxFill)
     EspBoxFillGradient.Rotation = 90
     EspBoxFillGradient.Enabled = false
+    EspBoxFillGradient.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(65, 105, 205)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(15, 20, 35))
+    })
 
     local HealthLine = Instance.new("Frame", EspBox)
     HealthLine.Size = UDim2.new(0, 4, 1, 0)
@@ -2524,15 +2528,64 @@ function KraviX:CreateWindow(config)
     HealthLine:SetAttribute("RelZIndex", 5)
     mkCorner(HealthLine, 2)
 
-    local ArmorLine = Instance.new("Frame", EspBox)
-    ArmorLine.Size = UDim2.new(0, 4, 1, 0)
-    ArmorLine.Position = UDim2.new(1, 4, 0, 0)
+    local ArmorLineBg = Instance.new("Frame", EspBox)
+    ArmorLineBg.Size = UDim2.new(0, 4, 1, 0)
+    ArmorLineBg.Position = UDim2.new(1, 4, 0, 0)
+    ArmorLineBg.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    ArmorLineBg.BorderSizePixel = 0
+    ArmorLineBg.ZIndex = MiniESP.Frame.ZIndex + 4
+    ArmorLineBg:SetAttribute("RelZIndex", 4)
+    ArmorLineBg.Visible = false
+    mkCorner(ArmorLineBg, 2)
+
+    local ArmorLine = Instance.new("Frame", ArmorLineBg)
+    ArmorLine.Size = UDim2.new(1, 0, 1, 0)
+    ArmorLine.Position = UDim2.new(0, 0, 0, 0)
     ArmorLine.BackgroundColor3 = Color3.fromRGB(80, 160, 255)
     ArmorLine.BorderSizePixel = 0
     ArmorLine.ZIndex = MiniESP.Frame.ZIndex + 5
     ArmorLine:SetAttribute("RelZIndex", 5)
-    ArmorLine.Visible = false
+    ArmorLine.Visible = true
     mkCorner(ArmorLine, 2)
+
+    local Box3DContainer = Instance.new("Frame", Overlay)
+    Box3DContainer.Size = UDim2.new(1, 0, 1, 0)
+    Box3DContainer.BackgroundTransparency = 1
+    Box3DContainer.ZIndex = MiniESP.Frame.ZIndex + 4
+    Box3DContainer:SetAttribute("RelZIndex", 4)
+    Box3DContainer.Visible = false
+
+    local Box3DLinesPool = {}
+    local function GetBox3DLine(i)
+        if not Box3DLinesPool[i] then
+            local line = Instance.new("Frame", Box3DContainer)
+            line.AnchorPoint = Vector2.new(0.5, 0.5)
+            line.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            line.BorderSizePixel = 0
+            line.ZIndex = MiniESP.Frame.ZIndex + 5
+            line:SetAttribute("RelZIndex", 5)
+            Box3DLinesPool[i] = line
+        end
+        return Box3DLinesPool[i]
+    end
+
+    local Box3DVertices = {
+        {-0.5, -0.5, -0.5},
+        { 0.5, -0.5, -0.5},
+        { 0.5,  0.5, -0.5},
+        {-0.5,  0.5, -0.5},
+        {-0.5, -0.5,  0.5},
+        { 0.5, -0.5,  0.5},
+        { 0.5,  0.5,  0.5},
+        {-0.5,  0.5,  0.5},
+    }
+    local Box3DEdges = {
+        {1, 2}, {2, 3}, {3, 4}, {4, 1},
+        {5, 6}, {6, 7}, {7, 8}, {8, 5},
+        {1, 5}, {2, 6}, {3, 7}, {4, 8}
+    }
+    local Box3DActive = false
+    local Box3DColor = Color3.fromRGB(255, 255, 255)
 
     local NameLbl = Instance.new("TextLabel", EspBox)
     NameLbl.AnchorPoint = Vector2.new(0.5, 1)
@@ -2939,14 +2992,56 @@ function KraviX:CreateWindow(config)
                 lineFrame.Visible = false
             end
         end
+
+        if Box3DActive and CurrentPreviewModel then
+            local root = CurrentPreviewModel:FindFirstChild("HumanoidRootPart") or CurrentPreviewModel:FindFirstChild("Torso")
+            local cloneRoot = root and RenderObjects[root]
+            if cloneRoot then
+                local cf = cloneRoot.CFrame
+                local size = Vector3.new(3.8, 5.2, 2.4)
+                local points = {}
+                for idx, v in ipairs(Box3DVertices) do
+                    local worldP = cf:PointToWorldSpace(Vector3.new(v[1] * size.X, v[2] * size.Y, v[3] * size.Z))
+                    local pt, vis = ProjectViewportPoint(worldP)
+                    points[idx] = {pos = pt, vis = vis}
+                end
+                for edgeIdx, edge in ipairs(Box3DEdges) do
+                    local p1 = points[edge[1]]
+                    local p2 = points[edge[2]]
+                    local line = GetBox3DLine(edgeIdx)
+                    if p1 and p2 and (p1.vis or p2.vis) then
+                        local pt1 = p1.pos
+                        local pt2 = p2.pos
+                        local center = (pt1 + pt2) / 2
+                        local dist = (pt2 - pt1).Magnitude
+                        local rot = math.deg(math.atan2(pt2.Y - pt1.Y, pt2.X - pt1.X))
+                        line.Size = UDim2.new(0, dist, 0, 1.5)
+                        line.Position = UDim2.new(0, center.X, 0, center.Y)
+                        line.Rotation = rot
+                        line.BackgroundColor3 = Box3DColor
+                        line.Visible = true
+                    else
+                        line.Visible = false
+                    end
+                end
+                Box3DContainer.Visible = true
+            else
+                Box3DContainer.Visible = false
+            end
+        else
+            if Box3DContainer.Visible then Box3DContainer.Visible = false end
+            for _, l in ipairs(Box3DLinesPool) do l.Visible = false end
+        end
     end)
 
     Window.ESPPreviewState = {
         Box               = true,
         BoxColor          = C.Accent,
+        Box3D             = false,
+        Box3DColor        = Color3.fromRGB(255, 255, 255),
         BoxFill           = false,
         BoxFillColor      = C.Accent,
-        BoxFillTrans      = 0.7,
+        BoxFillTrans      = 0.5,
         GradientFill      = false,
         GradientTopColor  = Color3.fromRGB(65, 105, 205),
         GradientBottomColor = Color3.fromRGB(15, 20, 35),
@@ -2985,50 +3080,67 @@ function KraviX:CreateWindow(config)
             Window.ESPPreviewState[k] = v
         end
 
-        if cfg.Box ~= nil then EspBox.Visible = cfg.Box end
-        if cfg.Boxes ~= nil then EspBox.Visible = cfg.Boxes end
+        if cfg.Box ~= nil then Window.ESPPreviewState.Box = (cfg.Box == true) end
+        if cfg.Boxes ~= nil then Window.ESPPreviewState.Box = (cfg.Boxes == true) end
+        if espBoxStroke then espBoxStroke.Enabled = (Window.ESPPreviewState.Box == true) end
         if cfg.BoxColor ~= nil and espBoxStroke then espBoxStroke.Color = cfg.BoxColor end
 
-        if cfg.BoxFill ~= nil then
-            EspBoxFill.Visible = (cfg.BoxFill == true) or (Window.ESPPreviewState.GradientFill == true)
+        if cfg.Box3D ~= nil then
+            Box3DActive = (cfg.Box3D == true)
+            Window.ESPPreviewState.Box3D = Box3DActive
+            Box3DContainer.Visible = Box3DActive
         end
-        if cfg.BoxFillColor ~= nil then EspBoxFill.BackgroundColor3 = cfg.BoxFillColor end
-        if cfg.BoxFillTrans ~= nil then EspBoxFill.BackgroundTransparency = cfg.BoxFillTrans end
+        if cfg.Box3DColor ~= nil then
+            Box3DColor = cfg.Box3DColor
+            Window.ESPPreviewState.Box3DColor = Box3DColor
+            for _, l in ipairs(Box3DLinesPool) do l.BackgroundColor3 = Box3DColor end
+        end
+
+        if cfg.BoxFill ~= nil then Window.ESPPreviewState.BoxFill = (cfg.BoxFill == true) end
+        if cfg.BoxFillColor ~= nil then Window.ESPPreviewState.BoxFillColor = cfg.BoxFillColor end
+        if cfg.BoxFillTrans ~= nil then Window.ESPPreviewState.BoxFillTrans = cfg.BoxFillTrans end
 
         if cfg.GradientFill ~= nil then
-            EspBoxFillGradient.Enabled = (cfg.GradientFill == true)
-            if cfg.GradientFill == true then
-                EspBoxFill.Visible = true
-                EspBoxFill.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            else
-                if Window.ESPPreviewState.BoxFill ~= nil then
-                    EspBoxFill.Visible = Window.ESPPreviewState.BoxFill
-                else
-                    EspBoxFill.Visible = false
-                end
-                if Window.ESPPreviewState.BoxFillColor then
-                    EspBoxFill.BackgroundColor3 = Window.ESPPreviewState.BoxFillColor
-                end
-            end
+            Window.ESPPreviewState.GradientFill = (cfg.GradientFill == true)
         end
+        if cfg.GradientTopColor ~= nil then Window.ESPPreviewState.GradientTopColor = cfg.GradientTopColor end
+        if cfg.GradientBottomColor ~= nil then Window.ESPPreviewState.GradientBottomColor = cfg.GradientBottomColor end
 
-        if cfg.GradientTopColor ~= nil or cfg.GradientBottomColor ~= nil then
-            local topC = cfg.GradientTopColor or Window.ESPPreviewState.GradientTopColor or Color3.fromRGB(65, 105, 205)
-            local botC = cfg.GradientBottomColor or Window.ESPPreviewState.GradientBottomColor or Color3.fromRGB(15, 20, 35)
+        if Window.ESPPreviewState.GradientFill == true then
+            EspBoxFill.Visible = true
+            EspBoxFill.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            EspBoxFill.BackgroundTransparency = Window.ESPPreviewState.BoxFillTrans or 0.5
+            local topC = Window.ESPPreviewState.GradientTopColor or Color3.fromRGB(65, 105, 205)
+            local botC = Window.ESPPreviewState.GradientBottomColor or Color3.fromRGB(15, 20, 35)
+            EspBoxFillGradient.Enabled = true
             EspBoxFillGradient.Color = ColorSequence.new({
                 ColorSequenceKeypoint.new(0, topC),
                 ColorSequenceKeypoint.new(1, botC)
             })
+        elseif Window.ESPPreviewState.BoxFill == true then
+            EspBoxFillGradient.Enabled = false
+            EspBoxFill.Visible = true
+            EspBoxFill.BackgroundColor3 = Window.ESPPreviewState.BoxFillColor or C.Accent
+            EspBoxFill.BackgroundTransparency = Window.ESPPreviewState.BoxFillTrans or 0.7
+        else
+            EspBoxFill.Visible = false
+            EspBoxFillGradient.Enabled = false
         end
 
-        if cfg.Health ~= nil then HealthLine.Visible = cfg.Health end
-        if cfg.Healthbar ~= nil then HealthLine.Visible = cfg.Healthbar end
-        if cfg.HealthBar ~= nil then HealthLine.Visible = cfg.HealthBar end
+        if cfg.Health ~= nil then HealthLine.Visible = (cfg.Health == true) end
+        if cfg.Healthbar ~= nil then HealthLine.Visible = (cfg.Healthbar == true) end
+        if cfg.HealthBar ~= nil then HealthLine.Visible = (cfg.HealthBar == true) end
         if cfg.HealthColor ~= nil then HealthLine.BackgroundColor3 = cfg.HealthColor end
         if cfg.HpColorFull ~= nil then HealthLine.BackgroundColor3 = cfg.HpColorFull end
 
-        if cfg.Armor ~= nil then ArmorLine.Visible = cfg.Armor end
-        if cfg.ArmorBar ~= nil then ArmorLine.Visible = cfg.ArmorBar end
+        local armorOn = nil
+        if cfg.Armor ~= nil then armorOn = (cfg.Armor == true) end
+        if cfg.ArmorBar ~= nil then armorOn = (cfg.ArmorBar == true) end
+        if armorOn ~= nil then
+            Window.ESPPreviewState.ArmorBar = armorOn
+            ArmorLineBg.Visible = armorOn
+            ArmorLine.Visible = armorOn
+        end
         if cfg.ArmorColor ~= nil then ArmorLine.BackgroundColor3 = cfg.ArmorColor end
         if cfg.ArmorColorFull ~= nil then ArmorLine.BackgroundColor3 = cfg.ArmorColorFull end
 
@@ -3606,14 +3718,45 @@ function KraviX:CreateWindow(config)
 
                 function Section:AddDropdown(cfg)
                     cfg = cfg or {}
+                    local isMulti  = (cfg.Multi == true) or (cfg.multi == true)
                     local options  = cfg.Values  or {}
-                    local selected = cfg.Default
-                    if type(selected) == "number" and options[selected] then
-                        selected = options[selected]
-                    end
-                    if not selected then selected = options[1] end
                     local callback = cfg.Callback or function() end
                     local opened   = false
+
+                    local selected
+                    local function getMultiDisplay()
+                        local picked = {}
+                        for _, opt in ipairs(options) do
+                            if selected[opt] then table.insert(picked, opt) end
+                        end
+                        if #picked == 0 then
+                            return cfg.Placeholder or "None"
+                        end
+                        return table.concat(picked, ", ")
+                    end
+
+                    if isMulti then
+                        selected = {}
+                        if type(cfg.Default) == "table" then
+                            for k, v in pairs(cfg.Default) do
+                                if type(k) == "number" and type(v) == "string" then
+                                    selected[v] = true
+                                elseif type(v) == "boolean" and v then
+                                    selected[k] = true
+                                elseif type(v) == "string" then
+                                    selected[v] = true
+                                end
+                            end
+                        elseif type(cfg.Default) == "string" then
+                            selected[cfg.Default] = true
+                        end
+                    else
+                        selected = cfg.Default
+                        if type(selected) == "number" and options[selected] then
+                            selected = options[selected]
+                        end
+                        if not selected then selected = options[1] end
+                    end
 
                     local Wrap = Instance.new("Frame")
                     Wrap.Size = UDim2.new(1,0,0,cfg.Name and 44 or 28)
@@ -3632,7 +3775,15 @@ function KraviX:CreateWindow(config)
                     local Sel = Instance.new("TextButton", Wrap)
                     Sel.Size = UDim2.new(1,0,0,26); Sel.Position = UDim2.new(0,0,0,yOff)
                     Sel.BackgroundColor3 = Color3.fromRGB(18,18,18)
-                    Sel.Text = selected or "Select"
+                    local displayText = "Select"
+                    if isMulti then
+                        displayText = getMultiDisplay()
+                    elseif type(selected) == "table" then
+                        displayText = table.concat(selected, ", ")
+                    elseif selected ~= nil then
+                        displayText = tostring(selected)
+                    end
+                    Sel.Text = displayText
                     Sel.TextColor3 = C.Text; Sel.TextSize = 11; Sel.Font = Enum.Font.Gotham
                     Sel.TextXAlignment = Enum.TextXAlignment.Left
                     Sel.AutoButtonColor = false; Sel.ZIndex = 14
@@ -3666,37 +3817,51 @@ function KraviX:CreateWindow(config)
 
                     local optBtns = {}
                     for _, opt in ipairs(options) do
+                        local isOptSel = isMulti and (selected[opt] == true) or (opt == selected)
                         local OBtn = Instance.new("TextButton", DFrame)
                         OBtn.Size = UDim2.new(1,0,0,22)
                         OBtn.BackgroundColor3 = C.Bg5
-                        OBtn.BackgroundTransparency = opt==selected and 0.5 or 1
-                        OBtn.Text = opt; OBtn.TextColor3 = opt==selected and C.Accent or C.Sub
+                        OBtn.BackgroundTransparency = isOptSel and 0.5 or 1
+                        OBtn.Text = opt; OBtn.TextColor3 = isOptSel and C.Accent or C.Sub
                         OBtn.TextSize = 11; OBtn.Font = Enum.Font.Gotham
                         OBtn.AutoButtonColor = false; OBtn.ZIndex = 201
                         mkCorner(OBtn,3); mkPad(OBtn,0,0,8,8)
                         optBtns[opt] = OBtn
                         OBtn.MouseEnter:Connect(function()
                             _hover = true
-                            if opt ~= Dropdown.Value then
+                            local curActive = isMulti and (selected[opt] == true) or (opt == Dropdown.Value)
+                            if not curActive then
                                 Tween(OBtn,{BackgroundTransparency=0.6,TextColor3=C.Text},0.08):Play()
                             end
                         end)
                         OBtn.MouseLeave:Connect(function()
-                            if opt ~= Dropdown.Value then
+                            local curActive = isMulti and (selected[opt] == true) or (opt == Dropdown.Value)
+                            if not curActive then
                                 Tween(OBtn,{BackgroundTransparency=1,TextColor3=C.Sub},0.08):Play()
                             end
                         end)
                         OBtn.MouseButton1Click:Connect(function()
-                            local prev = Dropdown.Value; Dropdown.Value = opt
-                            Sel.Text = opt
-                            for o, b in pairs(optBtns) do
-                                b.TextColor3 = o==opt and C.Accent or C.Sub
-                                b.BackgroundTransparency = o==opt and 0.5 or 1
+                            if isMulti then
+                                selected[opt] = not selected[opt]
+                                local nowSel = selected[opt] == true
+                                OBtn.TextColor3 = nowSel and C.Accent or C.Sub
+                                OBtn.BackgroundTransparency = nowSel and 0.5 or 1
+                                Sel.Text = getMultiDisplay()
+                                Dropdown.Value = selected
+                                callback(selected)
+                                if flagKey then Window.Flags[flagKey] = selected end
+                            else
+                                local prev = Dropdown.Value; Dropdown.Value = opt
+                                Sel.Text = opt
+                                for o, b in pairs(optBtns) do
+                                    b.TextColor3 = o==opt and C.Accent or C.Sub
+                                    b.BackgroundTransparency = o==opt and 0.5 or 1
+                                end
+                                opened = false; DFrame.Visible = false; _hover = false
+                                Tween(Arrow,{Rotation=0},0.15):Play()
+                                if prev ~= opt then callback(opt) end
+                                if flagKey then Window.Flags[flagKey] = opt end
                             end
-                            opened = false; DFrame.Visible = false; _hover = false
-                            Tween(Arrow,{Rotation=0},0.15):Play()
-                            if prev ~= opt then callback(opt) end
-                            if flagKey then Window.Flags[flagKey] = opt end
                         end)
                     end
 
@@ -3743,15 +3908,45 @@ function KraviX:CreateWindow(config)
                     end)
 
                     function Dropdown:Set(v)
-                        if table.find(options,v) then
-                            Dropdown.Value = v; Sel.Text = v
-                            for o, b in pairs(optBtns) do
-                                b.TextColor3 = o==v and C.Accent or C.Sub
-                                b.BackgroundTransparency = o==v and 0.5 or 1
+                        if isMulti then
+                            table.clear(selected)
+                            if type(v) == "table" then
+                                for k, val in pairs(v) do
+                                    if type(k) == "number" and type(val) == "string" then
+                                        selected[val] = true
+                                    elseif type(val) == "boolean" and val then
+                                        selected[k] = true
+                                    elseif type(val) == "string" then
+                                        selected[val] = true
+                                    end
+                                end
+                            elseif type(v) == "string" then
+                                selected[v] = true
                             end
-                            callback(v)
-                            if flagKey then Window.Flags[flagKey] = v end
+                            for o, b in pairs(optBtns) do
+                                local nowSel = selected[o] == true
+                                b.TextColor3 = nowSel and C.Accent or C.Sub
+                                b.BackgroundTransparency = nowSel and 0.5 or 1
+                            end
+                            Sel.Text = getMultiDisplay()
+                            Dropdown.Value = selected
+                            callback(selected)
+                            if flagKey then Window.Flags[flagKey] = selected end
+                        else
+                            if table.find(options,v) then
+                                Dropdown.Value = v; Sel.Text = tostring(v)
+                                for o, b in pairs(optBtns) do
+                                    b.TextColor3 = o==v and C.Accent or C.Sub
+                                    b.BackgroundTransparency = o==v and 0.5 or 1
+                                end
+                                callback(v)
+                                if flagKey then Window.Flags[flagKey] = v end
+                            end
                         end
+                    end
+
+                    function Dropdown:Get()
+                        return Dropdown.Value
                     end
 
                     if selected then task.defer(function() callback(selected) end) end
