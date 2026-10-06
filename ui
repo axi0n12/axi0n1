@@ -1,4 +1,4 @@
--- 4.4
+-- 4.5
 local KraviX = {}
 
 local TweenService     = game:GetService("TweenService")
@@ -1099,6 +1099,7 @@ function KraviX:CreateWindow(config)
     elseif backdropFx == "rain" then StartRain(Backdrop) end
 
     local WIN_W, WIN_H = 670, 720
+    local ActiveDropdownClose = nil
 
     local Main = Instance.new("Frame", ScreenGui)
     Main.Name = "KraviXMain"
@@ -3511,6 +3512,10 @@ function KraviX:CreateWindow(config)
         FadeOverlay.BackgroundTransparency = 1; FadeOverlay.BorderSizePixel = 0; FadeOverlay.ZIndex = 50
 
         local function SelectTab()
+            if ActiveDropdownClose then pcall(ActiveDropdownClose); ActiveDropdownClose = nil end
+            for _, obj in ipairs(ScreenGui:GetChildren()) do
+                if obj.Name == "KxColorPicker" and obj.Visible then obj.Visible = false end
+            end
             activeTabIndex = tabIndex
             for _, t in ipairs(Window.Tabs) do
                 local on = t.Index == activeTabIndex
@@ -3590,6 +3595,10 @@ function KraviX:CreateWindow(config)
             SubFadeOverlay.BackgroundTransparency = 1; SubFadeOverlay.BorderSizePixel = 0; SubFadeOverlay.ZIndex = 50
 
             local function SelectSub()
+                if ActiveDropdownClose then pcall(ActiveDropdownClose); ActiveDropdownClose = nil end
+                for _, obj in ipairs(ScreenGui:GetChildren()) do
+                    if obj.Name == "KxColorPicker" and obj.Visible then obj.Visible = false end
+                end
                 tabEntry.ActiveSub = subIndex
                 for _, st in ipairs(tabEntry.SubTabs) do
                     local on = st.Index == subIndex
@@ -3868,6 +3877,7 @@ function KraviX:CreateWindow(config)
 
                     local hasScroll = #options > 6
                     local DFrame = Instance.new("ScrollingFrame", ScreenGui)
+                    DFrame.Name             = "KxDropdownFrame"
                     DFrame.BackgroundColor3 = Color3.fromRGB(18,18,18)
                     DFrame.BorderSizePixel  = 0; DFrame.Visible = false; DFrame.ZIndex = 200
                     DFrame.ClipsDescendants = true
@@ -3883,6 +3893,8 @@ function KraviX:CreateWindow(config)
                     local _hover = false
                     DFrame.MouseEnter:Connect(function() _hover = true  end)
                     DFrame.MouseLeave:Connect(function() _hover = false end)
+
+                    local closeDropdown
 
                     local optBtns = {}
                     for _, opt in ipairs(options) do
@@ -3926,8 +3938,12 @@ function KraviX:CreateWindow(config)
                                     b.TextColor3 = o==opt and C.Accent or C.Sub
                                     b.BackgroundTransparency = o==opt and 0.5 or 1
                                 end
-                                opened = false; DFrame.Visible = false; _hover = false
-                                Tween(Arrow,{Rotation=0},0.15):Play()
+                                if closeDropdown then
+                                    closeDropdown()
+                                else
+                                    opened = false; DFrame.Visible = false; _hover = false
+                                    Tween(Arrow,{Rotation=0},0.15):Play()
+                                end
                                 if prev ~= opt then callback(opt) end
                                 if flagKey then Window.Flags[flagKey] = opt end
                             end
@@ -3935,8 +3951,29 @@ function KraviX:CreateWindow(config)
                     end
 
                     local _justOpenedDrop = false
+                    closeDropdown = function()
+                        if not opened then return end
+                        opened = false
+                        if ActiveDropdownClose == closeDropdown then
+                            ActiveDropdownClose = nil
+                        end
+                        Tween(DFrame,{Size=UDim2.new(0,Sel.AbsoluteSize.X,0,0)},0.14,Enum.EasingStyle.Quint,Enum.EasingDirection.In):Play()
+                        task.delay(0.15, function() if not opened then DFrame.Visible = false end end)
+                        Tween(Arrow,{Rotation=0},0.15):Play()
+                    end
+
                     local function openDropdown()
+                        if ActiveDropdownClose and ActiveDropdownClose ~= closeDropdown then
+                            pcall(ActiveDropdownClose)
+                            ActiveDropdownClose = nil
+                        end
+                        for _, obj in ipairs(ScreenGui:GetChildren()) do
+                            if obj.Name == "KxColorPicker" and obj.Visible then
+                                obj.Visible = false
+                            end
+                        end
                         opened = true; _justOpenedDrop = true
+                        ActiveDropdownClose = closeDropdown
                         local abs = Sel.AbsolutePosition
                         local fH  = math.min(#options * 24 + 8, 155)
                         local selH = (Sel.AbsoluteSize.Y > 0) and Sel.AbsoluteSize.Y or 26
@@ -3947,12 +3984,6 @@ function KraviX:CreateWindow(config)
                         DFrame.Visible = true
                         Tween(DFrame,{Size=UDim2.new(0,Sel.AbsoluteSize.X,0,fH)},0.18,Enum.EasingStyle.Quint):Play()
                         Tween(Arrow,{Rotation=180},0.15):Play()
-                    end
-                    local function closeDropdown()
-                        opened = false
-                        Tween(DFrame,{Size=UDim2.new(0,Sel.AbsoluteSize.X,0,0)},0.14,Enum.EasingStyle.Quint,Enum.EasingDirection.In):Play()
-                        task.delay(0.15, function() if not opened then DFrame.Visible = false end end)
-                        Tween(Arrow,{Rotation=0},0.15):Play()
                     end
 
                     Sel.MouseButton1Click:Connect(function()
@@ -4326,10 +4357,18 @@ function KraviX:CreateWindow(config)
                     end
 
                     local function getPointerPos(input)
-                        if input and input.UserInputType == Enum.UserInputType.Touch then
+                        if input and input.Position and input.Position.X ~= 0 and input.Position.Y ~= 0 then
                             return Vector2.new(input.Position.X, input.Position.Y)
                         end
-                        return UserInputService:GetMouseLocation()
+                        if Mouse then
+                            return Vector2.new(Mouse.X, Mouse.Y)
+                        end
+                        local ml = UserInputService:GetMouseLocation()
+                        local ok, gi = pcall(function() return game:GetService("GuiService"):GetGuiInset() end)
+                        if ok and gi then
+                            return Vector2.new(ml.X - gi.X, ml.Y - gi.Y)
+                        end
+                        return ml
                     end
 
                     CanvasHit.InputBegan:Connect(function(i)
@@ -4378,8 +4417,12 @@ function KraviX:CreateWindow(config)
                     SwBtn.MouseButton1Click:Connect(function()
                         pickerOpen = not pickerOpen
                         if pickerOpen then
+                            if ActiveDropdownClose then
+                                pcall(ActiveDropdownClose)
+                                ActiveDropdownClose = nil
+                            end
                             _justOpenedPicker = true
-                            for _, obj in ipairs(ScreenGui:GetDescendants()) do
+                            for _, obj in ipairs(ScreenGui:GetChildren()) do
                                 if obj.Name == "KxColorPicker" and obj ~= PF then
                                     obj.Visible = false
                                 end
@@ -4403,7 +4446,7 @@ function KraviX:CreateWindow(config)
                             return
                         end
                         if not pickerOpen or cDrag or hDrag then return end
-                        local mp = UserInputService:GetMouseLocation()
+                        local mp = getPointerPos(inp)
                         local fp = PF.AbsolutePosition; local fs = PF.AbsoluteSize
                         if not (mp.X>=fp.X and mp.X<=fp.X+fs.X
                              and mp.Y>=fp.Y and mp.Y<=fp.Y+fs.Y) then
