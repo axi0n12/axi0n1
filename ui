@@ -3480,20 +3480,29 @@ function Lexhancements:CreateWindow(config)
         TabBtn.AnchorPoint = Vector2.new(0, 0)
         TabBtn.BackgroundColor3 = C.Bg3
         TabBtn.BackgroundTransparency = 1
-        TabBtn.Text = (icon and icon.."  " or "")..name
-        TabBtn.TextColor3 = C.Muted; TabBtn.TextSize = 11; TabBtn.Font = Enum.Font.Gotham
-        TabBtn.TextXAlignment = Enum.TextXAlignment.Left
+        TabBtn.Text = ""
         TabBtn.AutoButtonColor = false; TabBtn.ZIndex = 12; TabBtn.LayoutOrder = tabIndex
-        mkCorner(TabBtn, 6); mkPad(TabBtn, 0, 0, 14, 10)
+        mkCorner(TabBtn, 6)
 
         local TabUnder = Instance.new("Frame", TabBtn)
         TabUnder.Size = UDim2.new(0, 3, 0, 16)
         TabUnder.Position = UDim2.new(0, 0, 0.5, -8)
         TabUnder.BackgroundColor3 = C.Accent
         TabUnder.BorderSizePixel = 0
-        TabUnder.ZIndex = 13
+        TabUnder.ZIndex = 14
         mkCorner(TabUnder, 2)
         TabUnder.BackgroundTransparency = 1
+
+        local TabTitle = Instance.new("TextLabel", TabBtn)
+        TabTitle.Size = UDim2.new(1, -22, 1, 0)
+        TabTitle.Position = UDim2.new(0, 14, 0, 0)
+        TabTitle.BackgroundTransparency = 1
+        TabTitle.Text = (icon and icon.."  " or "")..name
+        TabTitle.TextColor3 = C.Muted
+        TabTitle.TextSize = 11
+        TabTitle.Font = Enum.Font.Gotham
+        TabTitle.TextXAlignment = Enum.TextXAlignment.Left
+        TabTitle.ZIndex = 13
 
         local TabContent = Instance.new("Frame", ContentFrame)
         TabContent.Size = UDim2.new(1,0,1,0); TabContent.BackgroundTransparency = 1
@@ -3520,7 +3529,7 @@ function Lexhancements:CreateWindow(config)
         SubContent.BackgroundTransparency = 1; SubContent.BorderSizePixel = 0
         SubContent.ZIndex = 11; SubContent.ClipsDescendants = true
 
-        table.insert(Window.Tabs,{Btn=TabBtn,Under=TabUnder,Container=TabContent,
+        table.insert(Window.Tabs,{Btn=TabBtn,Under=TabUnder,Title=TabTitle,Container=TabContent,
             Index=tabIndex,SubTabs={},ActiveSub=0})
         local tabEntry = Window.Tabs[tabIndex]
 
@@ -3538,14 +3547,16 @@ function Lexhancements:CreateWindow(config)
                 local on = t.Index == activeTabIndex
                 if not on then t.Container.Visible = false end
                 Tween(t.Btn,{
-                    TextColor3 = on and C.White or C.Muted,
                     BackgroundColor3 = on and C.Bg3 or C.Bg,
                     BackgroundTransparency = on and 0 or 1
                 },0.12):Play()
+                if t.Title then
+                    Tween(t.Title, {TextColor3 = on and C.White or C.Muted}, 0.12):Play()
+                    t.Title.Font = on and Enum.Font.GothamBold or Enum.Font.Gotham
+                end
                 if t.Under then
                     Tween(t.Under, {BackgroundTransparency = on and 0 or 1}, 0.12):Play()
                 end
-                t.Btn.Font = on and Enum.Font.GothamBold or Enum.Font.Gotham
             end
             TabContent.Visible = true
             FadeOverlay.BackgroundTransparency = 0
@@ -3555,12 +3566,14 @@ function Lexhancements:CreateWindow(config)
         TabBtn.MouseButton1Click:Connect(SelectTab)
         TabBtn.MouseEnter:Connect(function()
             if tabIndex ~= activeTabIndex then
-                Tween(TabBtn,{TextColor3=C.Sub,BackgroundColor3=C.Bg3,BackgroundTransparency=0.5},0.1):Play()
+                Tween(TabBtn,{BackgroundColor3=C.Bg3,BackgroundTransparency=0.5},0.1):Play()
+                Tween(TabTitle,{TextColor3=C.Sub},0.1):Play()
             end
         end)
         TabBtn.MouseLeave:Connect(function()
             if tabIndex ~= activeTabIndex then
-                Tween(TabBtn,{TextColor3=C.Muted,BackgroundTransparency=1},0.1):Play()
+                Tween(TabBtn,{BackgroundTransparency=1},0.1):Play()
+                Tween(TabTitle,{TextColor3=C.Muted},0.1):Play()
             end
         end)
         if #Window.Tabs == 1 then SelectTab() end
@@ -3600,10 +3613,10 @@ function Lexhancements:CreateWindow(config)
 
             local function makeCol(xScale, xOff)
                 local s = Instance.new("ScrollingFrame", SubPanel)
-                s.Size     = UDim2.new(0.5, xOff, 1, 0)
-                s.Position = UDim2.new(xScale, math.max(0, -xOff), 0, 0)
+                s.Size     = UDim2.new(0.5, -6, 1, 0)
+                s.Position = UDim2.new(xScale, xOff, 0, 0)
                 s.BackgroundTransparency = 1; s.BorderSizePixel = 0
-                s.ScrollBarThickness = 3; s.ScrollBarImageColor3 = C.Accent
+                s.ScrollBarThickness = 2; s.ScrollBarImageColor3 = C.Accent
                 s.CanvasSize = UDim2.new(0, 0, 0, 0); s.ZIndex = 12
                 local l = Instance.new("UIListLayout", s)
                 l.Padding = UDim.new(0, 10); l.SortOrder = Enum.SortOrder.LayoutOrder
@@ -3615,12 +3628,8 @@ function Lexhancements:CreateWindow(config)
                 return s
             end
 
-            local LeftScroll  = makeCol(0, -5)
-            local Div         = Instance.new("Frame", SubPanel)
-            Div.Size          = UDim2.new(0, 1, 1, -16); Div.Position = UDim2.new(0.5, 0, 0, 8)
-            Div.BackgroundColor3 = C.Border; Div.BorderSizePixel = 0; Div.ZIndex = 12
-            local RightScroll = makeCol(0.5, -5)
-            RightScroll.Position = UDim2.new(0.5, 5, 0, 0)
+            local LeftScroll  = makeCol(0, 0)
+            local RightScroll = makeCol(0.5, 6)
 
             SubTab.Btn   = SBtn
             SubTab.Under = SUnder
@@ -3687,13 +3696,19 @@ function Lexhancements:CreateWindow(config)
                 CardLayout.SortOrder = Enum.SortOrder.LayoutOrder
                 CardLayout.Padding = UDim.new(0, 4)
 
+                local itemOrder = 0
+                local function nextOrder()
+                    itemOrder = itemOrder + 1
+                    return itemOrder
+                end
+
                 if sectionName and sectionName ~= "" then
                     local HdrFrame = Instance.new("Frame", Card)
                     HdrFrame.Size = UDim2.new(1, 0, 0, 22)
                     HdrFrame.BackgroundTransparency = 1
                     HdrFrame.BorderSizePixel = 0
                     HdrFrame.ZIndex = 13
-                    HdrFrame.LayoutOrder = 0
+                    HdrFrame.LayoutOrder = nextOrder()
 
                     local DotBadge = Instance.new("Frame", HdrFrame)
                     DotBadge.Size = UDim2.new(0, 8, 0, 8)
@@ -3719,10 +3734,13 @@ function Lexhancements:CreateWindow(config)
                     HLine.BackgroundColor3 = C.Border
                     HLine.BorderSizePixel = 0
                     HLine.ZIndex = 13
-                    HLine.LayoutOrder = 1
+                    HLine.LayoutOrder = nextOrder()
                 end
 
-                local function AddItem(item) item.Parent = Card end
+                local function AddItem(item)
+                    item.LayoutOrder = nextOrder()
+                    item.Parent = Card
+                end
 
                 function Section:AddToggle(cfg)
                     cfg = cfg or {}
@@ -4361,7 +4379,7 @@ function Lexhancements:CreateWindow(config)
                     Lbl.TextXAlignment = Enum.TextXAlignment.Left; Lbl.ZIndex = 14
 
                     local SwOut = Instance.new("Frame", Row)
-                    SwOut.Size = UDim2.new(0,42,0,16); SwOut.AnchorPoint = Vector2.new(1,0.5)
+                    SwOut.Size = UDim2.new(0,22,0,15); SwOut.AnchorPoint = Vector2.new(1,0.5)
                     SwOut.Position = UDim2.new(1,0,0.5,0)
                     SwOut.BackgroundColor3 = Color3.fromRGB(0,0,0)
                     SwOut.BorderSizePixel = 0; SwOut.ZIndex = 14
@@ -4607,8 +4625,10 @@ function Lexhancements:CreateWindow(config)
 
                 function Section:AddSeparator()
                     local S = Instance.new("Frame")
-                    S.Size = UDim2.new(1,0,0,1); S.BackgroundColor3 = C.Border
-                    S.BorderSizePixel = 0; S.ZIndex = 13
+                    S.Size = UDim2.new(1, 0, 0, 8); S.BackgroundTransparency = 1; S.ZIndex = 13
+                    local SLine = Instance.new("Frame", S)
+                    SLine.Size = UDim2.new(1, 0, 0, 1); SLine.Position = UDim2.new(0, 0, 0.5, 0)
+                    SLine.BackgroundColor3 = C.Border; SLine.BorderSizePixel = 0; SLine.ZIndex = 13
                     AddItem(S)
                 end
 
