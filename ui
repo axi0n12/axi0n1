@@ -1,4 +1,5 @@
-local KraviX = {}
+local Lexhancements = {}
+local KraviX = Lexhancements
 
 local TweenService     = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
@@ -15,27 +16,29 @@ local SOUND_NOTIF = "rbxassetid://84596244576386"
 local SOUND_OPEN  = "rbxassetid://4807489774"
 
 local C = {
-    Bg          = Color3.fromRGB( 12,  11,  16),
-    Bg2         = Color3.fromRGB(  8,   7,  12),
-    Bg3         = Color3.fromRGB( 16,  16,  20),
-    Bg4         = Color3.fromRGB( 22,  21,  28),
-    Bg5         = Color3.fromRGB( 28,  27,  35),
-    BgHover     = Color3.fromRGB( 28,  20,  42),
-    Accent      = Color3.fromRGB(124,  58, 237),
-    Accent2     = Color3.fromRGB(165,  85, 255),
-    Text        = Color3.fromRGB(220, 220, 225),
-    Sub         = Color3.fromRGB(136, 135, 141),
-    Muted       = Color3.fromRGB( 90,  89,  95),
-    Muted2      = Color3.fromRGB( 45,  44,  50),
-    Border      = Color3.fromRGB( 28,  28,  35),
-    BorderBt    = Color3.fromRGB( 40,  38,  50),
+    Bg          = Color3.fromRGB( 11,  11,  15), -- Background: #0B0B0F
+    Bg2         = Color3.fromRGB( 11,  11,  15), -- Background: #0B0B0F
+    Bg3         = Color3.fromRGB( 25,  21,  34), -- Surface: #191522
+    Bg4         = Color3.fromRGB( 33,  28,  45),
+    Bg5         = Color3.fromRGB( 41,  35,  56),
+    BgHover     = Color3.fromRGB( 42,  30,  62),
+    Accent      = Color3.fromRGB(168,  85, 247), -- Accent: #A855F7
+    Accent2     = Color3.fromRGB(216, 180, 254), -- Highlight: #D8B4FE
+    Highlight   = Color3.fromRGB(216, 180, 254), -- Highlight: #D8B4FE
+    Text        = Color3.fromRGB(240, 240, 245),
+    Sub         = Color3.fromRGB(160, 155, 175),
+    Muted       = Color3.fromRGB(110, 105, 125),
+    Muted2      = Color3.fromRGB( 55,  50,  68),
+    Border      = Color3.fromRGB( 38,  32,  52),
+    BorderBt    = Color3.fromRGB( 52,  44,  70),
     White       = Color3.fromRGB(255, 255, 255),
     Black       = Color3.fromRGB(  0,   0,   0),
     Green       = Color3.fromRGB( 60, 210, 110),
     Red         = Color3.fromRGB(230,  60,  60),
     Shadow      = Color3.fromRGB(  0,   0,   0),
-    NotifBg     = Color3.fromRGB( 16,  15,  22),
+    NotifBg     = Color3.fromRGB( 25,  21,  34), -- Surface: #191522
 }
+Lexhancements.C = C
 KraviX.C = C
 
 local TWEEN_SPD = 1.0
@@ -387,7 +390,7 @@ local function CreateWelcomeScreen(screenGui, onDone)
     local userId     = (LocalPlayer and LocalPlayer.UserId) or 1
 
     local WelcomeGui = Instance.new("ScreenGui")
-    WelcomeGui.Name = "AxionWelcomeGui"
+    WelcomeGui.Name = "LexhancementsWelcomeGui"
     WelcomeGui.IgnoreGuiInset = true
     WelcomeGui.ResetOnSpawn = false
     WelcomeGui.DisplayOrder = 999999
@@ -416,7 +419,7 @@ local function CreateWelcomeScreen(screenGui, onDone)
     Card.Size = UDim2.new(0, CARD_W, 0, CARD_H)
     Card.AnchorPoint = Vector2.new(0.5, 0.5)
     Card.Position = UDim2.new(0.5, 0, 0.5, 20)
-    Card.BackgroundColor3 = Color3.fromRGB(12, 12, 16)
+    Card.BackgroundColor3 = C.Bg
     Card.BackgroundTransparency = 1
     Card.BorderSizePixel = 0
     Card.ZIndex = 610
@@ -432,14 +435,14 @@ local function CreateWelcomeScreen(screenGui, onDone)
     AvatarCircle.Size = UDim2.new(0, PHOTO_SIZE, 0, PHOTO_SIZE)
     AvatarCircle.AnchorPoint = Vector2.new(0.5, 0)
     AvatarCircle.Position = UDim2.new(0.5, 0, 0, 24)
-    AvatarCircle.BackgroundColor3 = Color3.fromRGB(18, 15, 26)
+    AvatarCircle.BackgroundColor3 = C.Bg3
     AvatarCircle.BackgroundTransparency = 1
     AvatarCircle.BorderSizePixel = 0
     AvatarCircle.ClipsDescendants = true
     AvatarCircle.ZIndex = 612
     mkCorner(AvatarCircle, 999)
 
-    local AvatarStroke = mkStroke(AvatarCircle, Color3.fromRGB(124, 58, 237), 2, 1)
+    local AvatarStroke = mkStroke(AvatarCircle, C.Accent, 2, 1)
 
     local AvatarImg = Instance.new("ImageLabel", AvatarCircle)
     AvatarImg.Size = UDim2.new(1, 0, 1, 0)
@@ -480,7 +483,7 @@ local function CreateWelcomeScreen(screenGui, onDone)
     NickLbl.Position = UDim2.new(0.5, 0, 0, 124)
     NickLbl.BackgroundTransparency = 1
     NickLbl.Text = playerNick
-    NickLbl.TextColor3 = Color3.fromRGB(165, 85, 255)
+    NickLbl.TextColor3 = C.Highlight
     NickLbl.Font = Enum.Font.GothamMedium
     NickLbl.TextSize = 13
     NickLbl.TextTransparency = 1
@@ -504,7 +507,7 @@ local function CreateWelcomeScreen(screenGui, onDone)
     LoadBtn.Size = UDim2.new(1, -32, 0, 40)
     LoadBtn.AnchorPoint = Vector2.new(0.5, 1)
     LoadBtn.Position = UDim2.new(0.5, 0, 1, -16)
-    LoadBtn.BackgroundColor3 = Color3.fromRGB(110, 140, 245)
+    LoadBtn.BackgroundColor3 = C.Accent
     LoadBtn.BackgroundTransparency = 1
     LoadBtn.BorderSizePixel = 0
     LoadBtn.ZIndex = 612
@@ -512,8 +515,8 @@ local function CreateWelcomeScreen(screenGui, onDone)
 
     local BtnGrad = Instance.new("UIGradient", LoadBtn)
     BtnGrad.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(115, 150, 250)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(124, 75, 245))
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(168, 85, 247)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(216, 180, 254))
     })
 
     local BtnText = Instance.new("TextLabel", LoadBtn)
@@ -580,22 +583,22 @@ local function CreateWelcomeScreen(screenGui, onDone)
 end
 
 local function CreateLoader(screenGui, onDone, scriptName)
-    local titleText = scriptName or "AXION"
-    if titleText == "" or titleText:lower() == "script" or titleText:lower() == "mooze" or titleText:lower() == "kravix" then
-        titleText = "AXION"
+    local titleText = scriptName or "LEXHANCEMENTS"
+    if titleText == "" or titleText:lower() == "script" or titleText:lower() == "mooze" or titleText:lower() == "kravix" or titleText:lower() == "axion" or titleText:lower() == "lexhancements" then
+        titleText = "LEXHANCEMENTS"
     end
 
     local CFG = {
-        bg = Color3.fromRGB(8, 8, 8),
-        topBg = Color3.fromRGB(13, 13, 13),
-        fg = Color3.fromRGB(220, 220, 220),
-        activeColor = Color3.fromRGB(165, 85, 255),
+        bg = C.Bg,
+        topBg = C.Bg3,
+        fg = C.Text,
+        activeColor = C.Accent,
         fadeTime = 0.22,
     }
 
     local WIN_W, WIN_H = 670, 360
     local Loader = Instance.new("Frame", screenGui)
-    Loader.Name = "axion_terminal_window"
+    Loader.Name = "lexhancements_terminal_window"
     Loader.Size = UDim2.new(0, WIN_W, 0, WIN_H)
     Loader.Position = UDim2.new(0.5, -WIN_W/2, 0.5, -WIN_H/2)
     Loader.BackgroundColor3 = CFG.bg
@@ -603,7 +606,7 @@ local function CreateLoader(screenGui, onDone, scriptName)
     Loader.ZIndex = 500
     Loader.ClipsDescendants = true
     mkCorner(Loader, 6)
-    mkStroke(Loader, Color3.fromRGB(60, 40, 90), 1, 0)
+    mkStroke(Loader, C.Border, 1, 0)
 
     local Shadow = Instance.new("ImageLabel", Loader)
     Shadow.Name = "Shadow"
@@ -611,7 +614,7 @@ local function CreateLoader(screenGui, onDone, scriptName)
     Shadow.Position = UDim2.new(0, -20, 0, -20)
     Shadow.BackgroundTransparency = 1
     Shadow.Image = "rbxassetid://6015897843"
-    Shadow.ImageColor3 = Color3.fromRGB(124, 58, 237)
+    Shadow.ImageColor3 = C.Accent
     Shadow.ImageTransparency = 0.6
     Shadow.ZIndex = 499
     Shadow.ScaleType = Enum.ScaleType.Slice
@@ -628,7 +631,7 @@ local function CreateLoader(screenGui, onDone, scriptName)
     local TopSep = Instance.new("Frame", TopBar)
     TopSep.Size = UDim2.new(1, 0, 0, 1)
     TopSep.Position = UDim2.new(0, 0, 1, -1)
-    TopSep.BackgroundColor3 = Color3.fromRGB(45, 30, 65)
+    TopSep.BackgroundColor3 = C.Border
     TopSep.BorderSizePixel = 0
     TopSep.ZIndex = 502
 
@@ -718,7 +721,7 @@ local function CreateLoader(screenGui, onDone, scriptName)
 
     task.spawn(function()
         local asciiWord = titleText:upper()
-        if ASC[asciiWord:sub(1, 1)] == nil then asciiWord = "AXION" end
+        if ASC[asciiWord:sub(1, 1)] == nil then asciiWord = "LEX" end
         local fullAscii = buildAscii(asciiWord)
 
         local step = math.max(1, math.floor(#fullAscii / 12))
@@ -735,12 +738,12 @@ local function CreateLoader(screenGui, onDone, scriptName)
         local playerUserId = (LocalPlayer and LocalPlayer.UserId) or 0
 
         local logItems = {
-            { tag = "[+]", col = "rgb(165,85,255)", text = '<font color="rgb(220,220,220)">Key Verified:</font> <font color="rgb(60,210,110)">Valid License [Lifetime]</font>' },
-            { tag = "[+]", col = "rgb(165,85,255)", text = '<font color="rgb(220,220,220)">User:</font> <font color="rgb(192,132,252)">' .. playerNick .. '</font> <font color="rgb(120,120,130)">(ID: ' .. tostring(playerUserId) .. ')</font>' },
-            { tag = "[+]", col = "rgb(165,85,255)", text = '<font color="rgb(220,220,220)">Bypass:</font> <font color="rgb(60,210,110)">Working</font> <font color="rgb(120,120,130)">[100% Secure]</font>' },
-            { tag = "[+]", col = "rgb(165,85,255)", text = '<font color="rgb(220,220,220)">Axion:</font> <font color="rgb(60,210,110)">ON</font>' },
-            { tag = "[+]", col = "rgb(165,85,255)", text = '<font color="rgb(220,220,220)">Modules:</font> <font color="rgb(165,85,255)">Core Engine Initialized</font>' },
-            { tag = "[✓]", col = "rgb(60,210,110)", text = '<font color="rgb(240,240,240)">Ready! Launching Axion...</font>' },
+            { tag = "[+]", col = "rgb(168,85,247)", text = '<font color="rgb(220,220,220)">Key Verified:</font> <font color="rgb(60,210,110)">Valid License [Lifetime]</font>' },
+            { tag = "[+]", col = "rgb(168,85,247)", text = '<font color="rgb(220,220,220)">User:</font> <font color="rgb(216,180,254)">' .. playerNick .. '</font> <font color="rgb(120,120,130)">(ID: ' .. tostring(playerUserId) .. ')</font>' },
+            { tag = "[+]", col = "rgb(168,85,247)", text = '<font color="rgb(220,220,220)">Bypass:</font> <font color="rgb(60,210,110)">Working</font> <font color="rgb(120,120,130)">[100% Secure]</font>' },
+            { tag = "[+]", col = "rgb(168,85,247)", text = '<font color="rgb(220,220,220)">Lexhancements:</font> <font color="rgb(60,210,110)">ON</font>' },
+            { tag = "[+]", col = "rgb(168,85,247)", text = '<font color="rgb(168,85,247)">Modules:</font> <font color="rgb(216,180,254)">Core Engine Initialized</font>' },
+            { tag = "[✓]", col = "rgb(60,210,110)", text = '<font color="rgb(240,240,240)">Ready! Launching Lexhancements...</font>' },
         }
 
         local labels = {}
@@ -788,7 +791,7 @@ local function CreateLoader(screenGui, onDone, scriptName)
     end)
 end
 
-function KraviX:CreateWindow(config)
+function Lexhancements:CreateWindow(config)
     config         = config or {}
     config.Name    = config.Name    or "Script"
     config.Url     = config.Url     or ""
@@ -798,6 +801,7 @@ function KraviX:CreateWindow(config)
     if config.Accent then
         C.Accent  = config.Accent
         C.Accent2 = lighten(config.Accent, 0.09)
+        C.Highlight = C.Accent2
         C.BgHover = Color3.new(
             math.clamp(config.Accent.R*0.12,0,1),
             math.clamp(config.Accent.G*0.08,0,1),
@@ -844,7 +848,7 @@ function KraviX:CreateWindow(config)
 
     Window.Flags   = {}
     Window.Options = {}
-    Window.Folder  = config.Folder or "KraviX/configs"
+    Window.Folder  = config.Folder or "Lexhancements/configs"
 
     local function registerOption(cfg, control)
         local rawKey = cfg and (cfg.Flag or cfg.Name)
@@ -886,7 +890,7 @@ function KraviX:CreateWindow(config)
         cfgName = string.gsub(cfgName, "[^%w_%-]", "")
         if cfgName == "" then cfgName = "default" end
 
-        local folder = Window.Folder or "KraviX/configs"
+        local folder = Window.Folder or "Lexhancements/configs"
         ensureConfigFolder(folder)
 
         local data = {}
@@ -923,7 +927,7 @@ function KraviX:CreateWindow(config)
         local jsonStr
         local encOk, err = pcall(function() jsonStr = HttpService:JSONEncode(data) end)
         if not encOk or not jsonStr then
-            CreateNotification("KraviX Config", "Error serializing config: " .. tostring(err), 3, "error")
+            CreateNotification("Lexhancements Config", "Error serializing config: " .. tostring(err), 3, "error")
             return false
         end
 
@@ -931,13 +935,13 @@ function KraviX:CreateWindow(config)
             local filePath = folder .. "/" .. cfgName .. ".json"
             local writeOk, writeErr = pcall(function() writefile(filePath, jsonStr) end)
             if writeOk then
-                CreateNotification("KraviX Config", "Configuração '" .. cfgName .. "' saved successfully!", 3, "success")
+                CreateNotification("Lexhancements Config", "Configuração '" .. cfgName .. "' saved successfully!", 3, "success")
                 return true
             else
-                CreateNotification("KraviX Config", "Error saving file: " .. tostring(writeErr), 3, "error")
+                CreateNotification("Lexhancements Config", "Error saving file: " .. tostring(writeErr), 3, "error")
             end
         else
-            CreateNotification("KraviX Config", "Executor não suporta writefile!", 3, "error")
+            CreateNotification("Lexhancements Config", "Executor não suporta writefile!", 3, "error")
         end
         return false
     end
@@ -945,25 +949,25 @@ function KraviX:CreateWindow(config)
     function Window:LoadConfig(cfgName)
         if not cfgName or cfgName == "" then cfgName = "default" end
         cfgName = string.gsub(cfgName, "[^%w_%-]", "")
-        local folder = Window.Folder or "KraviX/configs"
+        local folder = Window.Folder or "Lexhancements/configs"
         local filePath = folder .. "/" .. cfgName .. ".json"
 
         if not readfile or not isfile or not isfile(filePath) then
-            CreateNotification("KraviX Config", "Configuração '" .. cfgName .. "' não encontrada!", 3, "error")
+            CreateNotification("Lexhancements Config", "Configuração '" .. cfgName .. "' não encontrada!", 3, "error")
             return false
         end
 
         local fileContent
         local readOk, readErr = pcall(function() fileContent = readfile(filePath) end)
         if not readOk or not fileContent then
-            CreateNotification("KraviX Config", "Error reading config: " .. tostring(readErr), 3, "error")
+            CreateNotification("Lexhancements Config", "Error reading config: " .. tostring(readErr), 3, "error")
             return false
         end
 
         local decoded
         local decOk, decErr = pcall(function() decoded = HttpService:JSONDecode(fileContent) end)
         if not decOk or type(decoded) ~= "table" then
-            CreateNotification("KraviX Config", "Corrupted config file!", 3, "error")
+            CreateNotification("Lexhancements Config", "Corrupted config file!", 3, "error")
             return false
         end
 
@@ -996,32 +1000,32 @@ function KraviX:CreateWindow(config)
             end
         end
 
-        CreateNotification("KraviX Config", "Configuração '" .. cfgName .. "' loaded successfully! (" .. loadedCount .. " opções)", 3, "success")
+        CreateNotification("Lexhancements Config", "Configuração '" .. cfgName .. "' loaded successfully! (" .. loadedCount .. " opções)", 3, "success")
         return true
     end
 
     function Window:DeleteConfig(cfgName)
         if not cfgName or cfgName == "" then return false end
         cfgName = string.gsub(cfgName, "[^%w_%-]", "")
-        local folder = Window.Folder or "KraviX/configs"
+        local folder = Window.Folder or "Lexhancements/configs"
         local filePath = folder .. "/" .. cfgName .. ".json"
 
         if isfile and isfile(filePath) and delfile then
             local delOk, err = pcall(function() delfile(filePath) end)
             if delOk then
-                CreateNotification("KraviX Config", "Configuração '" .. cfgName .. "' deleted!", 3, "info")
+                CreateNotification("Lexhancements Config", "Configuração '" .. cfgName .. "' deleted!", 3, "info")
                 return true
             else
-                CreateNotification("KraviX Config", "Error deleting: " .. tostring(err), 3, "error")
+                CreateNotification("Lexhancements Config", "Error deleting: " .. tostring(err), 3, "error")
             end
         else
-            CreateNotification("KraviX Config", "Arquivo não encontrado para deletar!", 3, "error")
+            CreateNotification("Lexhancements Config", "Arquivo não encontrado para deletar!", 3, "error")
         end
         return false
     end
 
     function Window:GetConfigs()
-        local folder = Window.Folder or "KraviX/configs"
+        local folder = Window.Folder or "Lexhancements/configs"
         ensureConfigFolder(folder)
         local list = {}
         if listfiles then
@@ -1044,21 +1048,21 @@ function KraviX:CreateWindow(config)
     end
 
     function Window:SetAutoLoad(cfgName)
-        local folder = Window.Folder or "KraviX/configs"
+        local folder = Window.Folder or "Lexhancements/configs"
         ensureConfigFolder(folder)
         local autoFile = folder .. "/autoload_config.txt"
         if writefile then
             pcall(function() writefile(autoFile, cfgName or "") end)
             if cfgName and cfgName ~= "" then
-                CreateNotification("KraviX Config", "Auto Load set to '" .. cfgName .. "'", 3, "success")
+                CreateNotification("Lexhancements Config", "Auto Load set to '" .. cfgName .. "'", 3, "success")
             else
-                CreateNotification("KraviX Config", "Auto Load disabled!", 3, "info")
+                CreateNotification("Lexhancements Config", "Auto Load disabled!", 3, "info")
             end
         end
     end
 
     function Window:GetAutoLoad()
-        local folder = Window.Folder or "KraviX/configs"
+        local folder = Window.Folder or "Lexhancements/configs"
         local autoFile = folder .. "/autoload_config.txt"
         if readfile and isfile and isfile(autoFile) then
             local val
@@ -1078,7 +1082,7 @@ function KraviX:CreateWindow(config)
     end
 
     local ScreenGui = Instance.new("ScreenGui")
-    ScreenGui.Name = "KraviX"; ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Global
+    ScreenGui.Name = "Lexhancements"; ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Global
     ScreenGui.ResetOnSpawn = false; ScreenGui.IgnoreGuiInset = true
     protect(ScreenGui)
     Window._ScreenGui = ScreenGui
@@ -1096,7 +1100,7 @@ function KraviX:CreateWindow(config)
     local ActiveDropdownClose = nil
 
     local Main = Instance.new("Frame", ScreenGui)
-    Main.Name = "KraviXMain"
+    Main.Name = "LexhancementsMain"
     Main.Size = UDim2.new(0,WIN_W,0,WIN_H)
     Main.Position = UDim2.new(0.5,-WIN_W/2,0.5,-WIN_H/2)
     Main.BackgroundColor3 = C.Bg2
@@ -1130,7 +1134,7 @@ function KraviX:CreateWindow(config)
     BrandLbl.Name = "BrandLbl"
     BrandLbl.Size = UDim2.new(0,0,1,0); BrandLbl.AutomaticSize = Enum.AutomaticSize.X
     BrandLbl.Position = UDim2.new(0,10,0,0)
-    BrandLbl.BackgroundTransparency = 1; BrandLbl.Text = "KraviX"
+    BrandLbl.BackgroundTransparency = 1; BrandLbl.Text = "Lexhancements"
     BrandLbl.TextColor3 = C.Accent; BrandLbl.TextSize = 12; BrandLbl.Font = Enum.Font.GothamBlack
     BrandLbl.TextXAlignment = Enum.TextXAlignment.Left; BrandLbl.ZIndex = 13
 
@@ -1191,34 +1195,39 @@ function KraviX:CreateWindow(config)
     CloseBtn.MouseEnter:Connect(function() Tween(CloseBtn,{BackgroundColor3=C.Red,TextColor3=C.White},0.1):Play() end)
     CloseBtn.MouseLeave:Connect(function() Tween(CloseBtn,{BackgroundColor3=C.Bg4,TextColor3=C.Muted},0.1):Play() end)
 
+    local TAB_WIDTH = 135
+
     local TabBar = Instance.new("ScrollingFrame", Main)
     TabBar.Name = "TabBar"
-    TabBar.Size = UDim2.new(1,0,0,34); TabBar.Position = UDim2.new(0,0,0,33)
+    TabBar.Size = UDim2.new(0, TAB_WIDTH, 1, -55)
+    TabBar.Position = UDim2.new(1, -TAB_WIDTH, 0, 33)
     TabBar.BackgroundColor3 = C.Bg2; TabBar.BackgroundTransparency = 0
     TabBar.BorderSizePixel = 0; TabBar.ZIndex = 11
-    TabBar.ScrollBarThickness = 0; TabBar.ScrollingDirection = Enum.ScrollingDirection.X
-    TabBar.AutomaticCanvasSize = Enum.AutomaticSize.X
-    TabBar.CanvasSize = UDim2.new(0,0,0,0); TabBar.ElasticBehavior = Enum.ElasticBehavior.Never
+    TabBar.ScrollBarThickness = 2
+    TabBar.ScrollBarImageColor3 = C.Border
+    TabBar.ScrollingDirection = Enum.ScrollingDirection.Y
+    TabBar.AutomaticCanvasSize = Enum.AutomaticSize.Y
+    TabBar.CanvasSize = UDim2.new(0, 0, 0, 0); TabBar.ElasticBehavior = Enum.ElasticBehavior.Never
     local TabList = Instance.new("UIListLayout", TabBar)
-    TabList.FillDirection      = Enum.FillDirection.Horizontal
-    TabList.SortOrder          = Enum.SortOrder.LayoutOrder
-    TabList.HorizontalAlignment = Enum.HorizontalAlignment.Left
-    TabList.VerticalAlignment   = Enum.VerticalAlignment.Center
-    TabList.Padding             = UDim.new(0,4)
-    mkPad(TabBar,0,0,10,10)
+    TabList.FillDirection       = Enum.FillDirection.Vertical
+    TabList.SortOrder           = Enum.SortOrder.LayoutOrder
+    TabList.HorizontalAlignment = Enum.HorizontalAlignment.Center
+    TabList.VerticalAlignment   = Enum.VerticalAlignment.Top
+    TabList.Padding             = UDim.new(0, 4)
+    mkPad(TabBar, 6, 6, 6, 6)
 
     local TabSep = Instance.new("Frame", Main)
     TabSep.Name = "TabSep"
-    TabSep.Size = UDim2.new(1,0,0,1); TabSep.Position = UDim2.new(0,0,0,67)
+    TabSep.Size = UDim2.new(0, 1, 1, -55); TabSep.Position = UDim2.new(1, -TAB_WIDTH - 1, 0, 33)
     TabSep.BackgroundColor3 = C.Border; TabSep.BorderSizePixel = 0; TabSep.ZIndex = 11
 
     local ContentFrame = Instance.new("Frame", Main)
-    ContentFrame.Size = UDim2.new(1,0,1,-90); ContentFrame.Position = UDim2.new(0,0,0,68)
+    ContentFrame.Size = UDim2.new(1, -TAB_WIDTH - 1, 1, -55); ContentFrame.Position = UDim2.new(0, 0, 0, 33)
     ContentFrame.BackgroundTransparency = 1; ContentFrame.BorderSizePixel = 0
     ContentFrame.ZIndex = 10; ContentFrame.ClipsDescendants = true
 
     local DockOutline = Instance.new("Frame", ScreenGui)
-    DockOutline.Name = "KxDockOutline"
+    DockOutline.Name = "LxDockOutline"
     DockOutline.AnchorPoint = Vector2.new(0.5, 0)
     DockOutline.Position = UDim2.new(0.5, 0, 0, 20)
     DockOutline.Size = UDim2.new(0, 0, 0, 48)
@@ -1361,7 +1370,7 @@ function KraviX:CreateWindow(config)
         return createDockBtn(opts)
     end
 
-    local ConfigFolder = "KraviX_Configs"
+    local ConfigFolder = "Lexhancements_Configs"
     local localConfigCache = {}
 
     function Window:GetConfigs()
@@ -1395,7 +1404,7 @@ function KraviX:CreateWindow(config)
             data = {
                 Version = "4.1",
                 Timestamp = os.time(),
-                Flags = _G.KraviX_Flags or {}
+                Flags = _G.Lexhancements_Flags or _G.KraviX_Flags or {}
             }
         end
         local jsonStr = HttpService:JSONEncode(data)
@@ -1435,6 +1444,7 @@ function KraviX:CreateWindow(config)
             if Window._ConfigApplier then
                 pcall(function() Window._ConfigApplier(decoded) end)
             elseif decoded.Flags then
+                _G.Lexhancements_Flags = decoded.Flags
                 _G.KraviX_Flags = decoded.Flags
             end
             if Window.Notify then Window.Notify("Config", "Loaded: " .. name, 2) end
@@ -1687,8 +1697,10 @@ function KraviX:CreateWindow(config)
         ToggleWindow()
     end)
 
-    _G.KraviX_GlobalWhitelist = _G.KraviX_GlobalWhitelist or {}
-    _G.KraviX_ViewingPlayer   = nil
+    _G.Lexhancements_GlobalWhitelist = _G.Lexhancements_GlobalWhitelist or _G.KraviX_GlobalWhitelist or {}
+    _G.KraviX_GlobalWhitelist        = _G.Lexhancements_GlobalWhitelist
+    _G.Lexhancements_ViewingPlayer   = nil
+    _G.KraviX_ViewingPlayer          = nil
 
     local MiniPlayers = Window:CreateMiniUI({
         Title = "Player List", Width = 480, Height = 320,
@@ -1874,7 +1886,8 @@ function KraviX:CreateWindow(config)
 
     local function isWhitelisted(plr)
         if not plr then return false end
-        return (_G.KraviX_GlobalWhitelist[plr.UserId] == true) or (_G.KraviX_GlobalWhitelist[plr.Name] == true)
+        local wl = _G.Lexhancements_GlobalWhitelist or _G.KraviX_GlobalWhitelist
+        return wl and ((wl[plr.UserId] == true) or (wl[plr.Name] == true))
     end
 
     local function updateSelectedPanel()
@@ -1889,7 +1902,8 @@ function KraviX:CreateWindow(config)
         AvatarImg.Position = UDim2.new(0.5, -26, 0, 14)
         Tween(AvatarImg, {Size = UDim2.new(0, 60, 0, 60), Position = UDim2.new(0.5, -30, 0, 10)}, 0.22, Enum.EasingStyle.Back, Enum.EasingDirection.Out):Play()
 
-        local isView = (_G.KraviX_ViewingPlayer == selectedPlayer)
+        local viewing = _G.Lexhancements_ViewingPlayer or _G.KraviX_ViewingPlayer
+        local isView = (viewing == selectedPlayer)
         local isWL   = isWhitelisted(selectedPlayer)
 
         if isWL then
@@ -1943,7 +1957,7 @@ function KraviX:CreateWindow(config)
                 count = count + 1
                 local isSel = (selectedPlayer == plr)
                 local isWL  = isWhitelisted(plr)
-                local isView = (_G.KraviX_ViewingPlayer == plr)
+                local isView = ((_G.Lexhancements_ViewingPlayer or _G.KraviX_ViewingPlayer) == plr)
 
                 local statusText = "User"
                 if plr == LocalPlayer then statusText = "Client" end
@@ -2042,7 +2056,9 @@ function KraviX:CreateWindow(config)
 
     ViewBtn.MouseButton1Click:Connect(function()
         if not selectedPlayer then return end
-        if _G.KraviX_ViewingPlayer == selectedPlayer then
+        local currentVP = _G.Lexhancements_ViewingPlayer or _G.KraviX_ViewingPlayer
+        if currentVP == selectedPlayer then
+            _G.Lexhancements_ViewingPlayer = nil
             _G.KraviX_ViewingPlayer = nil
             pcall(function()
                 if LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid") then
@@ -2052,6 +2068,7 @@ function KraviX:CreateWindow(config)
             CreateNotification("View", "Visão resetada.", 2, "info")
         else
             if selectedPlayer.Character and selectedPlayer.Character:FindFirstChildOfClass("Humanoid") then
+                _G.Lexhancements_ViewingPlayer = selectedPlayer
                 _G.KraviX_ViewingPlayer = selectedPlayer
                 workspace.CurrentCamera.CameraSubject = selectedPlayer.Character:FindFirstChildOfClass("Humanoid")
                 CreateNotification("View", "Spectating: " .. (selectedPlayer.DisplayName or selectedPlayer.Name), 2, "success")
@@ -2067,13 +2084,21 @@ function KraviX:CreateWindow(config)
         if not selectedPlayer then return end
         local isWL = isWhitelisted(selectedPlayer)
         local dName = selectedPlayer.DisplayName or selectedPlayer.Name
+        local wl = _G.Lexhancements_GlobalWhitelist or _G.KraviX_GlobalWhitelist
         if isWL then
-            _G.KraviX_GlobalWhitelist[selectedPlayer.UserId] = nil
-            _G.KraviX_GlobalWhitelist[selectedPlayer.Name] = nil
+            if wl then
+                wl[selectedPlayer.UserId] = nil
+                wl[selectedPlayer.Name] = nil
+            end
             CreateNotification("Whitelist", dName .. " removed from Whitelist!", 2, "info")
         else
-            _G.KraviX_GlobalWhitelist[selectedPlayer.UserId] = true
-            _G.KraviX_GlobalWhitelist[selectedPlayer.Name] = true
+            if not wl then
+                wl = {}
+                _G.Lexhancements_GlobalWhitelist = wl
+                _G.KraviX_GlobalWhitelist = wl
+            end
+            wl[selectedPlayer.UserId] = true
+            wl[selectedPlayer.Name] = true
             CreateNotification("Whitelist", dName .. " adicionado à Whitelist!", 2, "success")
         end
         updateSelectedPanel()
@@ -2083,7 +2108,8 @@ function KraviX:CreateWindow(config)
     Players.PlayerAdded:Connect(function() task.delay(0.2, refreshPlayerList) end)
     Players.PlayerRemoving:Connect(function(p)
         if selectedPlayer == p then selectedPlayer = LocalPlayer end
-        if _G.KraviX_ViewingPlayer == p then
+        if (_G.Lexhancements_ViewingPlayer == p) or (_G.KraviX_ViewingPlayer == p) then
+            _G.Lexhancements_ViewingPlayer = nil
             _G.KraviX_ViewingPlayer = nil
             pcall(function()
                 if LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid") then
@@ -2109,9 +2135,10 @@ function KraviX:CreateWindow(config)
     end)
 
     RunService.Heartbeat:Connect(function()
-        if _G.KraviX_ViewingPlayer then
-            local vp = _G.KraviX_ViewingPlayer
+        local vp = _G.Lexhancements_ViewingPlayer or _G.KraviX_ViewingPlayer
+        if vp then
             if not vp or not vp.Parent or not vp.Character then
+                _G.Lexhancements_ViewingPlayer = nil
                 _G.KraviX_ViewingPlayer = nil
                 pcall(function()
                     if LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid") then
@@ -2121,6 +2148,7 @@ function KraviX:CreateWindow(config)
             else
                 local hum = vp.Character:FindFirstChildOfClass("Humanoid")
                 if not hum or hum.Health <= 0 then
+                    _G.Lexhancements_ViewingPlayer = nil
                     _G.KraviX_ViewingPlayer = nil
                     pcall(function()
                         if LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid") then
@@ -3405,25 +3433,26 @@ function KraviX:CreateWindow(config)
         CreateLoader(ScreenGui, function()
             if useSound then PlaySound(SOUND_OPEN) end
             ShowWindow()
-            CreateNotification("Axion","Loaded successfully!",3,"success")
+            CreateNotification("Lexhancements","Loaded successfully!",3,"success")
         end, config.LoaderTitle or config.Name)
     else
         ShowWindow()
-        CreateNotification("Axion","Loaded successfully!",3,"success")
+        CreateNotification("Lexhancements","Loaded successfully!",3,"success")
     end
     function Window:CreateTab(name, icon)
         local Tab      = {}
         local tabIndex = #Window.Tabs + 1
 
         local TabBtn = Instance.new("TextButton", TabBar)
-        TabBtn.Size = UDim2.new(0,0,0,24); TabBtn.AutomaticSize = Enum.AutomaticSize.X
-        TabBtn.AnchorPoint = Vector2.new(0,0.5)
-        TabBtn.BackgroundColor3 = Color3.fromRGB(34,34,34)
+        TabBtn.Size = UDim2.new(1, 0, 0, 30)
+        TabBtn.AnchorPoint = Vector2.new(0, 0)
+        TabBtn.BackgroundColor3 = C.Bg3
         TabBtn.BackgroundTransparency = 1
         TabBtn.Text = (icon and icon.."  " or "")..name
         TabBtn.TextColor3 = C.Muted; TabBtn.TextSize = 11; TabBtn.Font = Enum.Font.Gotham
+        TabBtn.TextXAlignment = Enum.TextXAlignment.Left
         TabBtn.AutoButtonColor = false; TabBtn.ZIndex = 12; TabBtn.LayoutOrder = tabIndex
-        mkCorner(TabBtn,5); mkPad(TabBtn,0,0,12,12)
+        mkCorner(TabBtn,6); mkPad(TabBtn,0,0,10,8)
 
         local TabUnder = Instance.new("Frame", TabBtn)
         TabUnder.Size = UDim2.new(0,0,0,0); TabUnder.BackgroundTransparency = 1
@@ -3471,7 +3500,11 @@ function KraviX:CreateWindow(config)
             for _, t in ipairs(Window.Tabs) do
                 local on = t.Index == activeTabIndex
                 if not on then t.Container.Visible = false end
-                Tween(t.Btn,{TextColor3=on and C.White or C.Muted, BackgroundTransparency=on and 0 or 1},0.12):Play()
+                Tween(t.Btn,{
+                    TextColor3 = on and C.White or C.Muted,
+                    BackgroundColor3 = on and C.Bg3 or C.Bg2,
+                    BackgroundTransparency = on and 0 or 1
+                },0.12):Play()
                 t.Btn.Font = on and Enum.Font.GothamBold or Enum.Font.Gotham
             end
             TabContent.Visible = true
@@ -3482,7 +3515,7 @@ function KraviX:CreateWindow(config)
         TabBtn.MouseButton1Click:Connect(SelectTab)
         TabBtn.MouseEnter:Connect(function()
             if tabIndex ~= activeTabIndex then
-                Tween(TabBtn,{TextColor3=C.Sub,BackgroundTransparency=0.85},0.1):Play()
+                Tween(TabBtn,{TextColor3=C.Sub,BackgroundColor3=C.Bg3,BackgroundTransparency=0.5},0.1):Play()
             end
         end)
         TabBtn.MouseLeave:Connect(function()
@@ -4527,7 +4560,11 @@ function KraviX:CreateWindow(config)
     return Window
 end
 
-if getgenv then getgenv().KraviX = KraviX end
-_G.KraviX = KraviX
+if getgenv then
+    getgenv().Lexhancements = Lexhancements
+    getgenv().KraviX = Lexhancements
+end
+_G.Lexhancements = Lexhancements
+_G.KraviX = Lexhancements
 
-return KraviX
+return Lexhancements
