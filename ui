@@ -1,5 +1,4 @@
 local Lexhancements = {}
-local KraviX = Lexhancements
 
 local TweenService     = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
@@ -16,30 +15,28 @@ local SOUND_NOTIF = "rbxassetid://84596244576386"
 local SOUND_OPEN  = "rbxassetid://4807489774"
 
 local C = {
-    Bg          = Color3.fromRGB( 11,  11,  15), -- Background: #0B0B0F
-    Bg2         = Color3.fromRGB( 11,  11,  15), -- Background: #0B0B0F
-    Bg3         = Color3.fromRGB( 25,  21,  34), -- Surface: #191522
-    Bg4         = Color3.fromRGB( 33,  28,  45),
-    Bg5         = Color3.fromRGB( 41,  35,  56),
-    BgHover     = Color3.fromRGB( 42,  30,  62),
-    Accent      = Color3.fromRGB(168,  85, 247), -- Accent: #A855F7
-    Accent2     = Color3.fromRGB(216, 180, 254), -- Highlight: #D8B4FE
-    Highlight   = Color3.fromRGB(216, 180, 254), -- Highlight: #D8B4FE
-    Text        = Color3.fromRGB(240, 240, 245),
-    Sub         = Color3.fromRGB(160, 155, 175),
-    Muted       = Color3.fromRGB(110, 105, 125),
-    Muted2      = Color3.fromRGB( 55,  50,  68),
-    Border      = Color3.fromRGB( 38,  32,  52),
-    BorderBt    = Color3.fromRGB( 52,  44,  70),
+    Bg          = Color3.fromRGB( 12,  11,  16),
+    Bg2         = Color3.fromRGB(  8,   7,  12),
+    Bg3         = Color3.fromRGB( 16,  16,  20),
+    Bg4         = Color3.fromRGB( 22,  21,  28),
+    Bg5         = Color3.fromRGB( 28,  27,  35),
+    BgHover     = Color3.fromRGB( 28,  20,  42),
+    Accent      = Color3.fromRGB(124,  58, 237),
+    Accent2     = Color3.fromRGB(165,  85, 255),
+    Text        = Color3.fromRGB(220, 220, 225),
+    Sub         = Color3.fromRGB(136, 135, 141),
+    Muted       = Color3.fromRGB( 90,  89,  95),
+    Muted2      = Color3.fromRGB( 45,  44,  50),
+    Border      = Color3.fromRGB( 28,  28,  35),
+    BorderBt    = Color3.fromRGB( 40,  38,  50),
     White       = Color3.fromRGB(255, 255, 255),
     Black       = Color3.fromRGB(  0,   0,   0),
     Green       = Color3.fromRGB( 60, 210, 110),
     Red         = Color3.fromRGB(230,  60,  60),
     Shadow      = Color3.fromRGB(  0,   0,   0),
-    NotifBg     = Color3.fromRGB( 25,  21,  34), -- Surface: #191522
+    NotifBg     = Color3.fromRGB( 16,  15,  22),
 }
 Lexhancements.C = C
-KraviX.C = C
 
 local TWEEN_SPD = 1.0
 
@@ -390,7 +387,7 @@ local function CreateWelcomeScreen(screenGui, onDone)
     local userId     = (LocalPlayer and LocalPlayer.UserId) or 1
 
     local WelcomeGui = Instance.new("ScreenGui")
-    WelcomeGui.Name = "LexhancementsWelcomeGui"
+    WelcomeGui.Name = "AxionWelcomeGui"
     WelcomeGui.IgnoreGuiInset = true
     WelcomeGui.ResetOnSpawn = false
     WelcomeGui.DisplayOrder = 999999
@@ -419,7 +416,7 @@ local function CreateWelcomeScreen(screenGui, onDone)
     Card.Size = UDim2.new(0, CARD_W, 0, CARD_H)
     Card.AnchorPoint = Vector2.new(0.5, 0.5)
     Card.Position = UDim2.new(0.5, 0, 0.5, 20)
-    Card.BackgroundColor3 = C.Bg
+    Card.BackgroundColor3 = Color3.fromRGB(12, 12, 16)
     Card.BackgroundTransparency = 1
     Card.BorderSizePixel = 0
     Card.ZIndex = 610
@@ -435,14 +432,14 @@ local function CreateWelcomeScreen(screenGui, onDone)
     AvatarCircle.Size = UDim2.new(0, PHOTO_SIZE, 0, PHOTO_SIZE)
     AvatarCircle.AnchorPoint = Vector2.new(0.5, 0)
     AvatarCircle.Position = UDim2.new(0.5, 0, 0, 24)
-    AvatarCircle.BackgroundColor3 = C.Bg3
+    AvatarCircle.BackgroundColor3 = Color3.fromRGB(18, 15, 26)
     AvatarCircle.BackgroundTransparency = 1
     AvatarCircle.BorderSizePixel = 0
     AvatarCircle.ClipsDescendants = true
     AvatarCircle.ZIndex = 612
     mkCorner(AvatarCircle, 999)
 
-    local AvatarStroke = mkStroke(AvatarCircle, C.Accent, 2, 1)
+    local AvatarStroke = mkStroke(AvatarCircle, Color3.fromRGB(124, 58, 237), 2, 1)
 
     local AvatarImg = Instance.new("ImageLabel", AvatarCircle)
     AvatarImg.Size = UDim2.new(1, 0, 1, 0)
@@ -483,7 +480,7 @@ local function CreateWelcomeScreen(screenGui, onDone)
     NickLbl.Position = UDim2.new(0.5, 0, 0, 124)
     NickLbl.BackgroundTransparency = 1
     NickLbl.Text = playerNick
-    NickLbl.TextColor3 = C.Highlight
+    NickLbl.TextColor3 = Color3.fromRGB(165, 85, 255)
     NickLbl.Font = Enum.Font.GothamMedium
     NickLbl.TextSize = 13
     NickLbl.TextTransparency = 1
@@ -507,7 +504,7 @@ local function CreateWelcomeScreen(screenGui, onDone)
     LoadBtn.Size = UDim2.new(1, -32, 0, 40)
     LoadBtn.AnchorPoint = Vector2.new(0.5, 1)
     LoadBtn.Position = UDim2.new(0.5, 0, 1, -16)
-    LoadBtn.BackgroundColor3 = C.Accent
+    LoadBtn.BackgroundColor3 = Color3.fromRGB(110, 140, 245)
     LoadBtn.BackgroundTransparency = 1
     LoadBtn.BorderSizePixel = 0
     LoadBtn.ZIndex = 612
@@ -515,8 +512,8 @@ local function CreateWelcomeScreen(screenGui, onDone)
 
     local BtnGrad = Instance.new("UIGradient", LoadBtn)
     BtnGrad.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(168, 85, 247)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(216, 180, 254))
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(115, 150, 250)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(124, 75, 245))
     })
 
     local BtnText = Instance.new("TextLabel", LoadBtn)
@@ -583,22 +580,22 @@ local function CreateWelcomeScreen(screenGui, onDone)
 end
 
 local function CreateLoader(screenGui, onDone, scriptName)
-    local titleText = scriptName or "LEXHANCEMENTS"
-    if titleText == "" or titleText:lower() == "script" or titleText:lower() == "mooze" or titleText:lower() == "kravix" or titleText:lower() == "axion" or titleText:lower() == "lexhancements" then
-        titleText = "LEXHANCEMENTS"
+    local titleText = scriptName or "AXION"
+    if titleText == "" or titleText:lower() == "script" or titleText:lower() == "mooze" or titleText:lower() == "kravix" or titleText:lower() == "lexhancements" then
+        titleText = "AXION"
     end
 
     local CFG = {
-        bg = C.Bg,
-        topBg = C.Bg3,
-        fg = C.Text,
-        activeColor = C.Accent,
+        bg = Color3.fromRGB(8, 8, 8),
+        topBg = Color3.fromRGB(13, 13, 13),
+        fg = Color3.fromRGB(220, 220, 220),
+        activeColor = Color3.fromRGB(165, 85, 255),
         fadeTime = 0.22,
     }
 
     local WIN_W, WIN_H = 670, 360
     local Loader = Instance.new("Frame", screenGui)
-    Loader.Name = "lexhancements_terminal_window"
+    Loader.Name = "axion_terminal_window"
     Loader.Size = UDim2.new(0, WIN_W, 0, WIN_H)
     Loader.Position = UDim2.new(0.5, -WIN_W/2, 0.5, -WIN_H/2)
     Loader.BackgroundColor3 = CFG.bg
@@ -606,7 +603,7 @@ local function CreateLoader(screenGui, onDone, scriptName)
     Loader.ZIndex = 500
     Loader.ClipsDescendants = true
     mkCorner(Loader, 6)
-    mkStroke(Loader, C.Border, 1, 0)
+    mkStroke(Loader, Color3.fromRGB(60, 40, 90), 1, 0)
 
     local Shadow = Instance.new("ImageLabel", Loader)
     Shadow.Name = "Shadow"
@@ -614,7 +611,7 @@ local function CreateLoader(screenGui, onDone, scriptName)
     Shadow.Position = UDim2.new(0, -20, 0, -20)
     Shadow.BackgroundTransparency = 1
     Shadow.Image = "rbxassetid://6015897843"
-    Shadow.ImageColor3 = C.Accent
+    Shadow.ImageColor3 = Color3.fromRGB(124, 58, 237)
     Shadow.ImageTransparency = 0.6
     Shadow.ZIndex = 499
     Shadow.ScaleType = Enum.ScaleType.Slice
@@ -631,7 +628,7 @@ local function CreateLoader(screenGui, onDone, scriptName)
     local TopSep = Instance.new("Frame", TopBar)
     TopSep.Size = UDim2.new(1, 0, 0, 1)
     TopSep.Position = UDim2.new(0, 0, 1, -1)
-    TopSep.BackgroundColor3 = C.Border
+    TopSep.BackgroundColor3 = Color3.fromRGB(45, 30, 65)
     TopSep.BorderSizePixel = 0
     TopSep.ZIndex = 502
 
@@ -721,7 +718,7 @@ local function CreateLoader(screenGui, onDone, scriptName)
 
     task.spawn(function()
         local asciiWord = titleText:upper()
-        if ASC[asciiWord:sub(1, 1)] == nil then asciiWord = "LEX" end
+        if ASC[asciiWord:sub(1, 1)] == nil then asciiWord = "AXION" end
         local fullAscii = buildAscii(asciiWord)
 
         local step = math.max(1, math.floor(#fullAscii / 12))
@@ -738,12 +735,12 @@ local function CreateLoader(screenGui, onDone, scriptName)
         local playerUserId = (LocalPlayer and LocalPlayer.UserId) or 0
 
         local logItems = {
-            { tag = "[+]", col = "rgb(168,85,247)", text = '<font color="rgb(220,220,220)">Key Verified:</font> <font color="rgb(60,210,110)">Valid License [Lifetime]</font>' },
-            { tag = "[+]", col = "rgb(168,85,247)", text = '<font color="rgb(220,220,220)">User:</font> <font color="rgb(216,180,254)">' .. playerNick .. '</font> <font color="rgb(120,120,130)">(ID: ' .. tostring(playerUserId) .. ')</font>' },
-            { tag = "[+]", col = "rgb(168,85,247)", text = '<font color="rgb(220,220,220)">Bypass:</font> <font color="rgb(60,210,110)">Working</font> <font color="rgb(120,120,130)">[100% Secure]</font>' },
-            { tag = "[+]", col = "rgb(168,85,247)", text = '<font color="rgb(220,220,220)">Lexhancements:</font> <font color="rgb(60,210,110)">ON</font>' },
-            { tag = "[+]", col = "rgb(168,85,247)", text = '<font color="rgb(168,85,247)">Modules:</font> <font color="rgb(216,180,254)">Core Engine Initialized</font>' },
-            { tag = "[✓]", col = "rgb(60,210,110)", text = '<font color="rgb(240,240,240)">Ready! Launching Lexhancements...</font>' },
+            { tag = "[+]", col = "rgb(165,85,255)", text = '<font color="rgb(220,220,220)">Key Verified:</font> <font color="rgb(60,210,110)">Valid License [Lifetime]</font>' },
+            { tag = "[+]", col = "rgb(165,85,255)", text = '<font color="rgb(220,220,220)">User:</font> <font color="rgb(192,132,252)">' .. playerNick .. '</font> <font color="rgb(120,120,130)">(ID: ' .. tostring(playerUserId) .. ')</font>' },
+            { tag = "[+]", col = "rgb(165,85,255)", text = '<font color="rgb(220,220,220)">Bypass:</font> <font color="rgb(60,210,110)">Working</font> <font color="rgb(120,120,130)">[100% Secure]</font>' },
+            { tag = "[+]", col = "rgb(165,85,255)", text = '<font color="rgb(220,220,220)">Axion:</font> <font color="rgb(60,210,110)">ON</font>' },
+            { tag = "[+]", col = "rgb(165,85,255)", text = '<font color="rgb(220,220,220)">Modules:</font> <font color="rgb(165,85,255)">Core Engine Initialized</font>' },
+            { tag = "[✓]", col = "rgb(60,210,110)", text = '<font color="rgb(240,240,240)">Ready! Launching Axion...</font>' },
         }
 
         local labels = {}
@@ -801,7 +798,6 @@ function Lexhancements:CreateWindow(config)
     if config.Accent then
         C.Accent  = config.Accent
         C.Accent2 = lighten(config.Accent, 0.09)
-        C.Highlight = C.Accent2
         C.BgHover = Color3.new(
             math.clamp(config.Accent.R*0.12,0,1),
             math.clamp(config.Accent.G*0.08,0,1),
@@ -1096,14 +1092,14 @@ function Lexhancements:CreateWindow(config)
     if backdropFx == "snow" then StartSnow(Backdrop)
     elseif backdropFx == "rain" then StartRain(Backdrop) end
 
-    local WIN_W, WIN_H = 680, 620
+    local WIN_W, WIN_H = 670, 720
     local ActiveDropdownClose = nil
 
     local Main = Instance.new("Frame", ScreenGui)
     Main.Name = "LexhancementsMain"
     Main.Size = UDim2.new(0,WIN_W,0,WIN_H)
     Main.Position = UDim2.new(0.5,-WIN_W/2,0.5,-WIN_H/2)
-    Main.BackgroundColor3 = C.Bg
+    Main.BackgroundColor3 = C.Bg2
     Main.BorderSizePixel = 0; Main.Visible = false; Main.ZIndex = 10
     mkCorner(Main,10); mkStroke(Main,C.Border,1,0)
 
@@ -1114,105 +1110,41 @@ function Lexhancements:CreateWindow(config)
     Shadow.ImageColor3 = C.Shadow; Shadow.ImageTransparency = 0.4; Shadow.ZIndex = 9
     Shadow.ScaleType = Enum.ScaleType.Slice; Shadow.SliceCenter = Rect.new(49,49,450,450)
 
-    local SIDEBAR_W = 155
-
-    -- Sidebar on the LEFT (NebulaTech style)
-    local Sidebar = Instance.new("Frame", Main)
-    Sidebar.Name = "Sidebar"
-    Sidebar.Size = UDim2.new(0, SIDEBAR_W, 1, -26)
-    Sidebar.Position = UDim2.new(0, 0, 0, 0)
-    Sidebar.BackgroundColor3 = C.Bg
-    Sidebar.BorderSizePixel = 0
-    Sidebar.ZIndex = 11
-
-    local BrandFrame = Instance.new("Frame", Sidebar)
-    BrandFrame.Name = "BrandFrame"
-    BrandFrame.Size = UDim2.new(1, 0, 0, 46)
-    BrandFrame.Position = UDim2.new(0, 0, 0, 0)
-    BrandFrame.BackgroundTransparency = 1
-    BrandFrame.ZIndex = 12
-
-    local BrandLbl = Instance.new("TextLabel", BrandFrame)
-    BrandLbl.Name = "BrandLbl"
-    BrandLbl.Size = UDim2.new(1, -20, 0, 22)
-    BrandLbl.Position = UDim2.new(0, 16, 0, 14)
-    BrandLbl.BackgroundTransparency = 1
-    BrandLbl.Text = "lexhancements"
-    BrandLbl.TextColor3 = C.White
-    BrandLbl.TextSize = 16
-    BrandLbl.Font = Enum.Font.GothamBold
-    BrandLbl.TextXAlignment = Enum.TextXAlignment.Left
-    BrandLbl.ZIndex = 13
-
-    local BrandUnderline = Instance.new("Frame", BrandFrame)
-    BrandUnderline.Name = "BrandUnderline"
-    BrandUnderline.Size = UDim2.new(0, 32, 0, 2)
-    BrandUnderline.Position = UDim2.new(0, 16, 0, 36)
-    BrandUnderline.BackgroundColor3 = C.Accent
-    BrandUnderline.BorderSizePixel = 0
-    BrandUnderline.ZIndex = 13
-    mkCorner(BrandUnderline, 1)
-
-    local TabBar = Instance.new("ScrollingFrame", Sidebar)
-    TabBar.Name = "TabBar"
-    TabBar.Size = UDim2.new(1, 0, 1, -48)
-    TabBar.Position = UDim2.new(0, 0, 0, 48)
-    TabBar.BackgroundTransparency = 1
-    TabBar.BorderSizePixel = 0
-    TabBar.ZIndex = 11
-    TabBar.ScrollBarThickness = 0
-    TabBar.ScrollingDirection = Enum.ScrollingDirection.Y
-    TabBar.AutomaticCanvasSize = Enum.AutomaticSize.Y
-    TabBar.CanvasSize = UDim2.new(0, 0, 0, 0)
-    TabBar.ElasticBehavior = Enum.ElasticBehavior.Never
-
-    local TabList = Instance.new("UIListLayout", TabBar)
-    TabList.FillDirection       = Enum.FillDirection.Vertical
-    TabList.SortOrder           = Enum.SortOrder.LayoutOrder
-    TabList.HorizontalAlignment = Enum.HorizontalAlignment.Center
-    TabList.VerticalAlignment   = Enum.VerticalAlignment.Top
-    TabList.Padding             = UDim.new(0, 4)
-    mkPad(TabBar, 6, 6, 10, 10)
-
-    -- Vertical separator between Sidebar and Content Area
-    local SideSep = Instance.new("Frame", Main)
-    SideSep.Name = "SideSep"
-    SideSep.Size = UDim2.new(0, 1, 1, -26)
-    SideSep.Position = UDim2.new(0, SIDEBAR_W, 0, 0)
-    SideSep.BackgroundColor3 = C.Border
-    SideSep.BorderSizePixel = 0
-    SideSep.ZIndex = 11
-
-    local TabSep = SideSep
-
-    -- Top controls bar in Content Area
     local TopBar = Instance.new("Frame", Main)
     TopBar.Name = "TopBar"
-    TopBar.Size = UDim2.new(1, -SIDEBAR_W - 1, 0, 38)
-    TopBar.Position = UDim2.new(0, SIDEBAR_W + 1, 0, 0)
-    TopBar.BackgroundColor3 = C.Bg2
-    TopBar.BackgroundTransparency = 0
-    TopBar.BorderSizePixel = 0
-    TopBar.ZIndex = 12
+    TopBar.Size = UDim2.new(1,0,0,32)
+    TopBar.BackgroundColor3 = C.Bg2; TopBar.BackgroundTransparency = 0
+    TopBar.BorderSizePixel = 0; TopBar.ZIndex = 12
 
-    local CloseBtn = Instance.new("TextButton", TopBar)
-    CloseBtn.Size = UDim2.new(0,18,0,18); CloseBtn.AnchorPoint = Vector2.new(1,0.5)
-    CloseBtn.Position = UDim2.new(1,-10,0.5,0)
-    CloseBtn.BackgroundColor3 = C.Bg4
-    CloseBtn.BackgroundTransparency = 0; CloseBtn.Text = "×"
-    CloseBtn.TextColor3 = C.Muted; CloseBtn.TextSize = 13; CloseBtn.Font = Enum.Font.GothamBold
-    CloseBtn.AutoButtonColor = false; CloseBtn.ZIndex = 14
-    mkCorner(CloseBtn, 4)
+    local TopFix = Instance.new("Frame", TopBar)
+    TopFix.Name = "TopFix"
+    TopFix.Size = UDim2.new(1,0,0,6); TopFix.Position = UDim2.new(0,0,1,-6)
+    TopFix.BackgroundColor3 = C.Bg2; TopFix.BorderSizePixel = 0; TopFix.ZIndex = 12
 
-    CloseBtn.MouseEnter:Connect(function() Tween(CloseBtn,{BackgroundColor3=C.Red,TextColor3=C.White},0.1):Play() end)
-    CloseBtn.MouseLeave:Connect(function() Tween(CloseBtn,{BackgroundColor3=C.Bg4,TextColor3=C.Muted},0.1):Play() end)
+    local TopSep = Instance.new("Frame", Main)
+    TopSep.Name = "TopSep"
+    TopSep.Size = UDim2.new(1,0,0,1); TopSep.Position = UDim2.new(0,0,0,32)
+    TopSep.BackgroundColor3 = C.Border; TopSep.BorderSizePixel = 0; TopSep.ZIndex = 12
 
-    local VerLbl = Instance.new("TextLabel", TopBar)
-    VerLbl.Size = UDim2.new(0,60,1,0); VerLbl.AnchorPoint = Vector2.new(1,0.5)
-    VerLbl.Position = UDim2.new(1,-34,0.5,0)
-    VerLbl.BackgroundTransparency = 1; VerLbl.Text = config.Version or ""
-    VerLbl.TextColor3 = C.Muted; VerLbl.TextSize = 9; VerLbl.Font = Enum.Font.Code
-    VerLbl.TextXAlignment = Enum.TextXAlignment.Right; VerLbl.ZIndex = 13
+    local BrandLbl = Instance.new("TextLabel", TopBar)
+    BrandLbl.Name = "BrandLbl"
+    BrandLbl.Size = UDim2.new(0,0,1,0); BrandLbl.AutomaticSize = Enum.AutomaticSize.X
+    BrandLbl.Position = UDim2.new(0,10,0,0)
+    BrandLbl.BackgroundTransparency = 1; BrandLbl.Text = "Lexhancements"
+    BrandLbl.TextColor3 = C.Accent; BrandLbl.TextSize = 12; BrandLbl.Font = Enum.Font.GothamBlack
+    BrandLbl.TextXAlignment = Enum.TextXAlignment.Left; BrandLbl.ZIndex = 13
+
+    local DotSep = Instance.new("TextLabel", TopBar)
+    DotSep.Size = UDim2.new(0,12,1,0)
+    DotSep.BackgroundTransparency = 1; DotSep.Text = "·"
+    DotSep.TextColor3 = C.Muted2; DotSep.TextSize = 12; DotSep.Font = Enum.Font.GothamBold
+    DotSep.TextXAlignment = Enum.TextXAlignment.Center; DotSep.ZIndex = 13
+
+    local ScriptLbl = Instance.new("TextLabel", TopBar)
+    ScriptLbl.Size = UDim2.new(0,0,1,0); ScriptLbl.AutomaticSize = Enum.AutomaticSize.X
+    ScriptLbl.BackgroundTransparency = 1; ScriptLbl.Text = config.Name
+    ScriptLbl.TextColor3 = C.Sub; ScriptLbl.TextSize = 11; ScriptLbl.Font = Enum.Font.Gotham
+    ScriptLbl.TextXAlignment = Enum.TextXAlignment.Left; ScriptLbl.ZIndex = 13
 
     local ModePill = Instance.new("TextButton", TopBar)
     ModePill.Name = "ModePill"
@@ -1223,8 +1155,7 @@ function Lexhancements:CreateWindow(config)
         math.clamp(C.Accent.B*0.18,0,1))
     ModePill.BackgroundTransparency = 0; ModePill.Text = config.Mode
     ModePill.TextColor3 = C.Accent; ModePill.TextSize = 10; ModePill.Font = Enum.Font.GothamBold
-    ModePill.AutoButtonColor = false; ModePill.ZIndex = 13; ModePill.AnchorPoint = Vector2.new(1,0.5)
-    ModePill.Position = UDim2.new(1, -98, 0.5, 0)
+    ModePill.AutoButtonColor = false; ModePill.ZIndex = 13; ModePill.AnchorPoint = Vector2.new(0,0.5)
     mkCorner(ModePill,9)
     mkStroke(ModePill,Color3.new(
         math.clamp(C.Accent.R*0.5,0,1),
@@ -1232,34 +1163,62 @@ function Lexhancements:CreateWindow(config)
         math.clamp(C.Accent.B*0.6,0,1)),1,0)
     mkPad(ModePill,0,0,8,8)
 
-    local ScriptLbl = Instance.new("TextLabel", TopBar)
-    ScriptLbl.Size = UDim2.new(0,0,1,0); ScriptLbl.AutomaticSize = Enum.AutomaticSize.X
-    ScriptLbl.BackgroundTransparency = 1; ScriptLbl.Text = config.Name
-    ScriptLbl.TextColor3 = C.Sub; ScriptLbl.TextSize = 11; ScriptLbl.Font = Enum.Font.Gotham
-    ScriptLbl.TextXAlignment = Enum.TextXAlignment.Left; ScriptLbl.ZIndex = 13
-    ScriptLbl.Position = UDim2.new(0, 14, 0, 0)
+    task.defer(function()
+        local bW  = BrandLbl.AbsoluteSize.X; local gap = 6
+        DotSep.Position  = UDim2.new(0, 10+bW+gap, 0, 0)
+        local dW  = DotSep.AbsoluteSize.X
+        ScriptLbl.Position = UDim2.new(0, 10+bW+gap+dW+2, 0, 0)
+        local sW  = ScriptLbl.AbsoluteSize.X
+        ModePill.Position  = UDim2.new(0, 10+bW+gap+dW+2+sW+8, 0.5, 0)
+    end)
 
-    local DotSep = Instance.new("TextLabel", TopBar)
-    DotSep.Size = UDim2.new(0,12,1,0)
-    DotSep.BackgroundTransparency = 1; DotSep.Text = ""
-    DotSep.TextColor3 = C.Muted2; DotSep.TextSize = 12; DotSep.Font = Enum.Font.GothamBold
-    DotSep.TextXAlignment = Enum.TextXAlignment.Center; DotSep.ZIndex = 13
+    local VerLbl = Instance.new("TextLabel", TopBar)
+    VerLbl.Size = UDim2.new(0,80,1,0); VerLbl.AnchorPoint = Vector2.new(1,0)
+    VerLbl.Position = UDim2.new(1,-32,0,0)
+    VerLbl.BackgroundTransparency = 1; VerLbl.Text = config.Version or ""
+    VerLbl.TextColor3 = C.Muted; VerLbl.TextSize = 9; VerLbl.Font = Enum.Font.Code
+    VerLbl.TextXAlignment = Enum.TextXAlignment.Right; VerLbl.ZIndex = 13
 
-    local TopSep = Instance.new("Frame", Main)
-    TopSep.Name = "TopSep"
-    TopSep.Size = UDim2.new(1, -SIDEBAR_W - 1, 0, 1)
-    TopSep.Position = UDim2.new(0, SIDEBAR_W + 1, 0, 38)
-    TopSep.BackgroundColor3 = C.Border
-    TopSep.BorderSizePixel = 0; TopSep.ZIndex = 12
+    local CloseBtn = Instance.new("TextButton", TopBar)
+    CloseBtn.Size = UDim2.new(0,18,0,18); CloseBtn.AnchorPoint = Vector2.new(1,0.5)
+    CloseBtn.Position = UDim2.new(1,-8,0.5,0)
+    CloseBtn.BackgroundColor3 = C.Bg4
+    CloseBtn.BackgroundTransparency = 0; CloseBtn.Text = "×"
+    CloseBtn.TextColor3 = C.Muted; CloseBtn.TextSize = 13; CloseBtn.Font = Enum.Font.GothamBold
+    CloseBtn.AutoButtonColor = false; CloseBtn.ZIndex = 14
+    mkCorner(CloseBtn, 4)
+
+    CloseBtn.MouseEnter:Connect(function() Tween(CloseBtn,{BackgroundColor3=C.Red,TextColor3=C.White},0.1):Play() end)
+    CloseBtn.MouseLeave:Connect(function() Tween(CloseBtn,{BackgroundColor3=C.Bg4,TextColor3=C.Muted},0.1):Play() end)
+
+    local TabBar = Instance.new("ScrollingFrame", Main)
+    TabBar.Name = "TabBar"
+    TabBar.Size = UDim2.new(1,0,0,34); TabBar.Position = UDim2.new(0,0,0,33)
+    TabBar.BackgroundColor3 = C.Bg2; TabBar.BackgroundTransparency = 0
+    TabBar.BorderSizePixel = 0; TabBar.ZIndex = 11
+    TabBar.ScrollBarThickness = 0; TabBar.ScrollingDirection = Enum.ScrollingDirection.X
+    TabBar.AutomaticCanvasSize = Enum.AutomaticSize.X
+    TabBar.CanvasSize = UDim2.new(0,0,0,0); TabBar.ElasticBehavior = Enum.ElasticBehavior.Never
+    local TabList = Instance.new("UIListLayout", TabBar)
+    TabList.FillDirection      = Enum.FillDirection.Horizontal
+    TabList.SortOrder          = Enum.SortOrder.LayoutOrder
+    TabList.HorizontalAlignment = Enum.HorizontalAlignment.Left
+    TabList.VerticalAlignment   = Enum.VerticalAlignment.Center
+    TabList.Padding             = UDim.new(0,4)
+    mkPad(TabBar,0,0,10,10)
+
+    local TabSep = Instance.new("Frame", Main)
+    TabSep.Name = "TabSep"
+    TabSep.Size = UDim2.new(1,0,0,1); TabSep.Position = UDim2.new(0,0,0,67)
+    TabSep.BackgroundColor3 = C.Border; TabSep.BorderSizePixel = 0; TabSep.ZIndex = 11
 
     local ContentFrame = Instance.new("Frame", Main)
-    ContentFrame.Size = UDim2.new(1, -SIDEBAR_W - 1, 1, -65)
-    ContentFrame.Position = UDim2.new(0, SIDEBAR_W + 1, 0, 39)
+    ContentFrame.Size = UDim2.new(1,0,1,-90); ContentFrame.Position = UDim2.new(0,0,0,68)
     ContentFrame.BackgroundTransparency = 1; ContentFrame.BorderSizePixel = 0
     ContentFrame.ZIndex = 10; ContentFrame.ClipsDescendants = true
 
     local DockOutline = Instance.new("Frame", ScreenGui)
-    DockOutline.Name = "LxDockOutline"
+    DockOutline.Name = "KxDockOutline"
     DockOutline.AnchorPoint = Vector2.new(0.5, 0)
     DockOutline.Position = UDim2.new(0.5, 0, 0, 20)
     DockOutline.Size = UDim2.new(0, 0, 0, 48)
@@ -1918,8 +1877,7 @@ function Lexhancements:CreateWindow(config)
 
     local function isWhitelisted(plr)
         if not plr then return false end
-        local wl = _G.Lexhancements_GlobalWhitelist or _G.KraviX_GlobalWhitelist
-        return wl and ((wl[plr.UserId] == true) or (wl[plr.Name] == true))
+        return (_G.Lexhancements_GlobalWhitelist[plr.UserId] == true) or (_G.Lexhancements_GlobalWhitelist[plr.Name] == true)
     end
 
     local function updateSelectedPanel()
@@ -1934,8 +1892,7 @@ function Lexhancements:CreateWindow(config)
         AvatarImg.Position = UDim2.new(0.5, -26, 0, 14)
         Tween(AvatarImg, {Size = UDim2.new(0, 60, 0, 60), Position = UDim2.new(0.5, -30, 0, 10)}, 0.22, Enum.EasingStyle.Back, Enum.EasingDirection.Out):Play()
 
-        local viewing = _G.Lexhancements_ViewingPlayer or _G.KraviX_ViewingPlayer
-        local isView = (viewing == selectedPlayer)
+        local isView = (_G.Lexhancements_ViewingPlayer == selectedPlayer)
         local isWL   = isWhitelisted(selectedPlayer)
 
         if isWL then
@@ -1989,7 +1946,7 @@ function Lexhancements:CreateWindow(config)
                 count = count + 1
                 local isSel = (selectedPlayer == plr)
                 local isWL  = isWhitelisted(plr)
-                local isView = ((_G.Lexhancements_ViewingPlayer or _G.KraviX_ViewingPlayer) == plr)
+                local isView = (_G.Lexhancements_ViewingPlayer == plr)
 
                 local statusText = "User"
                 if plr == LocalPlayer then statusText = "Client" end
@@ -2088,8 +2045,7 @@ function Lexhancements:CreateWindow(config)
 
     ViewBtn.MouseButton1Click:Connect(function()
         if not selectedPlayer then return end
-        local currentVP = _G.Lexhancements_ViewingPlayer or _G.KraviX_ViewingPlayer
-        if currentVP == selectedPlayer then
+        if _G.Lexhancements_ViewingPlayer == selectedPlayer then
             _G.Lexhancements_ViewingPlayer = nil
             _G.KraviX_ViewingPlayer = nil
             pcall(function()
@@ -2116,21 +2072,13 @@ function Lexhancements:CreateWindow(config)
         if not selectedPlayer then return end
         local isWL = isWhitelisted(selectedPlayer)
         local dName = selectedPlayer.DisplayName or selectedPlayer.Name
-        local wl = _G.Lexhancements_GlobalWhitelist or _G.KraviX_GlobalWhitelist
         if isWL then
-            if wl then
-                wl[selectedPlayer.UserId] = nil
-                wl[selectedPlayer.Name] = nil
-            end
+            _G.Lexhancements_GlobalWhitelist[selectedPlayer.UserId] = nil
+            _G.Lexhancements_GlobalWhitelist[selectedPlayer.Name] = nil
             CreateNotification("Whitelist", dName .. " removed from Whitelist!", 2, "info")
         else
-            if not wl then
-                wl = {}
-                _G.Lexhancements_GlobalWhitelist = wl
-                _G.KraviX_GlobalWhitelist = wl
-            end
-            wl[selectedPlayer.UserId] = true
-            wl[selectedPlayer.Name] = true
+            _G.Lexhancements_GlobalWhitelist[selectedPlayer.UserId] = true
+            _G.Lexhancements_GlobalWhitelist[selectedPlayer.Name] = true
             CreateNotification("Whitelist", dName .. " adicionado à Whitelist!", 2, "success")
         end
         updateSelectedPanel()
@@ -2140,7 +2088,7 @@ function Lexhancements:CreateWindow(config)
     Players.PlayerAdded:Connect(function() task.delay(0.2, refreshPlayerList) end)
     Players.PlayerRemoving:Connect(function(p)
         if selectedPlayer == p then selectedPlayer = LocalPlayer end
-        if (_G.Lexhancements_ViewingPlayer == p) or (_G.KraviX_ViewingPlayer == p) then
+        if _G.Lexhancements_ViewingPlayer == p or _G.KraviX_ViewingPlayer == p then
             _G.Lexhancements_ViewingPlayer = nil
             _G.KraviX_ViewingPlayer = nil
             pcall(function()
@@ -2167,8 +2115,8 @@ function Lexhancements:CreateWindow(config)
     end)
 
     RunService.Heartbeat:Connect(function()
-        local vp = _G.Lexhancements_ViewingPlayer or _G.KraviX_ViewingPlayer
-        if vp then
+        if _G.Lexhancements_ViewingPlayer then
+            local vp = _G.Lexhancements_ViewingPlayer
             if not vp or not vp.Parent or not vp.Character then
                 _G.Lexhancements_ViewingPlayer = nil
                 _G.KraviX_ViewingPlayer = nil
@@ -3465,71 +3413,56 @@ function Lexhancements:CreateWindow(config)
         CreateLoader(ScreenGui, function()
             if useSound then PlaySound(SOUND_OPEN) end
             ShowWindow()
-            CreateNotification("Lexhancements","Loaded successfully!",3,"success")
+            CreateNotification("Axion","Loaded successfully!",3,"success")
         end, config.LoaderTitle or config.Name)
     else
         ShowWindow()
-        CreateNotification("Lexhancements","Loaded successfully!",3,"success")
+        CreateNotification("Axion","Loaded successfully!",3,"success")
     end
     function Window:CreateTab(name, icon)
         local Tab      = {}
         local tabIndex = #Window.Tabs + 1
 
         local TabBtn = Instance.new("TextButton", TabBar)
-        TabBtn.Size = UDim2.new(1, 0, 0, 32)
-        TabBtn.AnchorPoint = Vector2.new(0, 0)
-        TabBtn.BackgroundColor3 = C.Bg3
+        TabBtn.Size = UDim2.new(0,0,0,24); TabBtn.AutomaticSize = Enum.AutomaticSize.X
+        TabBtn.AnchorPoint = Vector2.new(0,0.5)
+        TabBtn.BackgroundColor3 = Color3.fromRGB(34,34,34)
         TabBtn.BackgroundTransparency = 1
-        TabBtn.Text = ""
+        TabBtn.Text = (icon and icon.."  " or "")..name
+        TabBtn.TextColor3 = C.Muted; TabBtn.TextSize = 11; TabBtn.Font = Enum.Font.Gotham
         TabBtn.AutoButtonColor = false; TabBtn.ZIndex = 12; TabBtn.LayoutOrder = tabIndex
-        mkCorner(TabBtn, 6)
+        mkCorner(TabBtn,5); mkPad(TabBtn,0,0,12,12)
 
         local TabUnder = Instance.new("Frame", TabBtn)
-        TabUnder.Size = UDim2.new(0, 3, 0, 16)
-        TabUnder.Position = UDim2.new(0, 0, 0.5, -8)
-        TabUnder.BackgroundColor3 = C.Accent
-        TabUnder.BorderSizePixel = 0
-        TabUnder.ZIndex = 14
-        mkCorner(TabUnder, 2)
-        TabUnder.BackgroundTransparency = 1
-
-        local TabTitle = Instance.new("TextLabel", TabBtn)
-        TabTitle.Size = UDim2.new(1, -22, 1, 0)
-        TabTitle.Position = UDim2.new(0, 14, 0, 0)
-        TabTitle.BackgroundTransparency = 1
-        TabTitle.Text = (icon and icon.."  " or "")..name
-        TabTitle.TextColor3 = C.Muted
-        TabTitle.TextSize = 11
-        TabTitle.Font = Enum.Font.Gotham
-        TabTitle.TextXAlignment = Enum.TextXAlignment.Left
-        TabTitle.ZIndex = 13
+        TabUnder.Size = UDim2.new(0,0,0,0); TabUnder.BackgroundTransparency = 1
+        TabUnder.BorderSizePixel = 0; TabUnder.ZIndex = 1
 
         local TabContent = Instance.new("Frame", ContentFrame)
         TabContent.Size = UDim2.new(1,0,1,0); TabContent.BackgroundTransparency = 1
         TabContent.BorderSizePixel = 0; TabContent.Visible = false; TabContent.ZIndex = 11
 
         local SubTabBar = Instance.new("Frame", TabContent)
-        SubTabBar.Size = UDim2.new(1, 0, 0, 34)
-        SubTabBar.BackgroundColor3 = C.Bg; SubTabBar.BackgroundTransparency = 0
+        SubTabBar.Size = UDim2.new(1,0,0,32)
+        SubTabBar.BackgroundColor3 = C.Bg2; SubTabBar.BackgroundTransparency = 0
         SubTabBar.BorderSizePixel = 0; SubTabBar.ZIndex = 12
         local SubList = Instance.new("UIListLayout", SubTabBar)
         SubList.FillDirection     = Enum.FillDirection.Horizontal
         SubList.SortOrder         = Enum.SortOrder.LayoutOrder
         SubList.VerticalAlignment = Enum.VerticalAlignment.Center
-        SubList.Padding           = UDim.new(0, 6)
-        mkPad(SubTabBar, 0, 0, 12, 12)
+        SubList.Padding           = UDim.new(0,0)
+        mkPad(SubTabBar,0,0,10,10)
 
         local SubSep = Instance.new("Frame", TabContent)
         SubSep.Name = "SubSep"
-        SubSep.Size = UDim2.new(1, 0, 0, 1); SubSep.Position = UDim2.new(0, 0, 0, 34)
+        SubSep.Size = UDim2.new(1,0,0,1); SubSep.Position = UDim2.new(0,0,0,32)
         SubSep.BackgroundColor3 = C.Border; SubSep.BorderSizePixel = 0; SubSep.ZIndex = 12
 
         local SubContent = Instance.new("Frame", TabContent)
-        SubContent.Size = UDim2.new(1, 0, 1, -35); SubContent.Position = UDim2.new(0, 0, 0, 35)
+        SubContent.Size = UDim2.new(1,0,1,-33); SubContent.Position = UDim2.new(0,0,0,33)
         SubContent.BackgroundTransparency = 1; SubContent.BorderSizePixel = 0
         SubContent.ZIndex = 11; SubContent.ClipsDescendants = true
 
-        table.insert(Window.Tabs,{Btn=TabBtn,Under=TabUnder,Title=TabTitle,Container=TabContent,
+        table.insert(Window.Tabs,{Btn=TabBtn,Under=TabUnder,Container=TabContent,
             Index=tabIndex,SubTabs={},ActiveSub=0})
         local tabEntry = Window.Tabs[tabIndex]
 
@@ -3546,17 +3479,8 @@ function Lexhancements:CreateWindow(config)
             for _, t in ipairs(Window.Tabs) do
                 local on = t.Index == activeTabIndex
                 if not on then t.Container.Visible = false end
-                Tween(t.Btn,{
-                    BackgroundColor3 = on and C.Bg3 or C.Bg,
-                    BackgroundTransparency = on and 0 or 1
-                },0.12):Play()
-                if t.Title then
-                    Tween(t.Title, {TextColor3 = on and C.White or C.Muted}, 0.12):Play()
-                    t.Title.Font = on and Enum.Font.GothamBold or Enum.Font.Gotham
-                end
-                if t.Under then
-                    Tween(t.Under, {BackgroundTransparency = on and 0 or 1}, 0.12):Play()
-                end
+                Tween(t.Btn,{TextColor3=on and C.White or C.Muted, BackgroundTransparency=on and 0 or 1},0.12):Play()
+                t.Btn.Font = on and Enum.Font.GothamBold or Enum.Font.Gotham
             end
             TabContent.Visible = true
             FadeOverlay.BackgroundTransparency = 0
@@ -3566,14 +3490,12 @@ function Lexhancements:CreateWindow(config)
         TabBtn.MouseButton1Click:Connect(SelectTab)
         TabBtn.MouseEnter:Connect(function()
             if tabIndex ~= activeTabIndex then
-                Tween(TabBtn,{BackgroundColor3=C.Bg3,BackgroundTransparency=0.5},0.1):Play()
-                Tween(TabTitle,{TextColor3=C.Sub},0.1):Play()
+                Tween(TabBtn,{TextColor3=C.Sub,BackgroundTransparency=0.85},0.1):Play()
             end
         end)
         TabBtn.MouseLeave:Connect(function()
             if tabIndex ~= activeTabIndex then
-                Tween(TabBtn,{BackgroundTransparency=1},0.1):Play()
-                Tween(TabTitle,{TextColor3=C.Muted},0.1):Play()
+                Tween(TabBtn,{TextColor3=C.Muted,BackgroundTransparency=1},0.1):Play()
             end
         end)
         if #Window.Tabs == 1 then SelectTab() end
@@ -3583,53 +3505,43 @@ function Lexhancements:CreateWindow(config)
             local subIndex = #tabEntry.SubTabs + 1
 
             local SBtn = Instance.new("TextButton", SubTabBar)
-            SBtn.Size = UDim2.new(0, 0, 0, 26); SBtn.AutomaticSize = Enum.AutomaticSize.X
-            SBtn.BackgroundColor3 = C.Bg3
+            SBtn.Size = UDim2.new(0,0,1,0); SBtn.AutomaticSize = Enum.AutomaticSize.X
             SBtn.BackgroundTransparency = 1; SBtn.Text = subName
             SBtn.TextColor3 = C.Muted; SBtn.TextSize = 11; SBtn.Font = Enum.Font.Gotham
             SBtn.AutoButtonColor = false; SBtn.ZIndex = 13; SBtn.LayoutOrder = subIndex
-            mkCorner(SBtn, 5)
-            mkPad(SBtn, 0, 0, 10, 10)
+            mkPad(SBtn,0,0,10,10)
 
             local SUnder = Instance.new("Frame", SBtn)
-            SUnder.Size = UDim2.new(1, -12, 0, 2)
-            SUnder.Position = UDim2.new(0, 6, 1, -2)
-            SUnder.BackgroundColor3 = C.Accent
-            SUnder.BorderSizePixel = 0; SUnder.ZIndex = 14
-            mkCorner(SUnder, 1)
-            SUnder.BackgroundTransparency = 1
+            SUnder.Size = UDim2.new(0,0,0,0); SUnder.BackgroundTransparency = 1
+            SUnder.BorderSizePixel = 0; SUnder.ZIndex = 1
 
             local SubPanel = Instance.new("Frame", SubContent)
             SubPanel.Size = UDim2.new(1,0,1,0); SubPanel.BackgroundTransparency = 1
             SubPanel.BorderSizePixel = 0; SubPanel.Visible = false; SubPanel.ZIndex = 12
 
-            if subName == "_default" then
-                SubTabBar.Visible = false
-                SubSep.Visible = false
-                SubContent.Size = UDim2.new(1, 0, 1, 0)
-                SubContent.Position = UDim2.new(0, 0, 0, 0)
-                SBtn.Visible = false
-            end
-
             local function makeCol(xScale, xOff)
                 local s = Instance.new("ScrollingFrame", SubPanel)
-                s.Size     = UDim2.new(0.5, -6, 1, 0)
-                s.Position = UDim2.new(xScale, xOff, 0, 0)
+                s.Size     = UDim2.new(0.5,xOff,1,0)
+                s.Position = UDim2.new(xScale,math.max(0,-xOff),0,0)
                 s.BackgroundTransparency = 1; s.BorderSizePixel = 0
-                s.ScrollBarThickness = 2; s.ScrollBarImageColor3 = C.Accent
-                s.CanvasSize = UDim2.new(0, 0, 0, 0); s.ZIndex = 12
+                s.ScrollBarThickness = 2; s.ScrollBarImageColor3 = C.Muted2
+                s.CanvasSize = UDim2.new(0,0,0,0); s.ZIndex = 12
                 local l = Instance.new("UIListLayout", s)
-                l.Padding = UDim.new(0, 10); l.SortOrder = Enum.SortOrder.LayoutOrder
+                l.Padding = UDim.new(0,2); l.SortOrder = Enum.SortOrder.LayoutOrder
                 l.HorizontalAlignment = Enum.HorizontalAlignment.Left
-                mkPad(s, 10, 12, 10, 10)
+                mkPad(s,10,14,12,10)
                 l:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-                    s.CanvasSize = UDim2.new(0, 0, 0, l.AbsoluteContentSize.Y + 20)
+                    s.CanvasSize = UDim2.new(0,0,0,l.AbsoluteContentSize.Y+18)
                 end)
                 return s
             end
 
-            local LeftScroll  = makeCol(0, 0)
-            local RightScroll = makeCol(0.5, 6)
+            local LeftScroll  = makeCol(0,-1)
+            local Div         = Instance.new("Frame", SubPanel)
+            Div.Size          = UDim2.new(0,1,1,0); Div.Position = UDim2.new(0.5,0,0,0)
+            Div.BackgroundColor3 = C.Border; Div.BorderSizePixel = 0; Div.ZIndex = 12
+            local RightScroll = makeCol(0.5,-1)
+            RightScroll.Position = UDim2.new(0.5,2,0,0)
 
             SubTab.Btn   = SBtn
             SubTab.Under = SUnder
@@ -3650,14 +3562,7 @@ function Lexhancements:CreateWindow(config)
                 for _, st in ipairs(tabEntry.SubTabs) do
                     local on = st.Index == subIndex
                     if not on then st.Panel.Visible = false end
-                    Tween(st.Btn,{
-                        TextColor3 = on and C.White or C.Muted,
-                        BackgroundColor3 = on and C.Bg3 or C.Bg,
-                        BackgroundTransparency = on and 0 or 1
-                    },0.1):Play()
-                    if st.Under then
-                        Tween(st.Under, {BackgroundTransparency = on and 0 or 1}, 0.1):Play()
-                    end
+                    Tween(st.Btn,{TextColor3=on and C.Accent or C.Muted},0.1):Play()
                     st.Btn.Font = on and Enum.Font.GothamBold or Enum.Font.Gotham
                 end
                 SubPanel.Visible = true
@@ -3667,14 +3572,10 @@ function Lexhancements:CreateWindow(config)
 
             SBtn.MouseButton1Click:Connect(SelectSub)
             SBtn.MouseEnter:Connect(function()
-                if subIndex ~= tabEntry.ActiveSub then
-                    Tween(SBtn,{TextColor3=C.Sub,BackgroundColor3=C.Bg3,BackgroundTransparency=0.5},0.08):Play()
-                end
+                if subIndex ~= tabEntry.ActiveSub then Tween(SBtn,{TextColor3=C.Sub},0.08):Play() end
             end)
             SBtn.MouseLeave:Connect(function()
-                if subIndex ~= tabEntry.ActiveSub then
-                    Tween(SBtn,{TextColor3=C.Muted,BackgroundTransparency=1},0.08):Play()
-                end
+                if subIndex ~= tabEntry.ActiveSub then Tween(SBtn,{TextColor3=C.Muted},0.08):Play() end
             end)
             if #tabEntry.SubTabs == 1 then SelectSub() end
 
@@ -3682,65 +3583,18 @@ function Lexhancements:CreateWindow(config)
                 local Section = {}
                 local scroll  = (column == "Right") and RightScroll or LeftScroll
 
-                local Card = Instance.new("Frame", scroll)
-                Card.Size = UDim2.new(1, 0, 0, 0)
-                Card.AutomaticSize = Enum.AutomaticSize.Y
-                Card.BackgroundColor3 = C.Bg3
-                Card.BorderSizePixel = 0
-                Card.ZIndex = 12
-                mkCorner(Card, 8)
-                mkStroke(Card, C.Border, 1, 0)
-                mkPad(Card, 8, 8, 10, 10)
-
-                local CardLayout = Instance.new("UIListLayout", Card)
-                CardLayout.SortOrder = Enum.SortOrder.LayoutOrder
-                CardLayout.Padding = UDim.new(0, 4)
-
-                local itemOrder = 0
-                local function nextOrder()
-                    itemOrder = itemOrder + 1
-                    return itemOrder
-                end
-
                 if sectionName and sectionName ~= "" then
-                    local HdrFrame = Instance.new("Frame", Card)
-                    HdrFrame.Size = UDim2.new(1, 0, 0, 22)
-                    HdrFrame.BackgroundTransparency = 1
-                    HdrFrame.BorderSizePixel = 0
-                    HdrFrame.ZIndex = 13
-                    HdrFrame.LayoutOrder = nextOrder()
-
-                    local DotBadge = Instance.new("Frame", HdrFrame)
-                    DotBadge.Size = UDim2.new(0, 8, 0, 8)
-                    DotBadge.Position = UDim2.new(0, 0, 0.5, -4)
-                    DotBadge.BackgroundColor3 = C.Accent
-                    DotBadge.BorderSizePixel = 0
-                    DotBadge.ZIndex = 14
-                    mkCorner(DotBadge, 4)
-
-                    local Hdr = Instance.new("TextLabel", HdrFrame)
-                    Hdr.Size = UDim2.new(1, -14, 1, 0)
-                    Hdr.Position = UDim2.new(0, 14, 0, 0)
-                    Hdr.BackgroundTransparency = 1
-                    Hdr.Text = sectionName
-                    Hdr.TextColor3 = C.Highlight
-                    Hdr.TextSize = 11
-                    Hdr.Font = Enum.Font.GothamBold
-                    Hdr.TextXAlignment = Enum.TextXAlignment.Left
-                    Hdr.ZIndex = 14
-
-                    local HLine = Instance.new("Frame", Card)
-                    HLine.Size = UDim2.new(1, 0, 0, 1)
-                    HLine.BackgroundColor3 = C.Border
-                    HLine.BorderSizePixel = 0
-                    HLine.ZIndex = 13
-                    HLine.LayoutOrder = nextOrder()
+                    local Hdr = Instance.new("TextLabel", scroll)
+                    Hdr.Size = UDim2.new(1,0,0,22); Hdr.BackgroundTransparency = 1
+                    Hdr.Text = sectionName; Hdr.TextColor3 = C.Sub
+                    Hdr.TextSize = 10; Hdr.Font = Enum.Font.GothamBold
+                    Hdr.TextXAlignment = Enum.TextXAlignment.Left; Hdr.ZIndex = 13
+                    local HLine = Instance.new("Frame", Hdr)
+                    HLine.Size = UDim2.new(1,0,0,1); HLine.Position = UDim2.new(0,0,1,-1)
+                    HLine.BackgroundColor3 = C.Border; HLine.BorderSizePixel = 0
                 end
 
-                local function AddItem(item)
-                    item.LayoutOrder = nextOrder()
-                    item.Parent = Card
-                end
+                local function AddItem(item) item.Parent = scroll end
 
                 function Section:AddToggle(cfg)
                     cfg = cfg or {}
@@ -4379,7 +4233,7 @@ function Lexhancements:CreateWindow(config)
                     Lbl.TextXAlignment = Enum.TextXAlignment.Left; Lbl.ZIndex = 14
 
                     local SwOut = Instance.new("Frame", Row)
-                    SwOut.Size = UDim2.new(0,22,0,15); SwOut.AnchorPoint = Vector2.new(1,0.5)
+                    SwOut.Size = UDim2.new(0,42,0,16); SwOut.AnchorPoint = Vector2.new(1,0.5)
                     SwOut.Position = UDim2.new(1,0,0.5,0)
                     SwOut.BackgroundColor3 = Color3.fromRGB(0,0,0)
                     SwOut.BorderSizePixel = 0; SwOut.ZIndex = 14
@@ -4625,10 +4479,8 @@ function Lexhancements:CreateWindow(config)
 
                 function Section:AddSeparator()
                     local S = Instance.new("Frame")
-                    S.Size = UDim2.new(1, 0, 0, 8); S.BackgroundTransparency = 1; S.ZIndex = 13
-                    local SLine = Instance.new("Frame", S)
-                    SLine.Size = UDim2.new(1, 0, 0, 1); SLine.Position = UDim2.new(0, 0, 0.5, 0)
-                    SLine.BackgroundColor3 = C.Border; SLine.BorderSizePixel = 0; SLine.ZIndex = 13
+                    S.Size = UDim2.new(1,0,0,1); S.BackgroundColor3 = C.Border
+                    S.BorderSizePixel = 0; S.ZIndex = 13
                     AddItem(S)
                 end
 
