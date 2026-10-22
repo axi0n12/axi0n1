@@ -387,7 +387,7 @@ local function CreateWelcomeScreen(screenGui, onDone)
     local userId     = (LocalPlayer and LocalPlayer.UserId) or 1
 
     local WelcomeGui = Instance.new("ScreenGui")
-    WelcomeGui.Name = "AxionWelcomeGui"
+    WelcomeGui.Name = "LexhancementsWelcomeGui"
     WelcomeGui.IgnoreGuiInset = true
     WelcomeGui.ResetOnSpawn = false
     WelcomeGui.DisplayOrder = 999999
@@ -580,9 +580,9 @@ local function CreateWelcomeScreen(screenGui, onDone)
 end
 
 local function CreateLoader(screenGui, onDone, scriptName)
-    local titleText = scriptName or "AXION"
+    local titleText = scriptName or "LEXHANCEMENTS"
     if titleText == "" or titleText:lower() == "script" or titleText:lower() == "mooze" or titleText:lower() == "kravix" or titleText:lower() == "lexhancements" then
-        titleText = "AXION"
+        titleText = "LEXHANCEMENTS"
     end
 
     local CFG = {
@@ -595,7 +595,7 @@ local function CreateLoader(screenGui, onDone, scriptName)
 
     local WIN_W, WIN_H = 670, 360
     local Loader = Instance.new("Frame", screenGui)
-    Loader.Name = "axion_terminal_window"
+    Loader.Name = "lexhancements_terminal_window"
     Loader.Size = UDim2.new(0, WIN_W, 0, WIN_H)
     Loader.Position = UDim2.new(0.5, -WIN_W/2, 0.5, -WIN_H/2)
     Loader.BackgroundColor3 = CFG.bg
@@ -718,7 +718,7 @@ local function CreateLoader(screenGui, onDone, scriptName)
 
     task.spawn(function()
         local asciiWord = titleText:upper()
-        if ASC[asciiWord:sub(1, 1)] == nil then asciiWord = "AXION" end
+        if ASC[asciiWord:sub(1, 1)] == nil then asciiWord = "LEXHANCEMENTS" end
         local fullAscii = buildAscii(asciiWord)
 
         local step = math.max(1, math.floor(#fullAscii / 12))
@@ -738,9 +738,9 @@ local function CreateLoader(screenGui, onDone, scriptName)
             { tag = "[+]", col = "rgb(165,85,255)", text = '<font color="rgb(220,220,220)">Key Verified:</font> <font color="rgb(60,210,110)">Valid License [Lifetime]</font>' },
             { tag = "[+]", col = "rgb(165,85,255)", text = '<font color="rgb(220,220,220)">User:</font> <font color="rgb(192,132,252)">' .. playerNick .. '</font> <font color="rgb(120,120,130)">(ID: ' .. tostring(playerUserId) .. ')</font>' },
             { tag = "[+]", col = "rgb(165,85,255)", text = '<font color="rgb(220,220,220)">Bypass:</font> <font color="rgb(60,210,110)">Working</font> <font color="rgb(120,120,130)">[100% Secure]</font>' },
-            { tag = "[+]", col = "rgb(165,85,255)", text = '<font color="rgb(220,220,220)">Axion:</font> <font color="rgb(60,210,110)">ON</font>' },
+            { tag = "[+]", col = "rgb(165,85,255)", text = '<font color="rgb(220,220,220)">Lexhancements:</font> <font color="rgb(60,210,110)">ON</font>' },
             { tag = "[+]", col = "rgb(165,85,255)", text = '<font color="rgb(220,220,220)">Modules:</font> <font color="rgb(165,85,255)">Core Engine Initialized</font>' },
-            { tag = "[✓]", col = "rgb(60,210,110)", text = '<font color="rgb(240,240,240)">Ready! Launching Axion...</font>' },
+            { tag = "[✓]", col = "rgb(60,210,110)", text = '<font color="rgb(240,240,240)">Ready! Launching Lexhancements...</font>' },
         }
 
         local labels = {}
@@ -3425,11 +3425,11 @@ function Lexhancements:CreateWindow(config)
         CreateLoader(ScreenGui, function()
             if useSound then PlaySound(SOUND_OPEN) end
             ShowWindow()
-            CreateNotification("Axion","Loaded successfully!",3,"success")
+            CreateNotification(config.Name or "Lexhancements", "Loaded successfully!", 3, "success")
         end, config.LoaderTitle or config.Name)
     else
         ShowWindow()
-        CreateNotification("Axion","Loaded successfully!",3,"success")
+        CreateNotification(config.Name or "Lexhancements", "Loaded successfully!", 3, "success")
     end
     function Window:CreateTab(name, icon)
         local Tab      = {}
