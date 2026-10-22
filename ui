@@ -1126,51 +1126,63 @@ function Lexhancements:CreateWindow(config)
     TopSep.Size = UDim2.new(1,0,0,1); TopSep.Position = UDim2.new(0,0,0,32)
     TopSep.BackgroundColor3 = C.Border; TopSep.BorderSizePixel = 0; TopSep.ZIndex = 12
 
-    local BrandLbl = Instance.new("TextLabel", TopBar)
-    BrandLbl.Name = "BrandLbl"
-    BrandLbl.Size = UDim2.new(0,0,1,0); BrandLbl.AutomaticSize = Enum.AutomaticSize.X
-    BrandLbl.Position = UDim2.new(0,10,0,0)
-    BrandLbl.BackgroundTransparency = 1; BrandLbl.Text = "Lexhancements"
-    BrandLbl.TextColor3 = C.Accent; BrandLbl.TextSize = 12; BrandLbl.Font = Enum.Font.GothamBlack
-    BrandLbl.TextXAlignment = Enum.TextXAlignment.Left; BrandLbl.ZIndex = 13
+    local TopLeft = Instance.new("Frame", TopBar)
+    TopLeft.Name = "TopLeft"
+    TopLeft.Size = UDim2.new(1, -120, 1, 0)
+    TopLeft.Position = UDim2.new(0, 10, 0, 0)
+    TopLeft.BackgroundTransparency = 1
+    TopLeft.BorderSizePixel = 0
+    TopLeft.ZIndex = 13
 
-    local DotSep = Instance.new("TextLabel", TopBar)
-    DotSep.Size = UDim2.new(0,12,1,0)
+    local TopLayout = Instance.new("UIListLayout", TopLeft)
+    TopLayout.FillDirection = Enum.FillDirection.Horizontal
+    TopLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+    TopLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    TopLayout.Padding = UDim.new(0, 6)
+
+    local BrandLbl = Instance.new("TextLabel", TopLeft)
+    BrandLbl.Name = "BrandLbl"
+    BrandLbl.Size = UDim2.new(0, 0, 1, 0); BrandLbl.AutomaticSize = Enum.AutomaticSize.X
+    BrandLbl.BackgroundTransparency = 1
+    BrandLbl.RichText = true
+    BrandLbl.Text = string.format('<font color="rgb(255,255,255)">L</font><font color="rgb(%d,%d,%d)">E</font>', math.floor(C.Accent2.R*255), math.floor(C.Accent2.G*255), math.floor(C.Accent2.B*255))
+    BrandLbl.TextSize = 13; BrandLbl.Font = Enum.Font.GothamBlack
+    BrandLbl.TextXAlignment = Enum.TextXAlignment.Left; BrandLbl.ZIndex = 13
+    BrandLbl.LayoutOrder = 1
+
+    local DotSep = Instance.new("TextLabel", TopLeft)
+    DotSep.Name = "DotSep"
+    DotSep.Size = UDim2.new(0, 8, 1, 0)
     DotSep.BackgroundTransparency = 1; DotSep.Text = "·"
     DotSep.TextColor3 = C.Muted2; DotSep.TextSize = 12; DotSep.Font = Enum.Font.GothamBold
     DotSep.TextXAlignment = Enum.TextXAlignment.Center; DotSep.ZIndex = 13
+    DotSep.LayoutOrder = 2
 
-    local ScriptLbl = Instance.new("TextLabel", TopBar)
-    ScriptLbl.Size = UDim2.new(0,0,1,0); ScriptLbl.AutomaticSize = Enum.AutomaticSize.X
+    local ScriptLbl = Instance.new("TextLabel", TopLeft)
+    ScriptLbl.Name = "ScriptLbl"
+    ScriptLbl.Size = UDim2.new(0, 0, 1, 0); ScriptLbl.AutomaticSize = Enum.AutomaticSize.X
     ScriptLbl.BackgroundTransparency = 1; ScriptLbl.Text = config.Name
     ScriptLbl.TextColor3 = C.Sub; ScriptLbl.TextSize = 11; ScriptLbl.Font = Enum.Font.Gotham
     ScriptLbl.TextXAlignment = Enum.TextXAlignment.Left; ScriptLbl.ZIndex = 13
+    ScriptLbl.LayoutOrder = 3
 
-    local ModePill = Instance.new("TextButton", TopBar)
+    local ModePill = Instance.new("TextButton", TopLeft)
     ModePill.Name = "ModePill"
-    ModePill.Size = UDim2.new(0,0,0,18); ModePill.AutomaticSize = Enum.AutomaticSize.X
+    ModePill.Size = UDim2.new(0, 0, 0, 18); ModePill.AutomaticSize = Enum.AutomaticSize.X
     ModePill.BackgroundColor3 = Color3.new(
         math.clamp(C.Accent.R*0.18,0,1),
         math.clamp(C.Accent.G*0.12,0,1),
         math.clamp(C.Accent.B*0.18,0,1))
     ModePill.BackgroundTransparency = 0; ModePill.Text = config.Mode
     ModePill.TextColor3 = C.Accent; ModePill.TextSize = 10; ModePill.Font = Enum.Font.GothamBold
-    ModePill.AutoButtonColor = false; ModePill.ZIndex = 13; ModePill.AnchorPoint = Vector2.new(0,0.5)
-    mkCorner(ModePill,9)
-    mkStroke(ModePill,Color3.new(
+    ModePill.AutoButtonColor = false; ModePill.ZIndex = 13
+    ModePill.LayoutOrder = 4
+    mkCorner(ModePill, 9)
+    mkStroke(ModePill, Color3.new(
         math.clamp(C.Accent.R*0.5,0,1),
         math.clamp(C.Accent.G*0.3,0,1),
-        math.clamp(C.Accent.B*0.6,0,1)),1,0)
-    mkPad(ModePill,0,0,8,8)
-
-    task.defer(function()
-        local bW  = BrandLbl.AbsoluteSize.X; local gap = 6
-        DotSep.Position  = UDim2.new(0, 10+bW+gap, 0, 0)
-        local dW  = DotSep.AbsoluteSize.X
-        ScriptLbl.Position = UDim2.new(0, 10+bW+gap+dW+2, 0, 0)
-        local sW  = ScriptLbl.AbsoluteSize.X
-        ModePill.Position  = UDim2.new(0, 10+bW+gap+dW+2+sW+8, 0.5, 0)
-    end)
+        math.clamp(C.Accent.B*0.6,0,1)), 1, 0)
+    mkPad(ModePill, 0, 0, 8, 8)
 
     local VerLbl = Instance.new("TextLabel", TopBar)
     VerLbl.Size = UDim2.new(0,80,1,0); VerLbl.AnchorPoint = Vector2.new(1,0)
