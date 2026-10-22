@@ -298,6 +298,15 @@ local ASC = {
         "  888  ",
         " o888o "
     },
+    L = {
+        " oooo          ",
+        " `888          ",
+        "  888          ",
+        "  888          ",
+        "  888          ",
+        "  888       o  ",
+        " o888ooooood8  "
+    },
     O = {
         "  .oooooo.   ",
         " d8P'  `Y8b  ",
@@ -633,19 +642,19 @@ local function CreateLoader(screenGui, onDone, scriptName)
     TopSep.ZIndex = 502
 
     local IconLbl = Instance.new("TextLabel", TopBar)
-    IconLbl.Size = UDim2.new(0, 20, 1, 0)
+    IconLbl.Size = UDim2.new(0, 24, 1, 0)
     IconLbl.Position = UDim2.new(0, 12, 0, 0)
     IconLbl.BackgroundTransparency = 1
-    IconLbl.Text = string.sub(titleText, 1, 1):upper()
-    IconLbl.TextColor3 = CFG.activeColor
+    IconLbl.RichText = true
+    IconLbl.Text = string.format('<font color="rgb(255,255,255)">L</font><font color="rgb(%d,%d,%d)">E</font>', math.floor(C.Accent2.R*255), math.floor(C.Accent2.G*255), math.floor(C.Accent2.B*255))
     IconLbl.TextSize = 13
     IconLbl.Font = Enum.Font.GothamBlack
     IconLbl.TextXAlignment = Enum.TextXAlignment.Left
     IconLbl.ZIndex = 502
 
     local TitleLbl = Instance.new("TextLabel", TopBar)
-    TitleLbl.Size = UDim2.new(0, 200, 1, 0)
-    TitleLbl.Position = UDim2.new(0, 30, 0, 0)
+    TitleLbl.Size = UDim2.new(0, 250, 1, 0)
+    TitleLbl.Position = UDim2.new(0, 42, 0, 0)
     TitleLbl.BackgroundTransparency = 1
     TitleLbl.Text = titleText
     TitleLbl.TextColor3 = Color3.fromRGB(230, 230, 230)
@@ -697,8 +706,8 @@ local function CreateLoader(screenGui, onDone, scriptName)
     ascii.Text = ""
     ascii.TextColor3 = CFG.fg
     ascii.Font = Enum.Font.Code
-    ascii.TextSize = 12
-    ascii.TextXAlignment = Enum.TextXAlignment.Left
+    ascii.TextSize = 11
+    ascii.TextXAlignment = Enum.TextXAlignment.Center
     ascii.TextYAlignment = Enum.TextYAlignment.Top
     ascii.TextTransparency = 0.1
     ascii.TextWrapped = false
@@ -717,8 +726,7 @@ local function CreateLoader(screenGui, onDone, scriptName)
     ConsoleList.Padding = UDim.new(0, 5)
 
     task.spawn(function()
-        local asciiWord = titleText:upper()
-        if ASC[asciiWord:sub(1, 1)] == nil then asciiWord = "LEXHANCEMENTS" end
+        local asciiWord = "LE"
         local fullAscii = buildAscii(asciiWord)
 
         local step = math.max(1, math.floor(#fullAscii / 12))
@@ -3425,11 +3433,11 @@ function Lexhancements:CreateWindow(config)
         CreateLoader(ScreenGui, function()
             if useSound then PlaySound(SOUND_OPEN) end
             ShowWindow()
-            CreateNotification(config.Name or "Lexhancements", "Loaded successfully!", 3, "success")
+            CreateNotification("Lexhancements", "Loaded successfully!", 3, "success")
         end, config.LoaderTitle or config.Name)
     else
         ShowWindow()
-        CreateNotification(config.Name or "Lexhancements", "Loaded successfully!", 3, "success")
+        CreateNotification("Lexhancements", "Loaded successfully!", 3, "success")
     end
     function Window:CreateTab(name, icon)
         local Tab      = {}
