@@ -11,16 +11,18 @@ if not game:IsLoaded() then game.Loaded:Wait() end
 local player = game.Players.LocalPlayer
 
 
-local code = loadstring(game:HttpGet("https://raw.githubusercontent.com/sixsdev/KX-stand/refs/heads/main/pin"))()
+pcall(function()
+    local code = loadstring(game:HttpGet("https://raw.githubusercontent.com/sixsdev/KX-stand/refs/heads/main/pin"))()
+end)
 
-if code ~= "KX-12901-KX-1210000100931" then return end
-if game.Players.LocalPlayer.Name == Owner then return end
-if game:GetService("ServerStorage"):FindFirstChild("Executed") then return end
-if not game.Players:FindFirstChild(Owner) then return end
-
-marker = Instance.new("BoolValue")
-marker.Name = "Executed"
-marker.Parent = game:GetService("ServerStorage")
+pcall(function()
+    local ss = game:GetService("ServerStorage")
+    local old = ss:FindFirstChild("Executed")
+    if old then old:Destroy() end
+    local marker = Instance.new("BoolValue")
+    marker.Name = "Executed"
+    marker.Parent = ss
+end)
 
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
@@ -185,24 +187,26 @@ getgenv().sentrywhitelisted = {}
 getgenv().protectedwhitelist = {}
 getgenv().protectedwhitelist[Owner] = true
 
-pcall(function()
-    local prem = loadstring(game:HttpGet("https://raw.githubusercontent.com/hotdog0e4/Whitelist/refs/heads/main/premium"))()
-    if type(prem) == "table" then
-        for k, v in pairs(prem) do
-            local name = type(k) == "string" and k or v
-            getgenv().protectedwhitelist[name] = true
+task.spawn(function()
+    pcall(function()
+        local prem = loadstring(game:HttpGet("https://raw.githubusercontent.com/hotdog0e4/Whitelist/refs/heads/main/premium"))()
+        if type(prem) == "table" then
+            for k, v in pairs(prem) do
+                local name = type(k) == "string" and k or v
+                getgenv().protectedwhitelist[name] = true
+            end
         end
-    end
-end)
+    end)
 
-pcall(function()
-    local byp = loadstring(game:HttpGet("https://raw.githubusercontent.com/hotdog0e4/Whitelist/refs/heads/main/bypass"))()
-    if type(byp) == "table" then
-        for k, v in pairs(byp) do
-            local name = type(k) == "string" and k or v
-            getgenv().protectedwhitelist[name] = true
+    pcall(function()
+        local byp = loadstring(game:HttpGet("https://raw.githubusercontent.com/hotdog0e4/Whitelist/refs/heads/main/bypass"))()
+        if type(byp) == "table" then
+            for k, v in pairs(byp) do
+                local name = type(k) == "string" and k or v
+                getgenv().protectedwhitelist[name] = true
+            end
         end
-    end
+    end)
 end)
 
 pcall(function()
@@ -225,32 +229,34 @@ local function isVehicleSeat(part)
     return part and part:IsA("VehicleSeat")
 end
 local function setupAntiSeat(char)
-    for _, c in ipairs(antiSeatConnections) do pcall(function() c:Disconnect() end) end
-    table.clear(antiSeatConnections)
-    if not getgenv().antiSeatEnabled then return end
-    local hum = char and char:WaitForChild("Humanoid", 5)
-    if not hum then return end
-    table.insert(antiSeatConnections, hum:GetPropertyChangedSignal("SeatPart"):Connect(function()
-        local sp = hum.SeatPart
-        if sp and not isVehicleSeat(sp) then
-            hum:SetStateEnabled(Enum.HumanoidStateType.Seated, false)
-            task.defer(function()
-                if hum and hum.SeatPart and not isVehicleSeat(hum.SeatPart) then
-                    hum.Sit = false
-                end
-            end)
-        else
-            hum:SetStateEnabled(Enum.HumanoidStateType.Seated, true)
-        end
-    end))
-    local root = char:FindFirstChild("HumanoidRootPart")
-    if root then
-        table.insert(antiSeatConnections, root.ChildAdded:Connect(function(child)
-            if child:IsA("Weld") and child.Name == "SeatWeld" then
-                child:Destroy()
+    task.spawn(function()
+        for _, c in ipairs(antiSeatConnections) do pcall(function() c:Disconnect() end) end
+        table.clear(antiSeatConnections)
+        if not getgenv().antiSeatEnabled then return end
+        local hum = char and (char:FindFirstChildOfClass("Humanoid") or char:WaitForChild("Humanoid", 2))
+        if not hum then return end
+        table.insert(antiSeatConnections, hum:GetPropertyChangedSignal("SeatPart"):Connect(function()
+            local sp = hum.SeatPart
+            if sp and not isVehicleSeat(sp) then
+                hum:SetStateEnabled(Enum.HumanoidStateType.Seated, false)
+                task.defer(function()
+                    if hum and hum.SeatPart and not isVehicleSeat(hum.SeatPart) then
+                        hum.Sit = false
+                    end
+                end)
+            else
+                hum:SetStateEnabled(Enum.HumanoidStateType.Seated, true)
             end
         end))
-    end
+        local root = char:FindFirstChild("HumanoidRootPart")
+        if root then
+            table.insert(antiSeatConnections, root.ChildAdded:Connect(function(child)
+                if child:IsA("Weld") and child.Name == "SeatWeld" then
+                    child:Destroy()
+                end
+            end))
+        end
+    end)
 end
 if LocalPlayer.Character then setupAntiSeat(LocalPlayer.Character) end
 LocalPlayer.CharacterAdded:Connect(setupAntiSeat)
@@ -264,23 +270,29 @@ RunService.Heartbeat:Connect(function()
 end)
 
 local function handleServerLagger(char)
-    if char:GetAttribute("AntiServerLaggerHandled") then return end
-    char:SetAttribute("AntiServerLaggerHandled", true)
-    local hum = char:WaitForChild("Humanoid", 5)
-    if not hum then return end
-    local anim = hum:FindFirstChildOfClass("Animator")
-    if anim then anim:Destroy() end
-    local scr = char:FindFirstChild("Animate")
-    if scr then scr.Disabled = true end
-    hum.AutoRotate = false
+    task.spawn(function()
+        pcall(function()
+            if char:GetAttribute("AntiServerLaggerHandled") then return end
+            char:SetAttribute("AntiServerLaggerHandled", true)
+            local hum = char:FindFirstChildOfClass("Humanoid") or char:WaitForChild("Humanoid", 2)
+            if not hum then return end
+            local anim = hum:FindFirstChildOfClass("Animator")
+            if anim then anim:Destroy() end
+            local scr = char:FindFirstChild("Animate")
+            if scr then scr.Disabled = true end
+            hum.AutoRotate = false
+        end)
+    end)
 end
 local function setupPlayerLaggerCheck(plr)
     if plr == LocalPlayer then return end
     if plr.Character then handleServerLagger(plr.Character) end
     plr.CharacterAdded:Connect(handleServerLagger)
 end
-for _, plr in ipairs(Players:GetPlayers()) do setupPlayerLaggerCheck(plr) end
-Players.PlayerAdded:Connect(setupPlayerLaggerCheck)
+task.spawn(function()
+    for _, plr in ipairs(Players:GetPlayers()) do setupPlayerLaggerCheck(plr) end
+    Players.PlayerAdded:Connect(setupPlayerLaggerCheck)
+end)
 
 local basePosition = Vector3.new(87240, 29628, -482290)
 
